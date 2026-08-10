@@ -83,3 +83,44 @@
   height: 1.75rem;
   border-radius: 9999px;
 }
+
+/* Responsivo */
+
+/*
+ * Abaixo do desktop os cinco itens não cabem em volta da logomarca, que
+ * o hero já mostra em tamanho grande logo abaixo. Então a marca sai e os
+ * links viram uma única faixa que rola na horizontal.
+ */
+@media (max-width: 899px) {
+  .nav__inner {
+    justify-content: flex-start;
+    gap: 1.75rem;
+    padding: 0 1.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav__inner::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav__marca {
+    display: none;
+  }
+
+  .nav__grupo {
+    flex: none;
+    gap: 1.75rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    white-space: nowrap;
+  }
+}
+
+@media (min-width: 900px) and (max-width: 1120px) {
+  .nav__grupo {
+    gap: 1.5rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+  }
+}

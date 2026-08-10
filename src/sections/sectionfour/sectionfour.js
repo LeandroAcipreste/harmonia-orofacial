@@ -1,6 +1,7 @@
-/* Conheça a Dra. Célia: entrada do texto e das áreas de atuação. */
+/* Conheça a Dra. Célia: entrada do texto, das áreas de atuação e do vídeo. */
 
 import { revelarAoEntrar } from "../../utils/reveal.js";
+import { tocarQuandoVisivel } from "../../utils/video.js";
 
 const MARGEM_TEXTO = "0px 0px -15% 0px";
 
@@ -21,4 +22,6 @@ export const initSectionFour = () => {
     void secao.offsetHeight;
 
     revelarAoEntrar(alvos, { margem: MARGEM_TEXTO });
+
+    tocarQuandoVisivel(secao.querySelector(".s4__video-fonte"));
 };

@@ -17,11 +17,13 @@
 
 /* Palco da sequência */
 
-/* Presa, a seção ocupa exatamente a tela e centraliza a grade */
+/* Presa, a seção ocupa exatamente a tela e centraliza a grade.
+   `min-height` no lugar de `height`: em tela baixa a grade cresce em vez
+   de ser cortada por fora do quadro preso */
 .s3.js-sequencia {
   display: flex;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   padding-top: 5rem;
   padding-bottom: 2rem;
 }
@@ -77,43 +79,6 @@
   background-color: var(--gold-300);
   transform: scaleX(0);
   transform-origin: left;
-}
-
-/* Brilho cônico que segue o cursor */
-
-.shell-card {
-  --cursor-angle: 0deg;
-  --glow-opacity: 0;
-}
-
-.shell-card__glow {
-  position: absolute;
-  inset: 0;
-  display: block;
-  border-radius: inherit;
-  pointer-events: none;
-  background: conic-gradient(
-    from var(--cursor-angle),
-    rgb(253 186 116 / 0.9),
-    transparent 50deg,
-    transparent 310deg,
-    rgb(253 186 116 / 0.9)
-  );
-  opacity: var(--glow-opacity);
-  transition: opacity 0.3s;
-}
-
-.shell-card__glow--difuso {
-  inset: -12px;
-  filter: blur(12px);
-  background: conic-gradient(
-    from var(--cursor-angle),
-    rgb(253 186 116 / 0.55),
-    transparent 50deg,
-    transparent 310deg,
-    rgb(253 186 116 / 0.55)
-  );
-  opacity: calc(var(--glow-opacity) * 0.6);
 }
 
 /* Corpo do cartão */
@@ -231,6 +196,40 @@
 }
 
 /* Responsivo */
+
+/* Celular: 2rem de folga num cartão estreito sobra pouco para a foto */
+@media (max-width: 480px) {
+  .s3__corpo {
+    gap: 1rem;
+    padding: 1.25rem;
+  }
+
+  .s3__etapas {
+    height: 6.5rem;
+  }
+}
+
+/* Tela baixa em 2 colunas: as duas fileiras precisam caber na dobra presa */
+@media (max-height: 700px) and (max-width: 1023px) {
+  .s3.js-sequencia {
+    padding-top: 4.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .s3__corpo {
+    gap: 0.875rem;
+    padding: 1.25rem;
+  }
+
+  .s3__etapas {
+    height: 5.5rem;
+  }
+
+  .s3__icone {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+}
 
 @media (min-width: 1024px) {
   .s3:not(.js-sequencia) {

@@ -1,0 +1,141 @@
+/* Pré-loader: o dente enchendo de dourado, de baixo para cima */
+
+html.esta-carregando,
+html.esta-carregando body {
+  overflow: hidden;
+}
+
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/*
+ * O fundo é quem leva o recorte na saída, e não a camada inteira: assim o
+ * risco dourado pode correr na borda do corte sem ser recortado junto.
+ */
+.preloader__fundo {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background-color: var(--navy-900);
+  background-image:
+    radial-gradient(60% 60% at 50% 55%, rgb(29 78 216 / 0.16), transparent 70%),
+    radial-gradient(40% 40% at 50% 100%, rgb(253 186 116 / 0.08), transparent 70%);
+  clip-path: inset(0 0 0 0);
+}
+
+/*
+ * Sem JS a camada some sozinha: uma tela cheia e fixa nunca pode ficar
+ * presa na frente do site. O módulo desliga esta rede ao assumir.
+ */
+.preloader:not(.js-ativo) {
+  animation: preloaderSocorro 0.6s ease 8s forwards;
+}
+
+@keyframes preloaderSocorro {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.preloader__palco {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* O dente */
+
+.preloader__dente {
+  width: clamp(7rem, 22vw, 11rem);
+  height: clamp(7rem, 22vw, 11rem);
+  overflow: visible;
+  filter: drop-shadow(0 0 28px rgb(253 186 116 / 0.28));
+}
+
+.preloader__contorno {
+  fill: none;
+  stroke: rgb(253 186 116 / 0.4);
+  stroke-width: 0.5;
+  stroke-linejoin: round;
+}
+
+/* Duas ondas em velocidades diferentes dão profundidade ao líquido */
+.preloader__onda {
+  fill: var(--gold-300);
+  transform-box: view-box;
+  transform-origin: 0 0;
+  animation: preloaderOnda 3s linear infinite;
+}
+
+.preloader__onda--fundo {
+  fill: rgb(251 146 60 / 0.55);
+  animation-duration: 4.6s;
+  animation-direction: reverse;
+}
+
+@keyframes preloaderOnda {
+  to {
+    transform: translateX(-12px);
+  }
+}
+
+/* Marca e contador */
+
+.preloader__marca {
+  margin-top: 2.25rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  color: var(--white);
+}
+
+.preloader__tipo {
+  margin-top: 0.625rem;
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  color: rgb(253 186 116 / 0.7);
+}
+
+.preloader__contador {
+  margin-top: 2rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.3em;
+  font-variant-numeric: tabular-nums;
+  color: var(--slate-500);
+}
+
+/* Risco dourado que sobe junto com a saída */
+.preloader__risco {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 20;
+  height: 1px;
+  background-image: linear-gradient(to right, transparent, var(--gold-300), transparent);
+  opacity: 0;
+}
+
+/* Movimento reduzido: o nível ainda sobe, mas sem ondular */
+@media (prefers-reduced-motion: reduce) {
+  .preloader__onda {
+    animation: none;
+  }
+
+  .preloader__dente {
+    filter: none;
+  }
+}

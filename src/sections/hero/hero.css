@@ -91,41 +91,6 @@
   animation: laserPulse 3s ease-in-out infinite;
 }
 
-/* Marcadores laterais */
-
-.hero__marker {
-  position: absolute;
-  top: 33.3333%;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 0.75rem;
-  letter-spacing: 0.3em;
-  color: var(--slate-500);
-}
-
-.hero__marker--esq {
-  left: 1.5rem;
-}
-
-.hero__marker--dir {
-  right: 1.5rem;
-}
-
-.hero__rule {
-  display: block;
-  width: 2rem;
-  height: 1px;
-  background-color: var(--slate-600);
-}
-
-.hero__sparkle {
-  width: 1rem;
-  height: 1rem;
-  color: rgb(253 186 116 / 0.7);
-}
-
 /* Medalhão da marca */
 
 /* Tamanho pela menor dimensão da janela */
@@ -239,27 +204,10 @@
 
 /* Responsivo */
 
-/* Somem quando a logomarca ocupa a largura */
-@media (max-width: 639px) {
-  .hero__marker {
-    display: none;
-  }
-}
-
-/* Deixa livre a faixa dos marcadores */
+/* Fora do celular a largura deixa de ser o limite da peça */
 @media (min-width: 640px) {
   .hero__medalhao {
     --tamanho: min(66vw, 56vh, 34rem);
-  }
-}
-
-@media (min-width: 768px) {
-  .hero__marker--esq {
-    left: 3rem;
-  }
-
-  .hero__marker--dir {
-    right: 3rem;
   }
 }
 

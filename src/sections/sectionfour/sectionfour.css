@@ -54,6 +54,28 @@
   color: var(--slate-400);
 }
 
+/* Vídeo da apresentação */
+
+/* O arquivo é retrato (1080x1920), então a moldura segue a proporção dele
+   e nada é cortado */
+.s4__video {
+  position: relative;
+  width: 100%;
+  max-width: 18rem;
+  margin-top: 2.5rem;
+  aspect-ratio: 9 / 16;
+  border: 1px solid rgb(255 255 255 / 0.08);
+  border-radius: 1rem;
+  overflow: hidden;
+  background-color: var(--navy-800);
+}
+
+.s4__video-fonte {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 /* Áreas de atuação */
 
 /* Um bloco por área de atuação */

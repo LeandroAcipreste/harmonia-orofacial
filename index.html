@@ -19,6 +19,35 @@
 
 <body>
 
+<div class="preloader" id="preloader" role="status" aria-live="polite" aria-label="Carregando">
+  <span class="preloader__fundo" aria-hidden="true"></span>
+
+  <div class="preloader__palco">
+    <svg class="preloader__dente" viewBox="0 0 24 24" aria-hidden="true">
+      <defs>
+        <clipPath id="preloader-recorte">
+          <path d="M12 3.5c-2.2 0-3.5.8-4.4 1.8C6.5 6.4 6.2 7.8 6.2 9.4c0 2.2.7 3.9 1.2 5.6.4 1.4.4 3.2 1.6 3.2 1 0 1.1-1.4 1.4-2.7.3-1.2.6-2.3 1.6-2.3s1.3 1.1 1.6 2.3c.3 1.3.4 2.7 1.4 2.7 1.2 0 1.2-1.8 1.6-3.2.5-1.7 1.2-3.4 1.2-5.6 0-1.6-.3-3-1.4-4.1-.9-1-2.2-1.8-4.4-1.8z"></path>
+        </clipPath>
+      </defs>
+
+      <g clip-path="url(#preloader-recorte)">
+        <g class="preloader__nivel">
+          <path class="preloader__onda preloader__onda--fundo" d="M-24 0 q3 -1.1 6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 V32 H-24 Z"></path>
+          <path class="preloader__onda" d="M-24 0 q3 -0.8 6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 V32 H-24 Z"></path>
+        </g>
+      </g>
+
+      <path class="preloader__contorno" d="M12 3.5c-2.2 0-3.5.8-4.4 1.8C6.5 6.4 6.2 7.8 6.2 9.4c0 2.2.7 3.9 1.2 5.6.4 1.4.4 3.2 1.6 3.2 1 0 1.1-1.4 1.4-2.7.3-1.2.6-2.3 1.6-2.3s1.3 1.1 1.6 2.3c.3 1.3.4 2.7 1.4 2.7 1.2 0 1.2-1.8 1.6-3.2.5-1.7 1.2-3.4 1.2-5.6 0-1.6-.3-3-1.4-4.1-.9-1-2.2-1.8-4.4-1.8z"></path>
+    </svg>
+
+    <p class="preloader__marca">HARMONIA OROFACIAL</p>
+    <p class="preloader__tipo">CLÍNICA ODONTOLÓGICA</p>
+    <p class="preloader__contador"><span class="preloader__num">0</span>%</p>
+  </div>
+
+  <span class="preloader__risco" aria-hidden="true"></span>
+</div>
+
 <div class="fundo" aria-hidden="true">
   <div class="fundo__brilhos" id="bg-layer-1">
     <span class="brilho brilho--azul"></span>
@@ -40,13 +69,18 @@
   <nav class="nav__inner">
     <div class="nav__grupo">
       <a class="nav-link" href="#sectiontwo">PROCEDIMENTOS</a>
+      <a class="nav-link" href="#sectionthree">RESULTADOS</a>
     </div>
 
     <a class="nav__marca" href="#hero" aria-label="Harmonia Orofacial, início">
       <img class="nav__marca-img" src="assets/favicon-180.png" alt="" />
     </a>
 
-    <div class="nav__grupo nav__grupo--dir"></div>
+    <div class="nav__grupo nav__grupo--dir">
+      <a class="nav-link" href="#sectionfour">A DENTISTA</a>
+      <a class="nav-link" href="#sectionfive">A CLÍNICA</a>
+      <a class="nav-link" href="#contato">CONTATO</a>
+    </div>
   </nav>
 </header>
 
@@ -62,15 +96,6 @@
         <span class="laser-pulse hero__laser-core"></span>
         <span class="laser-pulse hero__laser-dot"></span>
       </div>
-    </div>
-
-    <div class="hero__marker hero__marker--esq hero-el">
-      <span>01</span>
-      <span class="hero__rule"></span>
-    </div>
-    <div class="hero__marker hero__marker--dir hero-el">
-      <span class="hero__rule"></span>
-      <svg class="hero__sparkle" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg>
     </div>
 
     <div class="hero__medalhao hero-el flash-card" id="torus">
@@ -248,6 +273,10 @@
           estética do sorriso na mesma clínica, do implante planejado
           digitalmente às facetas e à harmonização do rosto.
         </p>
+
+        <div class="s4__video s4-anim">
+          <video class="s4__video-fonte" src="assets/dra-celia.mp4" poster="assets/dra-celia-poster.jpg" muted loop playsinline preload="metadata"></video>
+        </div>
       </div>
 
       <ul class="s4__areas">
@@ -293,81 +322,25 @@
   <section class="s5" id="sectionfive">
     <div class="s5__inner">
 
-      <header class="s5__capitulo">
-        <p class="s5__marcador s5-anim">(o espaço)</p>
-        <h2 class="s5__titulo">
-          <span class="s5__verso s5-anim">A CLÍNICA</span>
-          <span class="s5__verso s5__verso--recuado s5-anim">POR DENTRO</span>
-        </h2>
+      <header class="s5__cabecalho">
+        <p class="s5__eyebrow s5-anim">A clínica</p>
       </header>
 
-      <div class="s5__linha s5__linha--um">
-        <figure class="s5__peca">
-          <div class="s5__janela s5__janela--paisagem">
-            <img class="s5__fonte" src="assets/clinica/recepcao.jpg" alt="Recepção da clínica com balcão branco e o dente dourado vazado" loading="lazy" />
-          </div>
-          <figcaption class="s5__legenda">
-            <span class="s5__legenda-num">01</span>
-            <span class="s5__legenda-nome">RECEPÇÃO</span>
-          </figcaption>
+      <div class="s5__grade">
+        <figure class="s5__foto shell-card">
+          <img class="s5__img" src="assets/clinica/1.webp" alt="Fachada da clínica, com o letreiro Harmonia Orofacial e a bandeira azul na calçada" loading="lazy" />
         </figure>
-        <p class="s5__nota s5-anim">
-          Da fachada à sala de espera, cada detalhe foi escolhido para que a
-          visita ao dentista seja tranquila desde a porta.
-        </p>
-      </div>
-
-      <div class="s5__linha s5__linha--dois">
-        <figure class="s5__peca">
-          <div class="s5__janela s5__janela--retrato">
-            <img class="s5__fonte" src="assets/clinica/fachada.jpg" alt="Fachada da clínica Harmonia Orofacial com letreiro azul e dourado" loading="lazy" />
-          </div>
-          <figcaption class="s5__legenda">
-            <span class="s5__legenda-num">02</span>
-            <span class="s5__legenda-nome">FACHADA</span>
-          </figcaption>
+        <figure class="s5__foto shell-card">
+          <img class="s5__img" src="assets/clinica/2.webp" alt="Vista ampla da recepção, com o balcão branco, o lustre aceso e as poltronas azuis" loading="lazy" />
         </figure>
-        <figure class="s5__peca s5__peca--descida">
-          <div class="s5__janela s5__janela--retrato">
-            <img class="s5__fonte" src="assets/clinica/recepcao-lustre.jpg" alt="Lustre dourado aceso sobre a recepção da clínica" loading="lazy" />
-          </div>
-          <figcaption class="s5__legenda">
-            <span class="s5__legenda-num">03</span>
-            <span class="s5__legenda-nome">O LUSTRE</span>
-          </figcaption>
+        <figure class="s5__foto shell-card">
+          <img class="s5__img" src="assets/clinica/3.webp" alt="Lustre dourado aceso sobre o balcão da recepção" loading="lazy" />
         </figure>
-      </div>
-
-      <div class="s5__linha s5__linha--tres">
-        <figure class="s5__peca">
-          <div class="s5__janela s5__janela--vertical">
-            <video class="s5__fonte s5__fonte--video" src="assets/clinica/clinica.mov" poster="assets/clinica/sala-de-espera.jpg" muted loop playsinline preload="metadata"></video>
-          </div>
-          <figcaption class="s5__legenda">
-            <span class="s5__legenda-num">04</span>
-            <span class="s5__legenda-nome">EM MOVIMENTO</span>
-          </figcaption>
+        <figure class="s5__foto shell-card">
+          <img class="s5__img" src="assets/clinica/4.webp" alt="Sala de espera com cadeiras azuis e o corredor dos consultórios ao fundo" loading="lazy" />
         </figure>
-      </div>
-
-      <div class="s5__linha s5__linha--quatro">
-        <figure class="s5__peca">
-          <div class="s5__janela s5__janela--retrato">
-            <img class="s5__fonte" src="assets/clinica/recepcao-ampla.jpg" alt="Vista ampla da recepção com poltronas e planta" loading="lazy" />
-          </div>
-          <figcaption class="s5__legenda">
-            <span class="s5__legenda-num">05</span>
-            <span class="s5__legenda-nome">SALA DE ESPERA</span>
-          </figcaption>
-        </figure>
-        <figure class="s5__peca s5__peca--descida">
-          <div class="s5__janela s5__janela--retrato">
-            <img class="s5__fonte" src="assets/clinica/sala-de-espera.jpg" alt="Sala de espera vista da entrada, com cadeiras azuis e o corredor ao fundo" loading="lazy" />
-          </div>
-          <figcaption class="s5__legenda">
-            <span class="s5__legenda-num">06</span>
-            <span class="s5__legenda-nome">O AMBIENTE</span>
-          </figcaption>
+        <figure class="s5__foto s5__foto--larga shell-card">
+          <img class="s5__img" src="assets/clinica/5.webp" alt="Balcão da recepção com o dente vazado em dourado, o lustre e a marca na parede" loading="lazy" />
         </figure>
       </div>
 
@@ -375,6 +348,56 @@
   </section>
 
 </main>
+
+<footer class="rodape" id="contato">
+  <div class="rodape__inner">
+    <span class="rodape__fio" aria-hidden="true"></span>
+
+    <svg class="rodape__dente" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.5c-2.2 0-3.5.8-4.4 1.8C6.5 6.4 6.2 7.8 6.2 9.4c0 2.2.7 3.9 1.2 5.6.4 1.4.4 3.2 1.6 3.2 1 0 1.1-1.4 1.4-2.7.3-1.2.6-2.3 1.6-2.3s1.3 1.1 1.6 2.3c.3 1.3.4 2.7 1.4 2.7 1.2 0 1.2-1.8 1.6-3.2.5-1.7 1.2-3.4 1.2-5.6 0-1.6-.3-3-1.4-4.1-.9-1-2.2-1.8-4.4-1.8z"></path></svg>
+
+    <div class="rodape__conteudo">
+      <h2 class="sr-only">Contato</h2>
+
+      <img class="rodape__marca rodape-anim" src="assets/marca-harmonia.webp" alt="Harmonia Orofacial, clínica odontológica" width="598" height="156" loading="lazy" />
+
+      <p class="rodape__cro rodape-anim">DRA. CELIA LIMA CRO/SE 04799</p>
+
+      <ul class="rodape__contatos">
+        <li class="rodape__contato rodape-anim">
+          <span class="rodape__icone" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"></path></svg>
+          </span>
+          <a class="rodape__link" href="https://wa.me/5579998764880?text=Ol%C3%A1%21%20Vim%20pelo%20site%20e%20gostaria%20de%20agendar%20uma%20avalia%C3%A7%C3%A3o%20na%20Harmonia%20Orofacial." target="_blank" rel="noopener noreferrer" aria-label="(79) 99876-4880, conversar no WhatsApp">(79) 99876-4880</a>
+        </li>
+
+        <li class="rodape__contato rodape-anim">
+          <span class="rodape__icone" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
+          </span>
+          <a class="rodape__link" href="https://www.instagram.com/harmoniaorofacial2131" target="_blank" rel="noopener noreferrer">@harmoniaorofacial2131</a>
+        </li>
+
+        <li class="rodape__contato rodape-anim">
+          <span class="rodape__icone" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          </span>
+          <a class="rodape__link" href="https://www.google.com/maps/search/?api=1&amp;query=Av.+Manoel+Pedro+dos+Santos+Neto+647+Marcos+Freire+II+Nossa+Senhora+do+Socorro+SE" target="_blank" rel="noopener noreferrer">
+            Av. Manoel Pedro dos Santos Neto, número 647, Marcos<br />
+            Freire II, Nossa Senhora do Socorro-Se
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="rodape__base rodape-anim">
+      <p class="rodape__direitos">© 2026 Harmonia Orofacial</p>
+      <a class="rodape__voltar" href="#hero">
+        VOLTAR AO TOPO
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"></path></svg>
+      </a>
+    </div>
+  </div>
+</footer>
 
 <script src="src/vendor/lenis.min.js"></script>
 <script src="src/vendor/gsap.min.js"></script>

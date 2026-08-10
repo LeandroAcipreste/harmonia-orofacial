@@ -16,6 +16,8 @@ export const initScroll = () => {
         return instancia;
     }
 
+    comecarNoTopo();
+
     if (typeof Lenis === "undefined" || typeof gsap === "undefined") {
         return null;
     }
@@ -32,6 +34,32 @@ export const initScroll = () => {
     ligarAncoras();
 
     return instancia;
+};
+
+/*
+ * Recarregar a página tem que devolver o visitante ao hero. Sem isto o
+ * navegador restaura sozinho a posição anterior, e a pessoa cai no meio
+ * de uma dobra com as animações de entrada já passadas. O `load` repete
+ * a chamada porque a restauração acontece depois do primeiro quadro.
+ */
+const comecarNoTopo = () => {
+    if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual";
+    }
+
+    window.scrollTo(0, 0);
+
+    window.addEventListener(
+        "load",
+        () => {
+            window.scrollTo(0, 0);
+
+            if (instancia) {
+                instancia.scrollTo(0, { immediate: true });
+            }
+        },
+        { once: true }
+    );
 };
 
 const ligarAncoras = () => {

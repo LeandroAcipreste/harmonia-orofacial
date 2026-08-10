@@ -1,6 +1,6 @@
 .s5 {
   position: relative;
-  padding: 7rem 1.5rem 8rem;
+  padding: 6rem 1.5rem 7rem;
 }
 
 .s5__inner {
@@ -8,126 +8,126 @@
   margin: 0 auto;
 }
 
-/* Capítulo: marcador e o título em versos desalinhados */
+/* Cabeçalho */
 
-.s5__capitulo {
-  margin-bottom: 4rem;
+.s5__cabecalho {
+  margin-bottom: 3rem;
 }
 
-.s5__marcador {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: 0.9375rem;
-  color: var(--gold-300);
+.s5__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgb(253 186 116 / 0.8);
+}
+
+.s5__eyebrow::before {
+  content: "";
+  width: 2.5rem;
+  height: 1px;
+  background-color: rgb(253 186 116 / 0.45);
 }
 
 .s5__titulo {
-  margin-top: 1.5rem;
-}
-
-.s5__verso {
-  display: block;
-  font-family: var(--font-serif);
-  font-size: clamp(2.25rem, 8vw, 5.5rem);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
   font-weight: 500;
-  line-height: 0.95;
-  letter-spacing: -0.03em;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
   color: var(--white);
 }
 
-.s5__verso--recuado {
-  color: var(--slate-400);
-}
+/* Grade de fotos */
 
-/* Linhas de mídia */
-
-.s5__linha {
+.s5__grade {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 3rem;
+  gap: 1.25rem;
 }
 
-.s5__linha + .s5__linha {
-  margin-top: 4rem;
-}
-
-.s5__peca {
-  margin: 0;
-}
-
-/*
- * Janela e fonte: o recorte abre de baixo para cima enquanto a imagem,
- * que é mais alta que a janela, sobe por dentro. É o mesmo mecanismo do
- * design-system, e é ele que dá o assentamento editorial na entrada.
- */
-.s5__janela {
+/* Em coluna única a proporção vem da própria foto: linha de altura fixa
+   aqui espremeria as verticais numa faixa deitada */
+.s5__foto {
   position: relative;
-  display: block;
-  width: 100%;
+  margin: 0;
+  aspect-ratio: 4 / 5;
   overflow: hidden;
+  border: 1px solid rgb(253 186 116 / 0.45);
+  border-radius: 1.25rem;
   background-color: var(--navy-800);
+  transition: border-color 0.4s;
 }
 
-.s5__janela--paisagem {
+.s5__foto--larga {
   aspect-ratio: 4 / 3;
 }
 
-.s5__janela--retrato {
-  aspect-ratio: 3 / 4;
+.s5__foto:hover {
+  border-color: var(--gold-300);
 }
 
-.s5__janela--vertical {
-  aspect-ratio: 9 / 16;
-}
-
-/* A sobra de 15% na altura é o curso do deslize; em repouso ela fica
-   dividida entre o topo e a base */
-.s5__fonte {
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: block;
+/* A foto respira sozinha, para o quadro não ficar parado. Os tempos
+   quebrados e os atrasos negativos deixam cada uma num ponto diferente
+   do ciclo, então nenhuma delas pulsa junto com a vizinha. */
+.s5__img {
   width: 100%;
-  height: 115%;
+  height: 100%;
   object-fit: cover;
-  object-position: center center;
-  transform: translateY(-7.5%);
+  animation: s5Respirar 18s ease-in-out infinite alternate;
 }
 
-.s5__legenda {
-  display: flex;
-  align-items: baseline;
-  gap: 0.875rem;
-  margin-top: 1rem;
+@keyframes s5Respirar {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.09);
+  }
 }
 
-.s5__legenda-num {
-  font-size: 0.6875rem;
-  letter-spacing: 0.2em;
-  color: var(--gold-300);
-}
+.s5__foto:nth-child(2) .s5__img { animation-duration: 21s; animation-delay: -5s; }
+.s5__foto:nth-child(3) .s5__img { animation-duration: 16s; animation-delay: -11s; }
+.s5__foto:nth-child(4) .s5__img { animation-duration: 23s; animation-delay: -3s; }
+.s5__foto:nth-child(5) .s5__img { animation-duration: 19s; animation-delay: -14s; }
 
-.s5__legenda-nome {
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.3em;
-  color: var(--slate-400);
-}
-
-.s5__nota {
-  font-size: 1rem;
-  line-height: 1.75;
-  color: var(--slate-400);
+/* Anel dourado que segue o cursor, o mesmo dos cartões de procedimento.
+   Aqui a foto ocupa o cartão inteiro, então a máscara deixa passar só a
+   borda de 1px em vez do cone cheio. */
+.s5__foto::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  padding: 1px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--cursor-angle),
+    rgb(253 186 116 / 0.9),
+    transparent 60deg,
+    transparent 300deg,
+    rgb(253 186 116 / 0.9)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: var(--glow-opacity);
+  transition: opacity 0.3s;
+  pointer-events: none;
 }
 
 /* Entrada */
 
 .s5.js-anim .s5-anim {
   opacity: 0;
-  transform: translateY(40px);
+  transform: translateY(28px);
   transition:
-    opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .s5.js-anim .s5-anim.is-visivel {
@@ -135,90 +135,69 @@
   transform: none;
 }
 
-.s5.js-anim .s5__verso:nth-child(2) { transition-delay: 120ms; }
-
-.s5.js-anim .s5__peca .s5__janela {
-  clip-path: inset(0 0 100% 0);
-  transition: clip-path 1.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.s5.js-anim .s5__peca .s5__fonte {
-  transform: translateY(6%) scale(1.03);
-  transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.s5.js-anim .s5__peca .s5__legenda {
+/* Entrada demorada de propósito: as fotos assentam uma depois da outra */
+.s5__grade.js-anim .s5__foto {
   opacity: 0;
-  transition: opacity 0.9s ease 0.35s;
+  transform: translateY(40px);
+  transition:
+    opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.s5.js-anim .s5__peca.is-visivel .s5__janela {
-  clip-path: inset(0 0 0 0);
-}
-
-.s5.js-anim .s5__peca.is-visivel .s5__fonte {
-  transform: translateY(-7.5%) scale(1);
-}
-
-.s5.js-anim .s5__peca.is-visivel .s5__legenda {
+.s5__grade.js-anim.is-visivel .s5__foto {
   opacity: 1;
+  transform: none;
 }
 
-/* Responsivo: só aí as colunas e os desalinhamentos entram */
+.s5__grade.js-anim.is-visivel .s5__foto:nth-child(2) { transition-delay: 240ms; }
+.s5__grade.js-anim.is-visivel .s5__foto:nth-child(3) { transition-delay: 480ms; }
+.s5__grade.js-anim.is-visivel .s5__foto:nth-child(4) { transition-delay: 720ms; }
+.s5__grade.js-anim.is-visivel .s5__foto:nth-child(5) { transition-delay: 960ms; }
 
-@media (min-width: 768px) {
+/* Responsivo */
+
+/* A partir de duas colunas a altura da linha assume, e é ela que mantém
+   as fotos alinhadas mesmo com originais em retrato e paisagem */
+@media (min-width: 640px) {
+  .s5__grade {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: 18rem;
+  }
+
+  .s5__foto,
+  .s5__foto--larga {
+    aspect-ratio: auto;
+  }
+
+  .s5__foto--larga {
+    grid-column: span 2;
+  }
+}
+
+@media (min-width: 1024px) {
   .s5 {
-    padding: 9rem 2rem 10rem;
+    padding: 7rem 1.5rem 8rem;
   }
 
-  .s5__capitulo {
-    margin-bottom: 6rem;
+  .s5__cabecalho {
+    margin-bottom: 4rem;
   }
 
-  .s5__verso--recuado {
-    margin-left: 18%;
+  .s5__grade {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: 22rem;
   }
-
-  .s5__linha {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: 1.5rem;
-    align-items: start;
-  }
-
-  .s5__linha + .s5__linha {
-    margin-top: 9rem;
-  }
-
-  .s5__peca--descida {
-    margin-top: 7rem;
-  }
-
-  .s5__linha--um > .s5__peca { grid-column: 1 / 9; }
-  .s5__linha--um > .s5__nota { grid-column: 10 / 13; align-self: end; }
-
-  .s5__linha--dois > .s5__peca:nth-child(1) { grid-column: 2 / 6; }
-  .s5__linha--dois > .s5__peca:nth-child(2) { grid-column: 7 / 11; }
-
-  .s5__linha--tres > .s5__peca { grid-column: 8 / 12; }
-
-  .s5__linha--quatro > .s5__peca:nth-child(1) { grid-column: 1 / 5; }
-  .s5__linha--quatro > .s5__peca:nth-child(2) { grid-column: 6 / 10; }
 }
 
-/* Movimento reduzido: o recorte já entra aberto */
+/* Movimento reduzido: entra por opacidade e a foto não cresce */
 @media (prefers-reduced-motion: reduce) {
-  .s5.js-anim .s5-anim {
+  .s5.js-anim .s5-anim,
+  .s5__grade.js-anim .s5__foto {
     transform: none;
     transition: opacity 0.5s ease;
   }
 
-  .s5.js-anim .s5__peca .s5__janela {
-    clip-path: none;
-    transition: none;
-  }
-
-  .s5.js-anim .s5__peca .s5__fonte {
-    transform: none;
-    transition: none;
+  .s5__img {
+    animation: none;
   }
 }
