@@ -1,0 +1,54 @@
+# Material bruto e referências de design
+# Nada aqui é servido pelo site: as mídias usadas já estão em assets/.
+# Continuam no computador, apenas fora do versionamento.
+material-certo-clinica/
+design-system/
+
+# Dependências
+node_modules/
+.npm/
+.pnp
+.pnp.js
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Saídas de build e cache
+# O site é servido como está, sem build. Ficam aqui por precaução.
+dist/
+build/
+.cache/
+.temp/
+.tmp/
+
+# Vercel
+.vercel/
+
+# Variáveis de ambiente
+.env
+.env.*
+!.env.example
+
+# Sistema operacional
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Configuração local do Claude Code
+.claude/settings.local.json

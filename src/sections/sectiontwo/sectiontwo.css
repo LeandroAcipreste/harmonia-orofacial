@@ -1,0 +1,236 @@
+.s2 {
+  position: relative;
+  padding: 9rem 1.5rem 8rem;
+  overflow: hidden;
+}
+
+/* Fundo */
+
+/* Navy aqui dentro para o `screen` ter com o que se misturar */
+.s2__bg {
+  position: absolute;
+  inset: 0;
+  background-color: var(--navy-900);
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%);
+}
+
+.s2__layer {
+  position: absolute;
+  background-repeat: no-repeat;
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+
+/* Lustre visto por baixo. */
+.s2__layer--radial {
+  top: 46%;
+  right: -34%;
+  width: 78rem;
+  height: 78rem;
+  margin-top: -39rem;
+  opacity: 0.5;
+}
+
+.s2__spin {
+  position: absolute;
+  inset: 0;
+  background-image: url("../../../assets/lustre-radial.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+/* Desfoque pesado: os cristais viram bokeh */
+.s2__spin--halo {
+  filter: blur(26px) saturate(1.5) brightness(1.2);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 12%, rgb(0 0 0 / 0.5) 38%, transparent 64%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 12%, rgb(0 0 0 / 0.5) 38%, transparent 64%);
+  animation: s2Girar 120s linear infinite;
+}
+
+/* Lâmina de detalhe: devolve a cintilação */
+.s2__spin--detalhe {
+  opacity: 0.32;
+  filter: blur(1.5px) saturate(1.25);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 4%, rgb(0 0 0 / 0.35) 24%, transparent 46%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 4%, rgb(0 0 0 / 0.35) 24%, transparent 46%);
+  animation: s2Girar 170s linear infinite reverse;
+}
+
+@keyframes s2Girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Trama: só matéria, no canto inferior */
+.s2__layer--trama {
+  inset: -10% -10% -10% 30%;
+  opacity: 0.13;
+  background-image: url("../../../assets/lustre-trama.jpg");
+  /* Ampliada: perde a escala de luminária */
+  background-size: 210%;
+  background-position: 62% 45%;
+  filter: blur(3px);
+  -webkit-mask-image: radial-gradient(ellipse 55% 50% at 76% 80%, #000 0%, transparent 68%);
+  mask-image: radial-gradient(ellipse 55% 50% at 76% 80%, #000 0%, transparent 68%);
+}
+
+/* Véu: protege a coluna de texto da luz */
+.s2__wash {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, var(--navy-900) 0%, rgb(5 10 28 / 0.92) 28%, rgb(5 10 28 / 0.35) 58%, transparent 78%),
+    /* faixa escura no rodapé: dá contraste aos pilares e assenta a seção */
+    linear-gradient(to top, rgb(5 10 28 / 0.88) 0%, rgb(5 10 28 / 0.45) 22%, transparent 42%),
+    radial-gradient(ellipse 50% 45% at 80% 45%, rgb(253 186 116 / 0.07), transparent 70%),
+    radial-gradient(ellipse 90% 55% at 50% 118%, rgb(5 10 28 / 0.95), transparent 72%);
+}
+
+/* Conteúdo */
+
+.s2__inner {
+  position: relative;
+  z-index: 10; /* acima da camada de partículas — ver style.css */
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.s2__intro {
+  max-width: 34rem;
+}
+
+.s2__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  margin-bottom: 1.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgb(253 186 116 / 0.8);
+}
+
+.s2__eyebrow::before {
+  content: "";
+  width: 2.5rem;
+  height: 1px;
+  background-color: rgb(253 186 116 / 0.45);
+}
+
+/* Lista de procedimentos */
+
+.s2__lista {
+  display: grid;
+  gap: 0.9rem 2.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Entrada por máscara: o texto sobe por trás da borda */
+.s2__item {
+  font-size: 1.0625rem;
+  line-height: 1.4;
+  color: var(--slate-300);
+  overflow: hidden; /* reserva para navegadores sem `clip` */
+  overflow: clip;
+}
+
+.s2__item-txt {
+  position: relative;
+  display: block;
+  padding-left: 1.5rem;
+}
+
+/* Estado escondido só vale com `.js-anim` */
+.s2__lista.js-anim .s2__item-txt {
+  transform: translateY(110%);
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Revelação por item: a cascata vem da rolagem */
+.s2__lista.js-anim .s2__item.is-visivel .s2__item-txt {
+  transform: translateY(0);
+}
+
+/* Marcador dourado no lugar do bullet */
+.s2__item-txt::before {
+  content: "";
+  position: absolute;
+  top: 0.55em;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: rgb(253 186 116 / 0.85);
+}
+
+/* Movimento reduzido: entra por opacidade */
+@media (prefers-reduced-motion: reduce) {
+  .s2__lista.js-anim .s2__item-txt {
+    transform: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .s2__lista.js-anim .s2__item.is-visivel .s2__item-txt {
+    transform: none;
+    opacity: 1;
+  }
+}
+/* Responsivo */
+
+/* Mobile: a luz sobe, o véu deixa de ser lateral */
+@media (max-width: 767px) {
+  .s2 {
+    padding: 7rem 1.5rem 6rem;
+  }
+
+  .s2__layer--radial {
+    top: 14%;
+    right: -42%;
+    width: 46rem;
+    height: 46rem;
+    margin-top: 0;
+    opacity: 0.55;
+  }
+
+  .s2__layer--trama {
+    inset: 48% -25% -10% 5%;
+    opacity: 0.1;
+  }
+
+  .s2__wash {
+    background:
+      linear-gradient(to right, var(--navy-900) 0%, rgb(5 10 28 / 0.66) 45%, rgb(5 10 28 / 0.12) 100%),
+      linear-gradient(to top, rgb(5 10 28 / 0.86) 0%, rgb(5 10 28 / 0.4) 26%, transparent 46%),
+      radial-gradient(ellipse 90% 55% at 50% 118%, rgb(5 10 28 / 0.95), transparent 72%);
+  }
+}
+
+@media (min-width: 768px) {
+  .s2 {
+    padding: 11rem 3rem 10rem;
+  }
+
+  /* Duas colunas: doze itens numa só ficariam altos */
+  .s2__lista {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .s2__intro {
+    max-width: 38rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .s2__layer--radial {
+    animation: none;
+  }
+}

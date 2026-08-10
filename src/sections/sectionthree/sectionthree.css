@@ -1,0 +1,256 @@
+.s3 {
+  position: relative;
+  padding: 6rem 1.5rem;
+}
+
+.s3__palco {
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.s3__grade {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+/* Palco da sequência */
+
+/* Presa, a seção ocupa exatamente a tela e centraliza a grade */
+.s3.js-sequencia {
+  display: flex;
+  align-items: center;
+  height: 100vh;
+  padding-top: 5rem;
+  padding-bottom: 2rem;
+}
+
+/* Cartão */
+
+/* Moldura: gradiente de 1px em volta */
+.s3__card {
+  position: relative;
+  display: block;
+  padding: 1px;
+  border-radius: 1.5rem;
+  background-image: linear-gradient(to bottom, #262626, transparent);
+
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Estado escondido só vale com `.js-anim` */
+.s3__grade.js-anim .s3__card {
+  opacity: 0;
+  transform: translateY(70px) scale(0.94);
+  filter: blur(10px);
+}
+
+.s3__grade.js-anim.is-visivel .s3__card {
+  opacity: 1;
+  transform: none;
+  filter: blur(0);
+}
+
+.s3__grade.js-anim.is-visivel .s3__card:nth-child(1) { transition-delay: 0ms; }
+.s3__grade.js-anim.is-visivel .s3__card:nth-child(2) { transition-delay: 120ms; }
+.s3__grade.js-anim.is-visivel .s3__card:nth-child(3) { transition-delay: 240ms; }
+.s3__grade.js-anim.is-visivel .s3__card:nth-child(4) { transition-delay: 360ms; }
+
+/* Hover só depois da carta assentar */
+.s3__grade.js-anim.is-visivel .s3__card:hover {
+  transform: translateY(-0.5rem);
+}
+
+/* Trilho que marca o avanço da sequência do próprio card */
+.s3__trilho {
+  position: absolute;
+  right: 1.5rem;
+  bottom: 0;
+  left: 1.5rem;
+  z-index: 20;
+  height: 2px;
+  border-radius: 9999px;
+  background-color: var(--gold-300);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+/* Brilho cônico que segue o cursor */
+
+.shell-card {
+  --cursor-angle: 0deg;
+  --glow-opacity: 0;
+}
+
+.shell-card__glow {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: inherit;
+  pointer-events: none;
+  background: conic-gradient(
+    from var(--cursor-angle),
+    rgb(253 186 116 / 0.9),
+    transparent 50deg,
+    transparent 310deg,
+    rgb(253 186 116 / 0.9)
+  );
+  opacity: var(--glow-opacity);
+  transition: opacity 0.3s;
+}
+
+.shell-card__glow--difuso {
+  inset: -12px;
+  filter: blur(12px);
+  background: conic-gradient(
+    from var(--cursor-angle),
+    rgb(253 186 116 / 0.55),
+    transparent 50deg,
+    transparent 310deg,
+    rgb(253 186 116 / 0.55)
+  );
+  opacity: calc(var(--glow-opacity) * 0.6);
+}
+
+/* Corpo do cartão */
+
+.s3__corpo {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  height: 100%;
+  padding: 2rem;
+  border-radius: inherit;
+  background-color: var(--navy-800);
+  overflow: hidden;
+}
+
+.s3__canto {
+  align-self: flex-start;
+  width: 1rem;
+  height: 1rem;
+  color: var(--slate-500);
+  transition: color 0.3s;
+}
+
+.s3__card:hover .s3__canto {
+  color: var(--gold-300);
+}
+
+/* Etapas: procedimento, antes e depois ocupam a mesma área do cartão,
+   com a altura que o ícone e o nome ocupavam antes */
+.s3__etapas {
+  position: relative;
+  width: 100%;
+  height: 7.5rem;
+}
+
+.s3__etapa {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.s3__etapa--procedimento {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+/* Sem JS as fotos não entram: o cartão continua mostrando o procedimento */
+.s3__etapa--foto {
+  opacity: 0;
+  background-color: var(--navy-900);
+}
+
+.s3__etapa--foto::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(to top, rgb(5 10 28 / 0.85), rgb(5 10 28 / 0) 60%);
+}
+
+.s3__foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.s3__legenda {
+  position: absolute;
+  bottom: 0.625rem;
+  left: 50%;
+  z-index: 10;
+  transform: translateX(-50%);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  white-space: nowrap;
+  color: var(--gold-300);
+}
+
+.s3__icone {
+  width: 3rem;
+  height: 3rem;
+  color: var(--slate-300);
+  transition: color 0.5s, transform 0.5s;
+}
+
+.s3__card:hover .s3__icone {
+  color: var(--white);
+  transform: scale(1.1);
+}
+
+.s3__texto {
+  text-align: center;
+}
+
+.s3__nome {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  color: var(--slate-300);
+}
+
+.s3__num {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  color: rgb(253 186 116 / 0.7);
+}
+
+/* Responsivo */
+
+@media (min-width: 1024px) {
+  .s3:not(.js-sequencia) {
+    padding: 6rem 1.5rem 7rem;
+  }
+
+  .s3__grade {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Movimento reduzido: entra por opacidade */
+@media (prefers-reduced-motion: reduce) {
+  .s3__card {
+    transform: none;
+    filter: none;
+    transition: opacity 0.5s ease;
+  }
+
+  .s3__grade.js-anim.is-visivel .s3__card:hover {
+    transform: none;
+  }
+}

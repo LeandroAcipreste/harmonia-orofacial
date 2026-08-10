@@ -1,0 +1,85 @@
+.nav {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 50;
+  background-color: rgb(5 10 28 / 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgb(255 255 255 / 0.05);
+}
+
+.nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 4rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Grupos iguais mantêm a logomarca centrada */
+.nav__grupo {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 2.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  color: var(--slate-400);
+}
+
+.nav__grupo--dir {
+  justify-content: flex-end;
+}
+
+.nav-link {
+  position: relative;
+  transition: color 0.3s;
+}
+
+.nav-link:hover {
+  color: var(--white);
+}
+
+/* Risquinho criado pelo navigation.js */
+.nav-link__risco {
+  position: absolute;
+  bottom: -0.25rem;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--gold-300);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s;
+}
+
+.nav-link:hover .nav-link__risco {
+  transform: scaleX(1);
+}
+
+.nav__marca {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 9999px;
+  transition: transform 0.5s, border-color 0.5s;
+}
+
+.nav__marca:hover {
+  border-color: rgb(251 146 60 / 0.6);
+  transform: rotate(360deg);
+}
+
+.nav__marca-img {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 9999px;
+}

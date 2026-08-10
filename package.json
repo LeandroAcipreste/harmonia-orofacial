@@ -1,0 +1,8 @@
+{
+  "name": "site-harmonia-ortofacial",
+  "private": true,
+  "description": "Site da clínica Harmonia Orofacial. HTML, CSS e JavaScript puros, sem build.",
+  "scripts": {
+    "start": "npx --yes serve ."
+  }
+}

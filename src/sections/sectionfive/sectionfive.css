@@ -1,0 +1,224 @@
+.s5 {
+  position: relative;
+  padding: 7rem 1.5rem 8rem;
+}
+
+.s5__inner {
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+/* Capítulo: marcador e o título em versos desalinhados */
+
+.s5__capitulo {
+  margin-bottom: 4rem;
+}
+
+.s5__marcador {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.9375rem;
+  color: var(--gold-300);
+}
+
+.s5__titulo {
+  margin-top: 1.5rem;
+}
+
+.s5__verso {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: clamp(2.25rem, 8vw, 5.5rem);
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: var(--white);
+}
+
+.s5__verso--recuado {
+  color: var(--slate-400);
+}
+
+/* Linhas de mídia */
+
+.s5__linha {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 3rem;
+}
+
+.s5__linha + .s5__linha {
+  margin-top: 4rem;
+}
+
+.s5__peca {
+  margin: 0;
+}
+
+/*
+ * Janela e fonte: o recorte abre de baixo para cima enquanto a imagem,
+ * que é mais alta que a janela, sobe por dentro. É o mesmo mecanismo do
+ * design-system, e é ele que dá o assentamento editorial na entrada.
+ */
+.s5__janela {
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--navy-800);
+}
+
+.s5__janela--paisagem {
+  aspect-ratio: 4 / 3;
+}
+
+.s5__janela--retrato {
+  aspect-ratio: 3 / 4;
+}
+
+.s5__janela--vertical {
+  aspect-ratio: 9 / 16;
+}
+
+/* A sobra de 15% na altura é o curso do deslize; em repouso ela fica
+   dividida entre o topo e a base */
+.s5__fonte {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 115%;
+  object-fit: cover;
+  object-position: center center;
+  transform: translateY(-7.5%);
+}
+
+.s5__legenda {
+  display: flex;
+  align-items: baseline;
+  gap: 0.875rem;
+  margin-top: 1rem;
+}
+
+.s5__legenda-num {
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  color: var(--gold-300);
+}
+
+.s5__legenda-nome {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  color: var(--slate-400);
+}
+
+.s5__nota {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--slate-400);
+}
+
+/* Entrada */
+
+.s5.js-anim .s5-anim {
+  opacity: 0;
+  transform: translateY(40px);
+  transition:
+    opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.s5.js-anim .s5-anim.is-visivel {
+  opacity: 1;
+  transform: none;
+}
+
+.s5.js-anim .s5__verso:nth-child(2) { transition-delay: 120ms; }
+
+.s5.js-anim .s5__peca .s5__janela {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 1.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.s5.js-anim .s5__peca .s5__fonte {
+  transform: translateY(6%) scale(1.03);
+  transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.s5.js-anim .s5__peca .s5__legenda {
+  opacity: 0;
+  transition: opacity 0.9s ease 0.35s;
+}
+
+.s5.js-anim .s5__peca.is-visivel .s5__janela {
+  clip-path: inset(0 0 0 0);
+}
+
+.s5.js-anim .s5__peca.is-visivel .s5__fonte {
+  transform: translateY(-7.5%) scale(1);
+}
+
+.s5.js-anim .s5__peca.is-visivel .s5__legenda {
+  opacity: 1;
+}
+
+/* Responsivo: só aí as colunas e os desalinhamentos entram */
+
+@media (min-width: 768px) {
+  .s5 {
+    padding: 9rem 2rem 10rem;
+  }
+
+  .s5__capitulo {
+    margin-bottom: 6rem;
+  }
+
+  .s5__verso--recuado {
+    margin-left: 18%;
+  }
+
+  .s5__linha {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .s5__linha + .s5__linha {
+    margin-top: 9rem;
+  }
+
+  .s5__peca--descida {
+    margin-top: 7rem;
+  }
+
+  .s5__linha--um > .s5__peca { grid-column: 1 / 9; }
+  .s5__linha--um > .s5__nota { grid-column: 10 / 13; align-self: end; }
+
+  .s5__linha--dois > .s5__peca:nth-child(1) { grid-column: 2 / 6; }
+  .s5__linha--dois > .s5__peca:nth-child(2) { grid-column: 7 / 11; }
+
+  .s5__linha--tres > .s5__peca { grid-column: 8 / 12; }
+
+  .s5__linha--quatro > .s5__peca:nth-child(1) { grid-column: 1 / 5; }
+  .s5__linha--quatro > .s5__peca:nth-child(2) { grid-column: 6 / 10; }
+}
+
+/* Movimento reduzido: o recorte já entra aberto */
+@media (prefers-reduced-motion: reduce) {
+  .s5.js-anim .s5-anim {
+    transform: none;
+    transition: opacity 0.5s ease;
+  }
+
+  .s5.js-anim .s5__peca .s5__janela {
+    clip-path: none;
+    transition: none;
+  }
+
+  .s5.js-anim .s5__peca .s5__fonte {
+    transform: none;
+    transition: none;
+  }
+}

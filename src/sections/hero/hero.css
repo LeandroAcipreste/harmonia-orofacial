@@ -1,0 +1,279 @@
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 5rem 1.5rem 4rem;
+  overflow: hidden;
+}
+
+/* Canvas WebGL (gradiente em malha + partículas) */
+
+.hero__gl {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Feixe vertical de luz */
+
+.hero__laser {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  pointer-events: none;
+}
+
+.hero__laser-inner {
+  position: relative;
+  width: 1px;
+  height: 100%;
+  transform: translateX(-50%);
+}
+
+.hero__laser-halo,
+.hero__laser-glow,
+.hero__laser-core {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: block;
+}
+
+.hero__laser-halo {
+  left: -2rem;
+  width: 4rem;
+  background-color: rgb(6 182 212 / 0.1);
+  filter: blur(40px);
+}
+
+.hero__laser-glow {
+  left: -0.375rem;
+  width: 0.75rem;
+  background-color: rgb(96 165 250 / 0.3);
+  filter: blur(12px);
+}
+
+.hero__laser-core {
+  left: -1px;
+  width: 2px;
+  background-image: linear-gradient(to bottom, transparent, var(--cyan-300), transparent);
+}
+
+.hero__laser-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background-color: var(--cyan-200);
+  filter: blur(2px);
+  transform: translate(-50%, -50%);
+}
+
+@keyframes laserPulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.laser-pulse {
+  animation: laserPulse 3s ease-in-out infinite;
+}
+
+/* Marcadores laterais */
+
+.hero__marker {
+  position: absolute;
+  top: 33.3333%;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  color: var(--slate-500);
+}
+
+.hero__marker--esq {
+  left: 1.5rem;
+}
+
+.hero__marker--dir {
+  right: 1.5rem;
+}
+
+.hero__rule {
+  display: block;
+  width: 2rem;
+  height: 1px;
+  background-color: var(--slate-600);
+}
+
+.hero__sparkle {
+  width: 1rem;
+  height: 1rem;
+  color: rgb(253 186 116 / 0.7);
+}
+
+/* Medalhão da marca */
+
+/* Tamanho pela menor dimensão da janela */
+.hero__medalhao {
+  --tamanho: min(76vw, 56vh, 34rem);
+  position: relative;
+  z-index: 10;
+  width: var(--tamanho);
+  height: var(--tamanho);
+  border-radius: 9999px;
+}
+
+/* Sombra por `drop-shadow`: segue o alpha, não a caixa */
+.hero__medalhao-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 9999px;
+  filter: drop-shadow(0 25px 45px rgb(23 37 84 / 0.75));
+}
+
+.hero__medalhao-orbita {
+  position: absolute;
+  inset: -1.5rem;
+  display: block;
+  border: 1px solid rgb(253 186 116 / 0.18);
+  border-radius: 9999px;
+  animation: orbitaGira 30s linear infinite;
+}
+
+@keyframes orbitaGira {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Borda cônica que acende conforme o cursor se aproxima. */
+.flash-card {
+  position: relative;
+  --cursor-angle: 0deg;
+  --proximity: 0;
+}
+
+.flash-card::before,
+.flash-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--cursor-angle),
+    rgb(253 186 116 / 0.9),
+    transparent 60deg,
+    transparent 300deg,
+    rgb(253 186 116 / 0.9)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: var(--proximity);
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.flash-card::after {
+  filter: blur(12px);
+  opacity: calc(var(--proximity) * 0.6);
+  z-index: 19;
+}
+
+/* Indicador de rolagem */
+
+.hero__scroll {
+  position: absolute;
+  bottom: 2.5rem;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--slate-500);
+}
+
+.hero__scroll-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+}
+
+.hero__scroll-arrow {
+  width: 1rem;
+  height: 1rem;
+  animation: scrollBounce 1s infinite;
+}
+
+@keyframes scrollBounce {
+  0%,
+  100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+/* Responsivo */
+
+/* Somem quando a logomarca ocupa a largura */
+@media (max-width: 639px) {
+  .hero__marker {
+    display: none;
+  }
+}
+
+/* Deixa livre a faixa dos marcadores */
+@media (min-width: 640px) {
+  .hero__medalhao {
+    --tamanho: min(66vw, 56vh, 34rem);
+  }
+}
+
+@media (min-width: 768px) {
+  .hero__marker--esq {
+    left: 3rem;
+  }
+
+  .hero__marker--dir {
+    right: 3rem;
+  }
+}
+
+/* Sem altura para o indicador */
+@media (max-height: 620px) {
+  .hero__scroll {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .laser-pulse,
+  .hero__medalhao-orbita,
+  .hero__scroll-arrow {
+    animation: none;
+  }
+}

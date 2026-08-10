@@ -1,0 +1,143 @@
+.s4 {
+  position: relative;
+  padding: 6rem 1.5rem 7rem;
+}
+
+.s4__inner {
+  display: grid;
+  gap: 3.5rem;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+/* Coluna da apresentação */
+
+.s4__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  margin-bottom: 1.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgb(253 186 116 / 0.8);
+}
+
+.s4__eyebrow::before {
+  content: "";
+  width: 2.5rem;
+  height: 1px;
+  background-color: rgb(253 186 116 / 0.45);
+}
+
+.s4__nome {
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--white);
+}
+
+.s4__cro {
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  color: var(--slate-500);
+}
+
+.s4__bio {
+  margin-top: 1.75rem;
+  max-width: 34rem;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--slate-400);
+}
+
+/* Áreas de atuação */
+
+/* Um bloco por área de atuação */
+.s4__areas {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgb(255 255 255 / 0.08);
+}
+
+.s4__area {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
+}
+
+.s4__area-nome {
+  margin-bottom: 0.5rem;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  color: var(--white);
+}
+
+.s4__area-texto {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--slate-500);
+}
+
+/* Entrada */
+
+/* Estado escondido só vale com `.js-anim` */
+.s4.js-anim .s4-anim {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.s4.js-anim .s4-anim.is-visivel {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Nome por máscara */
+.s4.js-anim .s4__nome-mascara {
+  overflow: hidden;
+  overflow: clip;
+}
+
+.s4.js-anim .s4__nome {
+  transform: translateY(110%);
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.s4.js-anim .s4__nome-mascara.is-visivel .s4__nome {
+  transform: translateY(0);
+}
+
+/* Responsivo */
+
+@media (min-width: 900px) {
+  .s4__inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  .s4__nome {
+    font-size: 2.5rem;
+  }
+}
+
+/* Movimento reduzido: entra por opacidade */
+@media (prefers-reduced-motion: reduce) {
+  .s4.js-anim .s4-anim,
+  .s4.js-anim .s4-anim.is-visivel {
+    transform: none;
+  }
+
+  .s4.js-anim .s4__nome,
+  .s4.js-anim .s4__nome-mascara.is-visivel .s4__nome {
+    transform: none;
+  }
+}
