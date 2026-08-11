@@ -35,7 +35,7 @@ html.esta-carregando body {
  * presa na frente do site. O módulo desliga esta rede ao assumir.
  */
 .preloader:not(.js-ativo) {
-  animation: preloaderSocorro 0.6s ease 8s forwards;
+  animation: preloaderSocorro 0.6s ease 4s forwards;
 }
 
 @keyframes preloaderSocorro {

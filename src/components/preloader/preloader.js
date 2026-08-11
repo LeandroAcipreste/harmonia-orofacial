@@ -15,8 +15,13 @@ const DURACAO_RAMPA = 2.2;
 const TETO_RAMPA = 0.9;
 const DURACAO_FECHO = 0.6;
 
-/* Recurso que nunca chega não pode prender a página do cliente. */
-const LIMITE_SEGURANCA = 8000;
+/*
+ * Recurso que nunca chega não pode prender a página. O `load` só dispara
+ * depois de imagens e metadados de vídeo, o que numa rede de celular
+ * demora, então este limite é curto de propósito: passou disto, a página
+ * abre mesmo que algo ainda esteja vindo.
+ */
+const LIMITE_SEGURANCA = 3500;
 
 const reduzido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -124,3 +129,18 @@ const encerrar = (preloader) => {
         ScrollTrigger.refresh();
     }
 };
+
+/*
+ * Última rede: se qualquer coisa estourar no meio da animação de saída, a
+ * página não pode ficar coberta e sem rolagem. Este temporizador roda
+ * fora de toda a lógica acima e limpa a camada de qualquer jeito.
+ */
+window.setTimeout(() => {
+    const preso = document.querySelector(".preloader");
+
+    if (preso) {
+        encerrar(preso);
+    }
+
+    document.documentElement.classList.remove("esta-carregando");
+}, LIMITE_SEGURANCA + 2000);

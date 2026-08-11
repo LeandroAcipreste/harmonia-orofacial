@@ -2,8 +2,23 @@
 
 const DURACAO_SCROLL = 1.1;
 const ALTURA_NAV = 64;
+const LARGURA_MOVEL = 950;
 
 let instancia = null;
+
+/*
+ * No toque não existe scroll suave por JavaScript que ganhe do nativo. O
+ * navegador rola fora da thread principal, no compositor; o Lenis traz
+ * isso de volta para a thread principal e passa a disputar espaço com
+ * cada quadro de animação. O resultado é a rolagem engasgada.
+ *
+ * Por isso o Lenis fica só no ponteiro. No toque, rolagem nativa, e o
+ * ScrollTrigger trabalha direto com ela, que é o caminho para o qual ele
+ * foi feito.
+ */
+const ehMovel = () =>
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+    window.innerWidth <= LARGURA_MOVEL;
 
 /*
  * Instância única do Lenis. Com o Lenis no comando, o ScrollTrigger
@@ -17,6 +32,12 @@ export const initScroll = () => {
     }
 
     comecarNoTopo();
+    ligarAncoras();
+
+    if (ehMovel()) {
+        document.documentElement.classList.add("movel");
+        return null;
+    }
 
     if (typeof Lenis === "undefined" || typeof gsap === "undefined") {
         return null;
@@ -30,8 +51,6 @@ export const initScroll = () => {
 
     gsap.ticker.add((tempo) => instancia.raf(tempo * 1000));
     gsap.ticker.lagSmoothing(0);
-
-    ligarAncoras();
 
     return instancia;
 };
@@ -72,8 +91,22 @@ const ligarAncoras = () => {
             }
 
             evento.preventDefault();
-            instancia.scrollTo(alvo, { offset: -ALTURA_NAV });
+            irPara(alvo);
         });
+    });
+};
+
+/* Com Lenis, quem leva é ele. Sem Lenis, o próprio navegador, que também
+   sabe rolar suave. Os dois descontam a altura da barra fixa. */
+const irPara = (alvo) => {
+    if (instancia) {
+        instancia.scrollTo(alvo, { offset: -ALTURA_NAV });
+        return;
+    }
+
+    window.scrollTo({
+        top: alvo.getBoundingClientRect().top + window.scrollY - ALTURA_NAV,
+        behavior: "smooth",
     });
 };
 
