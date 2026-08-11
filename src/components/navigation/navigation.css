@@ -84,36 +84,147 @@
   border-radius: 9999px;
 }
 
+/* Botão do menu: só existe no celular */
+
+.nav__botao {
+  display: none;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  color: var(--slate-300);
+  cursor: pointer;
+}
+
+/* Os três traços do hambúrguer: um elemento e dois pseudos */
+.nav__botao-traco,
+.nav__botao-traco::before,
+.nav__botao-traco::after {
+  display: block;
+  width: 1.125rem;
+  height: 1px;
+  background-color: currentColor;
+  transition:
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.3s;
+}
+
+.nav__botao-traco {
+  position: relative;
+}
+
+.nav__botao-traco::before,
+.nav__botao-traco::after {
+  content: "";
+  position: absolute;
+  left: 0;
+}
+
+.nav__botao-traco::before {
+  transform: translateY(-0.3125rem);
+}
+
+.nav__botao-traco::after {
+  transform: translateY(0.3125rem);
+}
+
+/* Aberto, os traços viram um X e a seta aponta para cima */
+.nav.is-aberto .nav__botao-traco {
+  transform: rotate(45deg);
+}
+
+.nav.is-aberto .nav__botao-traco::before {
+  transform: translateY(0) rotate(-90deg);
+}
+
+.nav.is-aberto .nav__botao-traco::after {
+  opacity: 0;
+}
+
+.nav__botao-seta {
+  width: 0.875rem;
+  height: 0.875rem;
+  color: var(--gold-300);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav.is-aberto .nav__botao-seta {
+  transform: rotate(180deg);
+}
+
 /* Responsivo */
 
 /*
- * Abaixo do desktop os cinco itens não cabem em volta da logomarca, que
- * o hero já mostra em tamanho grande logo abaixo. Então a marca sai e os
- * links viram uma única faixa que rola na horizontal.
+ * No celular a barra cresce para baixo: os dois grupos de links quebram
+ * para linhas próprias e ficam recortados enquanto o menu está fechado.
+ * Quem anima é o `max-height`, e não `display`, para a abertura poder
+ * ser suave.
  */
 @media (max-width: 899px) {
   .nav__inner {
-    justify-content: flex-start;
-    gap: 1.75rem;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    height: auto;
+    max-height: 4rem;
     padding: 0 1.25rem;
-    overflow-x: auto;
-    scrollbar-width: none;
+    overflow: hidden;
+    transition: max-height 0.55s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .nav__inner::-webkit-scrollbar {
-    display: none;
+  .nav.is-aberto .nav__inner {
+    max-height: 26rem;
   }
 
   .nav__marca {
-    display: none;
+    order: 1;
+    margin: 0.75rem 0;
+  }
+
+  .nav__botao {
+    display: inline-flex;
+    order: 2;
   }
 
   .nav__grupo {
+    order: 3;
     flex: none;
-    gap: 1.75rem;
-    font-size: 0.6875rem;
-    letter-spacing: 0.16em;
-    white-space: nowrap;
+    flex-basis: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0;
+    visibility: hidden;
+    opacity: 0;
+    transition:
+      opacity 0.35s ease,
+      visibility 0.35s ease;
+  }
+
+  .nav__grupo--dir {
+    order: 4;
+    padding-bottom: 1rem;
+  }
+
+  .nav.is-aberto .nav__grupo {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .nav-link {
+    padding: 0.9375rem 0;
+    border-top: 1px solid rgb(255 255 255 / 0.07);
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+  }
+
+  /* O risquinho de hover não cabe em lista vertical */
+  .nav-link__risco {
+    display: none;
   }
 }
 
@@ -122,5 +233,16 @@
     gap: 1.5rem;
     font-size: 0.6875rem;
     letter-spacing: 0.18em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav__inner,
+  .nav__grupo,
+  .nav__botao-traco,
+  .nav__botao-traco::before,
+  .nav__botao-traco::after,
+  .nav__botao-seta {
+    transition: none;
   }
 }
