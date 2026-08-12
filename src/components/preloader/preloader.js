@@ -1,9 +1,4 @@
-/* Pré-loader: o nível de dourado dentro do dente acompanha o carregamento. */
-
-/* Altura do líquido em unidades do viewBox: vazio abaixo da raiz, cheio
-   acima da coroa. */
-const NIVEL_VAZIO = 20;
-const NIVEL_CHEIO = 2;
+/* Pré-loader: o dente dourado enche de baixo para cima acompanhando o carregamento. */
 
 /*
  * A rampa sobe sozinha até 90% e só fecha quando a página realmente
@@ -42,15 +37,29 @@ export const initPreloader = () => {
         return;
     }
 
-    const nivel = preloader.querySelector(".preloader__nivel");
+    const denteFill = preloader.querySelector(".preloader__dente-fill");
+    const barraFill = preloader.querySelector(".preloader__barra-fill");
     const contador = preloader.querySelector(".preloader__num");
     const estado = { progresso: 0 };
 
     const pintar = () => {
-        gsap.set(nivel, { y: NIVEL_VAZIO + (NIVEL_CHEIO - NIVEL_VAZIO) * estado.progresso });
+        const p = estado.progresso;
 
+        /* Revela a imagem de baixo para cima via clip-path inset:
+           inset(top right bottom left) — variamos o top de 100% a 0%. */
+        if (denteFill) {
+            const topClip = (1 - p) * 100;
+            gsap.set(denteFill, { clipPath: `inset(${topClip}% 0 0 0)` });
+        }
+
+        /* Barra de progresso fina */
+        if (barraFill) {
+            gsap.set(barraFill, { width: `${p * 100}%` });
+        }
+
+        /* Contador numérico */
         if (contador) {
-            contador.textContent = Math.round(estado.progresso * 100);
+            contador.textContent = Math.round(p * 100);
         }
     };
 

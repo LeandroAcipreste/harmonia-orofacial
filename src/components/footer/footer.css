@@ -35,10 +35,10 @@
   position: absolute;
   right: 0;
   bottom: 3rem;
-  width: 9rem;
-  height: 9rem;
-  color: var(--gold-300);
-  opacity: 0.14;
+  width: 12rem;
+  height: 10.4rem;
+  object-fit: contain;
+  opacity: 0.16;
   pointer-events: none;
 }
 

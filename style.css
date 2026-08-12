@@ -82,6 +82,15 @@ a {
   font-family: var(--font-serif);
 }
 
+/* Guarda os desenhos reaproveitados por <use>. Fora do fluxo para não abrir
+   uma linha em branco no topo da página. */
+.sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
 /* Só para leitor de tela e buscador */
 .sr-only {
   position: absolute;

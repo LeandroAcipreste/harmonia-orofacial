@@ -1,4 +1,4 @@
-/* Pré-loader: o dente enchendo de dourado, de baixo para cima */
+/* Pré-loader: o dente dourado enchendo de baixo para cima */
 
 html.esta-carregando,
 html.esta-carregando body {
@@ -53,43 +53,61 @@ html.esta-carregando body {
   align-items: center;
 }
 
-/* O dente */
+/* ====== Dente dourado (imagem com preenchimento de baixo para cima) ====== */
 
-.preloader__dente {
-  width: clamp(7rem, 22vw, 11rem);
-  height: clamp(7rem, 22vw, 11rem);
-  overflow: visible;
-  filter: drop-shadow(0 0 28px rgb(253 186 116 / 0.28));
+.preloader__dente-wrap {
+  position: relative;
+  width: clamp(11rem, 32vw, 16rem);
+  aspect-ratio: 1536 / 1024;
+  filter: drop-shadow(0 0 32px rgb(253 186 116 / 0.30));
 }
 
-.preloader__contorno {
-  fill: none;
-  stroke: rgb(253 186 116 / 0.4);
-  stroke-width: 0.5;
-  stroke-linejoin: round;
+/* Silhueta do dente: a imagem em opacidade muito baixa como guia visual */
+.preloader__dente-ghost {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.08;
+  pointer-events: none;
 }
 
-/* Duas ondas em velocidades diferentes dão profundidade ao líquido */
-.preloader__onda {
-  fill: var(--gold-300);
-  transform-box: view-box;
-  transform-origin: 0 0;
-  animation: preloaderOnda 3s linear infinite;
+/* A imagem principal do dente dourado revelada de baixo para cima.
+   clip-path inset controla a revelação: inset(100% 0 0 0) = totalmente
+   escondida, inset(0 0 0 0) = totalmente visível. */
+.preloader__dente-fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* Começa totalmente escondido (recorte do topo ao fundo) */
+  clip-path: inset(100% 0 0 0);
+  will-change: clip-path;
 }
 
-.preloader__onda--fundo {
-  fill: rgb(251 146 60 / 0.55);
-  animation-duration: 4.6s;
-  animation-direction: reverse;
+/* Brilho pulsante sutil sobre o dente */
+.preloader__dente-glow {
+  position: absolute;
+  inset: -20%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 60%,
+    rgb(253 186 116 / 0.15),
+    transparent 60%
+  );
+  opacity: 0;
+  animation: preloaderGlow 2s ease-in-out infinite;
+  pointer-events: none;
 }
 
-@keyframes preloaderOnda {
-  to {
-    transform: translateX(-12px);
-  }
+@keyframes preloaderGlow {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
 }
 
-/* Marca e contador */
+/* ====== Marca e contador ====== */
 
 .preloader__marca {
   margin-top: 2.25rem;
@@ -117,7 +135,27 @@ html.esta-carregando body {
   color: var(--slate-500);
 }
 
-/* Risco dourado que sobe junto com a saída */
+/* Barra de progresso fina e elegante abaixo do contador */
+.preloader__barra {
+  margin-top: 0.75rem;
+  width: 6rem;
+  height: 1px;
+  background-color: rgb(255 255 255 / 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.preloader__barra-fill {
+  display: block;
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(to right, var(--gold-300), var(--gold-400));
+  border-radius: 2px;
+  will-change: width;
+}
+
+/* ====== Risco dourado na saída ====== */
+
 .preloader__risco {
   position: absolute;
   right: 0;
@@ -129,13 +167,13 @@ html.esta-carregando body {
   opacity: 0;
 }
 
-/* Movimento reduzido: o nível ainda sobe, mas sem ondular */
+/* Movimento reduzido: sem animações de brilho */
 @media (prefers-reduced-motion: reduce) {
-  .preloader__onda {
+  .preloader__dente-glow {
     animation: none;
   }
 
-  .preloader__dente {
+  .preloader__dente-wrap {
     filter: none;
   }
 }

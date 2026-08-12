@@ -19,30 +19,22 @@
 
 <body>
 
+
+
 <div class="preloader" id="preloader" role="status" aria-live="polite" aria-label="Carregando">
   <span class="preloader__fundo" aria-hidden="true"></span>
 
   <div class="preloader__palco">
-    <svg class="preloader__dente" viewBox="0 0 24 24" aria-hidden="true">
-      <defs>
-        <clipPath id="preloader-recorte">
-          <path d="M12 3.5c-2.2 0-3.5.8-4.4 1.8C6.5 6.4 6.2 7.8 6.2 9.4c0 2.2.7 3.9 1.2 5.6.4 1.4.4 3.2 1.6 3.2 1 0 1.1-1.4 1.4-2.7.3-1.2.6-2.3 1.6-2.3s1.3 1.1 1.6 2.3c.3 1.3.4 2.7 1.4 2.7 1.2 0 1.2-1.8 1.6-3.2.5-1.7 1.2-3.4 1.2-5.6 0-1.6-.3-3-1.4-4.1-.9-1-2.2-1.8-4.4-1.8z"></path>
-        </clipPath>
-      </defs>
-
-      <g clip-path="url(#preloader-recorte)">
-        <g class="preloader__nivel">
-          <path class="preloader__onda preloader__onda--fundo" d="M-24 0 q3 -1.1 6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 V32 H-24 Z"></path>
-          <path class="preloader__onda" d="M-24 0 q3 -0.8 6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 t6 0 V32 H-24 Z"></path>
-        </g>
-      </g>
-
-      <path class="preloader__contorno" d="M12 3.5c-2.2 0-3.5.8-4.4 1.8C6.5 6.4 6.2 7.8 6.2 9.4c0 2.2.7 3.9 1.2 5.6.4 1.4.4 3.2 1.6 3.2 1 0 1.1-1.4 1.4-2.7.3-1.2.6-2.3 1.6-2.3s1.3 1.1 1.6 2.3c.3 1.3.4 2.7 1.4 2.7 1.2 0 1.2-1.8 1.6-3.2.5-1.7 1.2-3.4 1.2-5.6 0-1.6-.3-3-1.4-4.1-.9-1-2.2-1.8-4.4-1.8z"></path>
-    </svg>
+    <div class="preloader__dente-wrap" aria-hidden="true">
+      <img class="preloader__dente-ghost" src="assets/svg-dente-dourado.svg" alt="" />
+      <img class="preloader__dente-fill"  src="assets/svg-dente-dourado.svg" alt="" />
+      <span class="preloader__dente-glow"></span>
+    </div>
 
     <p class="preloader__marca">HARMONIA OROFACIAL</p>
     <p class="preloader__tipo">CLÍNICA ODONTOLÓGICA</p>
     <p class="preloader__contador"><span class="preloader__num">0</span>%</p>
+    <div class="preloader__barra"><span class="preloader__barra-fill"></span></div>
   </div>
 
   <span class="preloader__risco" aria-hidden="true"></span>
@@ -359,7 +351,7 @@
   <div class="rodape__inner">
     <span class="rodape__fio" aria-hidden="true"></span>
 
-    <svg class="rodape__dente" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.5c-2.2 0-3.5.8-4.4 1.8C6.5 6.4 6.2 7.8 6.2 9.4c0 2.2.7 3.9 1.2 5.6.4 1.4.4 3.2 1.6 3.2 1 0 1.1-1.4 1.4-2.7.3-1.2.6-2.3 1.6-2.3s1.3 1.1 1.6 2.3c.3 1.3.4 2.7 1.4 2.7 1.2 0 1.2-1.8 1.6-3.2.5-1.7 1.2-3.4 1.2-5.6 0-1.6-.3-3-1.4-4.1-.9-1-2.2-1.8-4.4-1.8z"></path></svg>
+    <img class="rodape__dente" src="assets/logo-transparente-png.png" alt="" aria-hidden="true" />
 
     <div class="rodape__conteudo">
       <h2 class="sr-only">Contato</h2>
