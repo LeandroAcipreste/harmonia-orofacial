@@ -50,5 +50,5 @@ $RECYCLE.BIN/
 *.swo
 *~
 
-# Configuração local do Claude Code
-.claude/settings.local.json
+# Claude Code
+.claude/
