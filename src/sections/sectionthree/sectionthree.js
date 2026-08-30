@@ -161,8 +161,18 @@ const desdobrar = (linha, peca, posicao) => {
 const montarCardSolto = (card) => {
     const linha = gsap.timeline({
         scrollTrigger: {
+            /*
+             * Começa com a linha já quase inteira na tela, e não assim que
+             * ela encosta na borda de baixo. Disparando cedo, a abertura
+             * acontecia na beirada inferior, onde ninguém está olhando, e
+             * o card chegava ao meio da tela com o efeito já terminado.
+             *
+             * Em 72% o topo da linha está a pouco mais de dois terços da
+             * altura da tela: o card ocupa lugar visível, vazio, e a peça
+             * levanta ali dentro, à vista.
+             */
             trigger: card.parentElement,
-            start: "top 88%",
+            start: "top 72%",
             end: "bottom 28%",
             scrub: true,
             invalidateOnRefresh: true,
