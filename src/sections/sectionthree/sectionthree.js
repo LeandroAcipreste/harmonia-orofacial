@@ -8,6 +8,35 @@ const MARGEM_CARTOES = "0px 0px -25% 0px";
 /* Alturas de viewport de rolagem por card. Define o ritmo da sequência. */
 const ROLAGEM_POR_CARD = 0.9;
 
+/* Uma tela a mais de rolagem, só para o desdobramento acontecer. */
+const ROLAGEM_DA_TELA = 1;
+
+/*
+ * Estado deitado da tela. `rotateX(90deg)` é a peça exatamente de perfil,
+ * invisível; o `scaleX` estreito é o que dá a impressão de que ela estava
+ * dobrada e se abre ao subir. Vem do JS, e não do CSS, para os cards
+ * ficarem visíveis quando o JavaScript não roda.
+ */
+const TELA_DEITADA = { rotateX: 90, scaleX: 0.44, yPercent: 14, opacity: 0 };
+const TELA_DE_FRENTE = { rotateX: 0, scaleX: 1, yPercent: 0, opacity: 1 };
+
+/* Unidades da timeline gastas no desdobramento. */
+const TELA_ABERTURA = 2.2;
+const TELA_ASSENTA = 0.5;
+
+/*
+ * No celular quem desdobra é cada card, não o painel — e aí a perspectiva
+ * precisa ser do próprio elemento, porque a do `.s3` no CSS só alcança os
+ * filhos diretos, e o card é neto. `transformPerspective` põe o
+ * `perspective()` dentro da transformação da própria peça, o que ainda dá
+ * a cada card o seu ponto de fuga, que é o certo quando eles abrem um de
+ * cada vez.
+ */
+const CARTA_DEITADA = { rotateX: 82, scaleX: 0.52, opacity: 0, transformPerspective: 900 };
+const CARTA_DE_FRENTE = { rotateX: 0, scaleX: 1, opacity: 1 };
+
+const CARTA_ABERTURA = 1.4;
+
 /* Prender a seção custa quase quatro telas de rolagem, o que pesa demais
    num aparelho pequeno. A partir daqui a dobra fica presa; abaixo, a
    sequência corre enquanto a seção atravessa a tela. */
@@ -85,7 +114,8 @@ const ligarSequencia = (secao) => {
 
         montarMestre(secao, cards, {
             start: "top top",
-            end: () => `+=${window.innerHeight * ROLAGEM_POR_CARD * cards.length}`,
+            end: () =>
+                `+=${window.innerHeight * (ROLAGEM_POR_CARD * cards.length + ROLAGEM_DA_TELA)}`,
             pin: true,
             pinSpacing: true,
             anticipatePin: 1,
@@ -108,16 +138,34 @@ const ligarSequencia = (secao) => {
         cards.forEach((card) => {
             const linha = gsap.timeline({
                 scrollTrigger: {
-                    trigger: card,
-                    start: "top 78%",
-                    end: "bottom 30%",
+                    /*
+                     * O gatilho é a seção, e não o card, porque o card
+                     * agora se deita: sob `rotateX(82deg)` o retângulo dele
+                     * fica achatado a quase nada, e é pelo retângulo que o
+                     * ScrollTrigger calcula onde começar e terminar. O
+                     * cálculo sairia todo errado, e a sincronia que
+                     * acabamos de acertar iria junto.
+                     *
+                     * `offsetTop` e `offsetHeight` são geometria de layout,
+                     * que transformação nenhuma altera. Medindo por eles, a
+                     * posição do card continua exata com a peça deitada.
+                     */
+                    trigger: secao,
+                    start: () => `top+=${card.offsetTop} 82%`,
+                    end: () => `top+=${card.offsetTop + card.offsetHeight} 35%`,
                     scrub: true,
                     invalidateOnRefresh: true,
                 },
             });
 
             linha
-                .add(criarSequenciaDoCard(card), RESPIRO_ENTRADA)
+                .fromTo(
+                    card,
+                    { ...CARTA_DEITADA },
+                    { ...CARTA_DE_FRENTE, duration: CARTA_ABERTURA, ease: "power3.out" },
+                    0
+                )
+                .add(criarSequenciaDoCard(card), CARTA_ABERTURA + RESPIRO_ENTRADA)
                 .to({}, { duration: RESPIRO_SAIDA });
         });
     });
@@ -134,11 +182,45 @@ const montarMestre = (secao, cards, gatilho) => {
         },
     });
 
+    abrirTela(mestre, secao);
+
     cards.forEach((card) => {
         mestre.add(criarSequenciaDoCard(card), ">");
     });
 
     return mestre;
+};
+
+/*
+ * A tela sobe deitada e desdobra até ficar de frente.
+ *
+ * `fromTo` e não `from`: com `scrub`, o estado inicial é aplicado assim
+ * que o gatilho nasce, então a peça já entra deitada, e o estado final é
+ * escrito por extenso em vez de depender do que o navegador calculou.
+ *
+ * O `border-radius` não entra na animação de propósito. Girar e esmaecer
+ * são trabalho do compositor e não custam nada; mudar o raio a cada
+ * quadro obriga a repintar o recorte de um painel de mil e cem pixels com
+ * quatro cards e oito imagens dentro. Era o único passo do efeito que
+ * travaria, e é o único que ficou de fora.
+ */
+const abrirTela = (linha, secao) => {
+    const tela = secao.querySelector(".s3__palco");
+
+    if (!tela) {
+        return;
+    }
+
+    linha.fromTo(
+        tela,
+        { ...TELA_DEITADA },
+        { ...TELA_DE_FRENTE, duration: TELA_ABERTURA, ease: "power3.out" },
+        0
+    );
+
+    /* Um respiro antes do primeiro card trocar de etapa: a tela precisa
+       chegar e ser vista de frente antes de algo se mexer dentro dela. */
+    linha.to({}, { duration: TELA_ASSENTA });
 };
 
 /*

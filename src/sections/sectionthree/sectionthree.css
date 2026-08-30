@@ -1,12 +1,32 @@
+/*
+ * A perspectiva mora no pai porque é dela que o desdobramento da tela
+ * tira a profundidade: sem ela, `rotateX` vira um achatamento vertical
+ * chapado em vez de uma peça girando para a frente.
+ *
+ * 1400px é uma câmera distante — perspectiva curta exagera a fuga e
+ * entorta os cards das pontas.
+ */
 .s3 {
   position: relative;
   padding: 6rem 1.5rem;
+  perspective: 1400px;
 }
 
+/*
+ * A tela: o painel que sobe deitado e desdobra até ficar de frente. Nasce
+ * de frente e opaco — quem deita é o JS, no primeiro quadro. Sem
+ * JavaScript, ou sem GSAP, os cards ficam visíveis em vez de presos de
+ * perfil, invisíveis para sempre.
+ */
 .s3__palco {
   width: 100%;
   max-width: 72rem;
   margin: 0 auto;
+  padding: 1.25rem;
+  border: 1px solid rgb(226 232 240 / 0.07);
+  border-radius: 1.75rem;
+  background-color: rgb(10 17 40 / 0.5);
+  transform-origin: center center;
 }
 
 /* Celular: um cartão embaixo do outro. As colunas entram a partir do tablete. */
