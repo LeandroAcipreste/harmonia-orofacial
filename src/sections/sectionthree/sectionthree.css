@@ -233,11 +233,27 @@
   }
 }
 
-/* Em coluna o cartão ocupa a largura toda, e a área da foto acompanha:
-   na altura de dois cartões lado a lado ela viraria uma tira. */
 @media (max-width: 767px) {
+  /* Em coluna o cartão ocupa a largura toda, e a área da foto acompanha:
+     na altura de dois cartões lado a lado ela viraria uma tira. */
   .s3__etapas {
     height: 11rem;
+  }
+
+  /*
+   * O vão entre as linhas não é respiro visual: é o trecho de rolagem que
+   * pertence a cada card. Um card só começa a abrir depois de o anterior
+   * ter mostrado o depois enquanto valer
+   *
+   *     row-gap = (início − fim do gatilho) × altura da tela
+   *
+   * Com o gatilho indo de 72% a 40% em sectionthree.js, a diferença é
+   * 32% — daí 32vh. Com o vão de 1,25rem que havia aqui, o card seguinte
+   * começava mais de trezentos pixels antes de o anterior terminar, e
+   * dois ou três animavam ao mesmo tempo.
+   */
+  .s3__grade {
+    row-gap: 32vh;
   }
 }
 

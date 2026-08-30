@@ -167,13 +167,20 @@ const montarCardSolto = (card) => {
              * acontecia na beirada inferior, onde ninguém está olhando, e
              * o card chegava ao meio da tela com o efeito já terminado.
              *
-             * Em 72% o topo da linha está a pouco mais de dois terços da
-             * altura da tela: o card ocupa lugar visível, vazio, e a peça
-             * levanta ali dentro, à vista.
+             * ATENÇÃO: estes dois números estão amarrados ao vão entre as
+             * linhas, no CSS. Um card só começa depois do anterior
+             * terminar enquanto valer
+             *
+             *     vão entre linhas = (início − fim) × altura da tela
+             *
+             * Aqui a diferença é 72% − 40% = 32%, e o `row-gap` da grade
+             * no celular é 32vh. Mexer num sem mexer no outro faz as
+             * sequências voltarem a se sobrepor, ou abre rolagem morta
+             * entre elas.
              */
             trigger: card.parentElement,
             start: "top 72%",
-            end: "bottom 28%",
+            end: "bottom 40%",
             scrub: true,
             invalidateOnRefresh: true,
         },
