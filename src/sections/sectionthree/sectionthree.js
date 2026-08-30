@@ -1,9 +1,6 @@
 /* Destaques: cada card percorre procedimento → antes → depois com a rolagem. */
 
-import { revelarAoEntrar } from "../../utils/reveal.js";
 import { ligarBrilhoDoCursor } from "../../components/shellcard/shellcard.js";
-
-const MARGEM_CARTOES = "0px 0px -25% 0px";
 
 /* Alturas de viewport de rolagem por card. Define o ritmo da sequência. */
 const ROLAGEM_POR_CARD = 0.9;
@@ -67,18 +64,14 @@ export const initSectionThree = () => {
         return;
     }
 
-    const grade = secao.querySelector(".s3__grade");
-
-    if (!grade) {
-        return;
-    }
-
     ligarBrilhoDoCursor(secao.querySelectorAll(".shell-card"));
 
-    grade.classList.add("js-anim");
-    void grade.offsetHeight;
-    revelarAoEntrar([grade], { margem: MARGEM_CARTOES });
-
+    /*
+     * A revelação em desfoque que existia aqui saiu junto com o CSS dela.
+     * Ela e o desdobramento animavam `opacity` e `transform` do mesmo
+     * card, e o GSAP escreve em linha, que ganha da folha: era sempre o
+     * desdobramento que valia. Uma entrada só, e é essa.
+     */
     ligarSequencia(secao);
 };
 
@@ -139,20 +132,16 @@ const ligarSequencia = (secao) => {
             const linha = gsap.timeline({
                 scrollTrigger: {
                     /*
-                     * O gatilho é a seção, e não o card, porque o card
-                     * agora se deita: sob `rotateX(82deg)` o retângulo dele
-                     * fica achatado a quase nada, e é pelo retângulo que o
-                     * ScrollTrigger calcula onde começar e terminar. O
-                     * cálculo sairia todo errado, e a sincronia que
-                     * acabamos de acertar iria junto.
-                     *
-                     * `offsetTop` e `offsetHeight` são geometria de layout,
-                     * que transformação nenhuma altera. Medindo por eles, a
-                     * posição do card continua exata com a peça deitada.
+                     * O gatilho é a linha, não o card. O card se deita, e
+                     * sob `rotateX(82deg)` o retângulo dele fica achatado a
+                     * quase nada — é pelo retângulo que o ScrollTrigger
+                     * calcula início e fim, e a conta sairia toda errada.
+                     * A linha nunca se transforma, então a caixa dela é
+                     * estável e mede o lugar certo.
                      */
-                    trigger: secao,
-                    start: () => `top+=${card.offsetTop} 82%`,
-                    end: () => `top+=${card.offsetTop + card.offsetHeight} 35%`,
+                    trigger: card.parentElement,
+                    start: "top 82%",
+                    end: "bottom 35%",
                     scrub: true,
                     invalidateOnRefresh: true,
                 },

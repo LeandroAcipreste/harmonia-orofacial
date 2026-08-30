@@ -22,11 +22,17 @@
   width: 100%;
   max-width: 72rem;
   margin: 0 auto;
-  padding: 1.25rem;
-  border: 1px solid rgb(226 232 240 / 0.07);
-  border-radius: 1.75rem;
-  background-color: rgb(10 17 40 / 0.5);
   transform-origin: center center;
+}
+
+/*
+ * Cada card na própria linha. No celular é ela que segura a caixa de
+ * layout enquanto o card se deita: transformação não mexe em layout,
+ * então a linha mantém a altura e a coluna não colapsa — e é por isso que
+ * o gatilho da rolagem pode se ancorar nela com segurança.
+ */
+.s3__linha {
+  display: grid;
 }
 
 /* Celular: um cartão embaixo do outro. As colunas entram a partir do tablete. */
@@ -65,26 +71,15 @@
     filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Estado escondido só vale com `.js-anim` */
-.s3__grade.js-anim .s3__card {
-  opacity: 0;
-  transform: translateY(70px) scale(0.94);
-  filter: blur(10px);
-}
+/*
+ * A entrada em desfoque que existia aqui saiu. Ela animava `opacity` e
+ * `transform` do card por transição de CSS, e o desdobramento faz o mesmo
+ * pelo GSAP, com estilo em linha — que ganha da folha. Eram dois sistemas
+ * disputando as mesmas duas propriedades no mesmo elemento, com o segundo
+ * sempre vencendo. O desdobramento é a entrada agora.
+ */
 
-.s3__grade.js-anim.is-visivel .s3__card {
-  opacity: 1;
-  transform: none;
-  filter: blur(0);
-}
-
-.s3__grade.js-anim.is-visivel .s3__card:nth-child(1) { transition-delay: 0ms; }
-.s3__grade.js-anim.is-visivel .s3__card:nth-child(2) { transition-delay: 120ms; }
-.s3__grade.js-anim.is-visivel .s3__card:nth-child(3) { transition-delay: 240ms; }
-.s3__grade.js-anim.is-visivel .s3__card:nth-child(4) { transition-delay: 360ms; }
-
-/* Hover só depois da carta assentar */
-.s3__grade.js-anim.is-visivel .s3__card:hover {
+.s3__card:hover {
   transform: translateY(-0.5rem);
 }
 
@@ -260,6 +255,19 @@
   .s3__grade {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  /*
+   * A partir daqui o palco vira a tela que desdobra, e ganha corpo de
+   * painel. No celular ele não tem moldura nenhuma: quem desdobra lá é
+   * cada card, um a um, e um recipiente em volta juntaria os quatro numa
+   * caixa só — o contrário de linhas separadas.
+   */
+  .s3__palco {
+    padding: 1.25rem;
+    border: 1px solid rgb(226 232 240 / 0.07);
+    border-radius: 1.75rem;
+    background-color: rgb(10 17 40 / 0.5);
+  }
 }
 
 @media (min-width: 1024px) {
@@ -280,7 +288,7 @@
     transition: opacity 0.5s ease;
   }
 
-  .s3__grade.js-anim.is-visivel .s3__card:hover {
+  .s3__card:hover {
     transform: none;
   }
 }
