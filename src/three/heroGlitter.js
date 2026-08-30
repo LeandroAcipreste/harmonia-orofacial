@@ -123,6 +123,12 @@ const PARTICULAS = {
        acontecer fora de vista. */
     folga: 1.16,
 
+    /* Atrator, só onde há cursor. Valores do canvas original. */
+    atracao: 0.6,
+    giro: 0.35,
+    amortecimento: 0.99,
+    raioDeAbsorcao: 0.06,
+
     /* Correnteza: escala espacial dos redemoinhos, quanto o campo se
        remexe no tempo e a velocidade que ele imprime. */
     correnteEscala: 3.2,
@@ -273,9 +279,13 @@ void main() {
     float fase = aleatorio(floor(vUv * 520.0)) * 6.2831;
     float pisca = 1.0 - uCintilacao + uCintilacao * (0.5 + 0.5 * sin(uTempo * 1.7 + fase));
 
-    /* Expoente alto: só as palhetas realmente claras acendem, o resto da
-       superfície permanece fosco. */
-    float palheta = pow(grao, 7.0) * pisca;
+    /* Só as palhetas realmente claras acendem; o resto da superfície
+       permanece fosco. A sétima potência sai por multiplicação, e não por
+       pow(): são quatro produtos no lugar de um log e uma exponencial,
+       por fragmento, numa passada que cobre a tela inteira. */
+    float grao2 = grao * grao;
+    float grao3 = grao2 * grao;
+    float palheta = grao3 * grao3 * grao * pisca;
 
     /* Corpo da chapa: um nível de azul fixo que o grão modula em volta.
        O nível não sai mais da foto — é justamente por não haver degradê
@@ -329,17 +339,33 @@ const envolver = (valor) => {
     return valor;
 };
 
-const criarPoeira = (quantidade, pixelRatio, uniformesDaCena) => {
+/*
+ * Duas físicas, uma por tipo de aparelho.
+ *
+ * Onde há cursor, a poeira o persegue: atrator com componente lateral,
+ * absorção e renascimento. É o comportamento do canvas original e o que
+ * dá sentido a mexer o mouse.
+ *
+ * Onde não há cursor não existe nada a perseguir, e um atrator preso a um
+ * ponto que anda sozinho vira poeira orbitando esse ponto. Ali entra a
+ * correnteza: cada partícula anda conforme o campo do lugar onde está,
+ * espalhada pela tela inteira, e o ponteiro virtual só sopra ao passar.
+ */
+const criarPoeira = (quantidade, pixelRatio, uniformesDaCena, semCursor) => {
     const posicoes = new Float32Array(quantidade * 3);
     const velocidades = new Float32Array(quantidade * 2);
     const tamanhos = new Float32Array(quantidade);
 
-    /* Semeadura única. Depois disto nenhuma partícula é recriada: a
-       distribuição inicial é a que dura a sessão inteira. */
-    for (let i = 0; i < quantidade; i += 1) {
+    const semear = (i) => {
         posicoes[i * 3] = Math.random() * 2 - 1;
         posicoes[i * 3 + 1] = Math.random() * 2 - 1;
+        velocidades[i * 2] = 0;
+        velocidades[i * 2 + 1] = 0;
         tamanhos[i] = 1.8 + Math.random() * 4.2;
+    };
+
+    for (let i = 0; i < quantidade; i += 1) {
+        semear(i);
     }
 
     const geometria = new BufferGeometry();
@@ -379,7 +405,7 @@ const criarPoeira = (quantidade, pixelRatio, uniformesDaCena) => {
      * cursor: a velocidade decai para zero e a poeira assenta parada, sem
      * deixar de reagir a quem passa o mouse por ela.
      */
-    const atualizar = (cursor, t, comCorrente) => {
+    const porCorrenteza = (cursor, t, comCorrente) => {
         const escala = PARTICULAS.correnteEscala;
         const giro = t * PARTICULAS.correnteTempo;
 
@@ -417,7 +443,7 @@ const criarPoeira = (quantidade, pixelRatio, uniformesDaCena) => {
                que a poeira antiga se juntava toda num ponto só. */
             const dx = x - cursor.x;
             const dy = y - cursor.y;
-            const distancia = Math.hypot(dx, dy) + 1e-4;
+            const distancia = Math.sqrt(dx * dx + dy * dy) + 1e-4;
 
             if (distancia < PARTICULAS.soproRaio) {
                 const sopro = (1 - distancia / PARTICULAS.soproRaio) * PARTICULAS.soproForca;
@@ -438,7 +464,47 @@ const criarPoeira = (quantidade, pixelRatio, uniformesDaCena) => {
         geometria.attributes.position.needsUpdate = true;
     };
 
-    return { pontos, atualizar };
+    /*
+     * Física do desktop, intacta desde o canvas original: a partícula é
+     * puxada pelo cursor com uma componente lateral, e é essa força
+     * tangencial que transforma a queda em redemoinho. Chegando perto
+     * demais ela é absorvida e renasce longe, senão todas acabariam
+     * empilhadas no mesmo ponto.
+     */
+    const porAtrator = (atrator) => {
+        for (let i = 0; i < quantidade; i += 1) {
+            const eixo = i * 3;
+            const par = i * 2;
+
+            const dx = atrator.x - posicoes[eixo];
+            const dy = atrator.y - posicoes[eixo + 1];
+
+            /* `Math.hypot` custa mais de três vezes uma raiz direta, e isto
+               roda mil e quatrocentas vezes por quadro. */
+            const distancia = Math.sqrt(dx * dx + dy * dy) + 1e-4;
+            const forca = PARTICULAS.atracao / (distancia + 0.08);
+
+            const radialX = (dx / distancia) * forca;
+            const radialY = (dy / distancia) * forca;
+
+            velocidades[par] += (radialX - radialY * PARTICULAS.giro) * PARTICULAS.passo;
+            velocidades[par + 1] += (radialY + radialX * PARTICULAS.giro) * PARTICULAS.passo;
+
+            velocidades[par] *= PARTICULAS.amortecimento;
+            velocidades[par + 1] *= PARTICULAS.amortecimento;
+
+            posicoes[eixo] += velocidades[par] * PARTICULAS.passo;
+            posicoes[eixo + 1] += velocidades[par + 1] * PARTICULAS.passo;
+
+            if (distancia < PARTICULAS.raioDeAbsorcao) {
+                semear(i);
+            }
+        }
+
+        geometria.attributes.position.needsUpdate = true;
+    };
+
+    return { pontos, atualizar: semCursor ? porCorrenteza : porAtrator };
 };
 
 /* A textura é a cena inteira: sem ela não há o que desenhar, então o
@@ -522,10 +588,13 @@ export const iniciarHeroGlitter = async (canvas, { reduzido = false } = {}) => {
     malha.rotation.x = INCLINACAO;
     cena.add(malha);
 
+    const semCursor = window.matchMedia(CONSULTA_SEM_CURSOR).matches;
+
     const poeira = criarPoeira(
         movel ? PARTICULAS.quantidadeMovel : PARTICULAS.quantidade,
         renderizador.getPixelRatio(),
-        uniformes
+        uniformes,
+        semCursor
     );
 
     cena.add(poeira.pontos);
@@ -566,8 +635,6 @@ export const iniciarHeroGlitter = async (canvas, { reduzido = false } = {}) => {
 
     ajustar();
     window.addEventListener("resize", ajustar);
-
-    const semCursor = window.matchMedia(CONSULTA_SEM_CURSOR).matches;
 
     /* Enquanto ninguém mexeu o mouse não existe cursor a perseguir, e o
        centro da tela é o pior lugar possível para o redemoinho: é onde
@@ -685,7 +752,14 @@ export const iniciarHeroGlitter = async (canvas, { reduzido = false } = {}) => {
          * no mouse é a mesma exceção que o hero já abre em
          * `ligarAtracaoDoCursor`.
          */
-        poeira.atualizar(mirarCursor(t), t, !reduzido);
+        /* No desktop a poeira só é atualizada com movimento liberado ou
+           com o mouse em uso — quem persegue responde ao gesto, e é a
+           exceção que o hero já abre em `ligarAtracaoDoCursor`. Sem
+           cursor a correnteza cuida do resto: com movimento reduzido ela
+           não corre e a poeira assenta parada. */
+        if (semCursor || !reduzido || cursorEmUso) {
+            poeira.atualizar(mirarCursor(t), t, !reduzido);
+        }
 
         renderizador.render(cena, camera);
     };
