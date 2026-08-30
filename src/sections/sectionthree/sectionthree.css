@@ -33,6 +33,14 @@
  */
 .s3__linha {
   display: grid;
+
+  /*
+   * A mesma perspectiva que o `.s3` dá ao painel no desktop. Ela precisa
+   * morar aqui porque `perspective` só alcança os filhos diretos, e o card
+   * é neto do `.s3` — sem isto o `rotateX` vira um achatamento vertical
+   * chapado em vez de uma peça girando para a frente.
+   */
+  perspective: 1400px;
 }
 
 /* Celular: um cartão embaixo do outro. As colunas entram a partir do tablete. */

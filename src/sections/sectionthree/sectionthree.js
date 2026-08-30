@@ -9,30 +9,24 @@ const ROLAGEM_POR_CARD = 0.9;
 const ROLAGEM_DA_TELA = 1;
 
 /*
- * Estado deitado da tela. `rotateX(90deg)` é a peça exatamente de perfil,
- * invisível; o `scaleX` estreito é o que dá a impressão de que ela estava
- * dobrada e se abre ao subir. Vem do JS, e não do CSS, para os cards
- * ficarem visíveis quando o JavaScript não roda.
+ * Estado deitado do desdobramento, um só para os dois casos: o painel no
+ * desktop e cada card no celular. `rotateX(90deg)` é a peça exatamente de
+ * perfil, invisível; o `scaleX` estreito dá a impressão de que ela estava
+ * dobrada e se abre ao subir; o `yPercent` faz ela chegar de baixo.
+ *
+ * Vem do JS, e não do CSS, para os cards ficarem visíveis quando o
+ * JavaScript não roda.
+ *
+ * A perspectiva não está aqui: ela é do elemento pai, em CSS — `.s3` para
+ * o painel, `.s3__linha` para o card. Assim os dois usam o mesmo modelo de
+ * projeção, e não uma perspectiva de parente e outra de peça.
  */
-const TELA_DEITADA = { rotateX: 90, scaleX: 0.44, yPercent: 14, opacity: 0 };
-const TELA_DE_FRENTE = { rotateX: 0, scaleX: 1, yPercent: 0, opacity: 1 };
+const DEITADO = { rotateX: 90, scaleX: 0.44, yPercent: 14, opacity: 0 };
+const DE_FRENTE = { rotateX: 0, scaleX: 1, yPercent: 0, opacity: 1 };
 
 /* Unidades da timeline gastas no desdobramento. */
-const TELA_ABERTURA = 2.2;
-const TELA_ASSENTA = 0.5;
-
-/*
- * No celular quem desdobra é cada card, não o painel — e aí a perspectiva
- * precisa ser do próprio elemento, porque a do `.s3` no CSS só alcança os
- * filhos diretos, e o card é neto. `transformPerspective` põe o
- * `perspective()` dentro da transformação da própria peça, o que ainda dá
- * a cada card o seu ponto de fuga, que é o certo quando eles abrem um de
- * cada vez.
- */
-const CARTA_DEITADA = { rotateX: 82, scaleX: 0.52, opacity: 0, transformPerspective: 900 };
-const CARTA_DE_FRENTE = { rotateX: 0, scaleX: 1, opacity: 1 };
-
-const CARTA_ABERTURA = 1.4;
+const ABERTURA = 2.2;
+const ASSENTA = 0.5;
 
 /* Prender a seção custa quase quatro telas de rolagem, o que pesa demais
    num aparelho pequeno. A partir daqui a dobra fica presa; abaixo, a
@@ -133,11 +127,11 @@ const ligarSequencia = (secao) => {
                 scrollTrigger: {
                     /*
                      * O gatilho é a linha, não o card. O card se deita, e
-                     * sob `rotateX(82deg)` o retângulo dele fica achatado a
-                     * quase nada — é pelo retângulo que o ScrollTrigger
-                     * calcula início e fim, e a conta sairia toda errada.
-                     * A linha nunca se transforma, então a caixa dela é
-                     * estável e mede o lugar certo.
+                     * sob `rotateX(90deg)` o retângulo dele fica achatado a
+                     * zero — é pelo retângulo que o ScrollTrigger calcula
+                     * início e fim, e a conta sairia toda errada. A linha
+                     * nunca se transforma, então a caixa dela é estável e
+                     * mede o lugar certo.
                      */
                     trigger: card.parentElement,
                     start: "top 82%",
@@ -150,11 +144,11 @@ const ligarSequencia = (secao) => {
             linha
                 .fromTo(
                     card,
-                    { ...CARTA_DEITADA },
-                    { ...CARTA_DE_FRENTE, duration: CARTA_ABERTURA, ease: "power3.out" },
+                    { ...DEITADO },
+                    { ...DE_FRENTE, duration: ABERTURA, ease: "power3.out" },
                     0
                 )
-                .add(criarSequenciaDoCard(card), CARTA_ABERTURA + RESPIRO_ENTRADA)
+                .add(criarSequenciaDoCard(card), ABERTURA + RESPIRO_ENTRADA)
                 .to({}, { duration: RESPIRO_SAIDA });
         });
     });
@@ -202,14 +196,14 @@ const abrirTela = (linha, secao) => {
 
     linha.fromTo(
         tela,
-        { ...TELA_DEITADA },
-        { ...TELA_DE_FRENTE, duration: TELA_ABERTURA, ease: "power3.out" },
+        { ...DEITADO },
+        { ...DE_FRENTE, duration: ABERTURA, ease: "power3.out" },
         0
     );
 
     /* Um respiro antes do primeiro card trocar de etapa: a tela precisa
        chegar e ser vista de frente antes de algo se mexer dentro dela. */
-    linha.to({}, { duration: TELA_ASSENTA });
+    linha.to({}, { duration: ASSENTA });
 };
 
 /*
