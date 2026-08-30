@@ -12,16 +12,16 @@
   perspective: 1400px;
 }
 
-/* Película dourada ao fundo */
+/* Fundo da dobra */
 
 /*
  * O card subindo só se percebe contra alguma coisa parada. Sobre navy
  * liso e vazio, uma peça que sobe enquanto aparece lê como simples
- * esmaecimento — não há referência para o olho medir o movimento. Esta
- * camada é essa referência.
+ * esmaecimento — não há referência para o olho medir o movimento. Este
+ * fundo é essa referência.
  *
- * Recortada por `clip-path` e não por `overflow`: `overflow` cria um
- * contêiner de rolagem, e o `sticky` mais abaixo passaria a se prender a
+ * Recortado por `clip-path` e não por `overflow`: `overflow` cria um
+ * contêiner de rolagem, e o `sticky` logo abaixo passaria a se prender a
  * ele, que nunca rola.
  */
 .s3__pelicula {
@@ -33,52 +33,42 @@
 }
 
 /*
- * A purpurina. É a mesma textura de glitter do hero, com os níveis
- * esmagados até sobrarem só as palhetas, usada como máscara de um
- * gradiente dourado: o dourado aparece onde há palheta e some no resto.
- * Máscara em vez de imagem tingida por `filter` — filtro sobre uma camada
- * do tamanho da seção custa uma repintura inteira.
+ * Grudado no topo: a imagem fica parada preenchendo a tela enquanto a
+ * seção passa por trás. Esticá-la pela seção inteira não serviria — no
+ * celular a dobra passa de dois mil e quinhentos pixels, e as ondas
+ * ficariam deformadas até não se reconhecerem.
  */
-.s3__pelicula-grao {
-  position: absolute;
-  inset: 0;
-  display: block;
-  background-image: linear-gradient(
-    140deg,
-    var(--gold-200),
-    var(--gold-400) 45%,
-    var(--gold-300)
-  );
-  -webkit-mask-image: url("../../../assets/purpurina.webp");
-  mask-image: url("../../../assets/purpurina.webp");
-  -webkit-mask-size: 24rem;
-  mask-size: 24rem;
-  opacity: 0.42;
-}
-
-/* Grudada no topo: o brilho fica parado no meio da tela enquanto a seção
-   passa por trás, e é ele que destaca o card que está subindo naquele
-   momento. Ancorado ao meio da seção só apareceria num trecho. */
 .s3__pelicula-palco {
   position: sticky;
   top: 0;
   height: 100vh;
 }
 
-.s3__pelicula-luz {
+.s3__pelicula-imagem {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  inset: 0;
   display: block;
-  width: min(150vw, 70rem);
-  height: min(120vh, 52rem);
-  background-image: radial-gradient(
-    ellipse 50% 42% at 50% 50%,
-    rgb(253 186 116 / 0.16),
-    rgb(251 146 60 / 0.06) 45%,
-    transparent 72%
+  background-image: url("../../../assets/fundo-resultados.webp");
+  background-position: center;
+  background-size: cover;
+}
+
+/*
+ * Véu por cima da imagem. Ela é clara e saturada, e os cards são escuros:
+ * sem isto o fundo disputa a atenção com eles em vez de sustentá-los. Mais
+ * fechado nas pontas, aberto no meio, onde o card em movimento está.
+ */
+.s3__pelicula-imagem::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+    to bottom,
+    rgb(5 10 28 / 0.82),
+    rgb(5 10 28 / 0.52) 42%,
+    rgb(5 10 28 / 0.52) 58%,
+    rgb(5 10 28 / 0.82)
   );
-  transform: translate(-50%, -50%);
 }
 
 /*
