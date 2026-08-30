@@ -64,12 +64,23 @@ const SUAVIDADE = 0.045;
  */
 const CONSULTA_SEM_CURSOR = "(hover: none), (pointer: coarse)";
 
-/* A volta do ponteiro virtual. Elipse fixa, e não círculo calculado pela
-   proporção da tela: em celular em pé o círculo verdadeiro sairia da
-   lateral. Uma volta a cada dezesseis segundos. */
-const VOLTA_VELOCIDADE = 0.39;
-const VOLTA_RAIO_X = 0.62;
-const VOLTA_RAIO_Y = 0.52;
+/*
+ * O caminho do ponteiro virtual é um oito — uma lemniscata de Gerono,
+ * `sen(θ)` num eixo e `sen(2θ)` no outro. A frequência dobrada de um lado
+ * é o que fecha a curva em dois laços em vez de um círculo.
+ *
+ * O cruzamento do oito cai no centro da tela, que é onde está o medalhão,
+ * mas é justamente ali que a curva corre mais depressa: a poeira
+ * atravessa sem ter tempo de se juntar atrás do logo. Num círculo o
+ * enxame andava sempre à mesma velocidade e a distância do centro nunca
+ * mudava; aqui ele acelera, alonga e volta a se recolher.
+ *
+ * Mais lento que a volta anterior porque o oito passa duas vezes por
+ * ciclo: na mesma velocidade, agitava em vez de dançar.
+ */
+const OITO_VELOCIDADE = 0.3;
+const OITO_LACO_LONGO = 0.62;
+const OITO_LACO_CURTO = 0.42;
 
 /*
  * `aco` não está na paleta do site: é o corpo da superfície, o azul que a
@@ -547,10 +558,19 @@ export const iniciarHeroGlitter = async (canvas, { reduzido = false } = {}) => {
          * continua no centro enquanto o fundo se move em volta.
          */
         if (semCursor) {
-            alvo.set(
-                Math.cos(t * VOLTA_VELOCIDADE) * VOLTA_RAIO_X,
-                Math.sin(t * VOLTA_VELOCIDADE) * VOLTA_RAIO_Y
-            );
+            const angulo = t * OITO_VELOCIDADE;
+
+            /* Um laço percorre o eixo comprido; o outro, o dobro da
+               frequência, faz a travessia estreita que fecha o oito. */
+            const laco = Math.sin(angulo) * OITO_LACO_LONGO;
+            const travessia = Math.sin(angulo * 2) * OITO_LACO_CURTO;
+
+            /* O oito acompanha o lado comprido da tela: fica em pé no
+               celular e deitado no tablet na horizontal. Fixo num eixo só,
+               ele ficaria espremido em metade dos aparelhos. */
+            const deitado = camera.aspect >= 1;
+
+            alvo.set(deitado ? laco : travessia, deitado ? travessia : laco);
         }
 
         /* Para a câmera e as luzes o ponteiro chega por perseguição, não
