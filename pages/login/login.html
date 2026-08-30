@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Entrar · Harmonia Orofacial</title>
+  <meta name="robots" content="noindex, nofollow" />
+
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="../../assets/favicon-512.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/favicon-180.png" />
+
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="login-style.css" />
+</head>
+
+<body>
+
+<div class="fundo" aria-hidden="true">
+  <div class="fundo__brilhos">
+    <span class="brilho brilho--azul"></span>
+    <span class="brilho brilho--indigo"></span>
+    <span class="brilho brilho--ciano"></span>
+  </div>
+  <div class="fundo__estrelas">
+    <span class="estrela estrela--1"></span>
+    <span class="estrela estrela--2"></span>
+    <span class="estrela estrela--3"></span>
+    <span class="estrela estrela--4"></span>
+    <span class="estrela estrela--5"></span>
+    <span class="estrela estrela--6"></span>
+  </div>
+  <div class="fundo__grade"></div>
+</div>
+
+<main class="pagina acesso">
+
+  <a class="acesso__voltar" href="../../index.html">
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
+    VOLTAR AO SITE
+  </a>
+
+  <div class="acesso__cartao">
+
+    <aside class="acesso__marca acesso-el">
+      <img class="acesso__marca-img" src="../../assets/favicon-180.png" alt="" />
+      <p class="acesso__marca-nome">HARMONIA OROFACIAL</p>
+      <p class="acesso__marca-tipo">CLÍNICA ODONTOLÓGICA</p>
+
+      <h1 class="acesso__titulo serif">Entrar</h1>
+      <p class="acesso__texto">Use o e-mail e a senha do seu cadastro.</p>
+    </aside>
+
+    <!-- Feixe da home reaproveitado: aqui ele mede o preenchimento do formulário. -->
+    <div class="trilho" id="trilho" aria-hidden="true">
+      <span class="trilho__halo"></span>
+      <span class="trilho__base"></span>
+      <span class="trilho__fill"></span>
+      <span class="trilho__ponto"></span>
+    </div>
+
+    <form class="acesso__form" id="login-form" action="/api/sessao" method="post" enctype="multipart/form-data" novalidate>
+      <p class="acesso__alerta" id="login-alerta" role="alert" hidden></p>
+
+      <div class="campo acesso-el">
+        <label class="campo__label" for="login-email">E-mail</label>
+        <input
+          class="campo__input"
+          id="login-email"
+          name="email"
+          type="email"
+          inputmode="email"
+          autocomplete="username"
+          placeholder="seu@email.com"
+          aria-describedby="erro-email"
+          required
+        />
+        <p class="campo__erro" id="erro-email"></p>
+      </div>
+
+      <div class="campo acesso-el">
+        <label class="campo__label" for="login-senha">Senha</label>
+        <span class="campo__wrap">
+          <input
+            class="campo__input"
+            id="login-senha"
+            name="senha"
+            type="password"
+            autocomplete="current-password"
+            placeholder="••••••••"
+            aria-describedby="erro-senha"
+            minlength="8"
+            required
+          />
+          <button class="campo__olho" type="button" data-olho aria-pressed="false" aria-label="Mostrar senha">
+            <svg class="campo__olho-icone campo__olho-icone--ver" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.06 12.35a1 1 0 0 1 0-.7 10.7 10.7 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.7 10.7 0 0 1-19.88 0"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <svg class="campo__olho-icone campo__olho-icone--ocultar" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.73 5.08A10.4 10.4 0 0 1 12 5c4.64 0 8.34 2.86 9.94 6.65a1 1 0 0 1 0 .7 11.3 11.3 0 0 1-2.17 3.3"></path><path d="M6.6 6.6A11.3 11.3 0 0 0 2.06 11.65a1 1 0 0 0 0 .7C3.66 16.14 7.36 19 12 19a10.5 10.5 0 0 0 5.4-1.4"></path><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path><path d="m3 3 18 18"></path></svg>
+          </button>
+        </span>
+        <p class="campo__erro" id="erro-senha"></p>
+      </div>
+
+      <div class="acesso__opcoes acesso-el">
+        <label class="marcar">
+          <input class="marcar__input" type="checkbox" name="lembrar" value="1" />
+          <span class="marcar__caixa" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+          </span>
+          <span class="marcar__texto">Manter conectado</span>
+        </label>
+
+        <a class="acesso__esqueci" href="recuperar.html">Esqueci minha senha</a>
+      </div>
+
+      <button class="acesso__enviar acesso-el" type="submit">
+        <span class="acesso__enviar-texto">Entrar</span>
+        <span class="acesso__enviar-giro" aria-hidden="true"></span>
+      </button>
+    </form>
+
+  </div>
+</main>
+
+<script src="../../src/vendor/gsap.min.js"></script>
+<script type="module" src="login.js"></script>
+
+</body>
+</html>

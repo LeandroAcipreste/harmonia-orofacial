@@ -62,6 +62,36 @@
   transform: scaleX(1);
 }
 
+/*
+ * Entrar: a única ação da barra, todo o resto são seções da página. Por
+ * isso ganha contorno e o dourado da marca, em vez de se vestir de link.
+ */
+.nav__acesso {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9375rem;
+  border: 1px solid rgb(253 186 116 / 0.35);
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  color: var(--gold-300);
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.nav__acesso svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.nav__acesso:hover,
+.nav__acesso:focus-visible {
+  border-color: var(--gold-300);
+  background-color: rgb(253 186 116 / 0.12);
+  color: var(--gold-200);
+}
+
 .nav__marca {
   display: flex;
   align-items: center;
@@ -226,6 +256,15 @@
   .nav-link__risco {
     display: none;
   }
+
+  /* Dentro do menu recolhido, entrar vem primeiro: quem abre o menu
+     atrás do login não quer rolar a lista de seções. */
+  .nav__acesso {
+    order: -1;
+    justify-content: center;
+    margin: 1rem 0 0.5rem;
+    padding: 0.8125rem 1rem;
+  }
 }
 
 @media (min-width: 900px) and (max-width: 1120px) {
@@ -233,6 +272,11 @@
     gap: 1.5rem;
     font-size: 0.6875rem;
     letter-spacing: 0.18em;
+  }
+
+  .nav__acesso {
+    padding: 0.4375rem 0.75rem;
+    letter-spacing: 0.16em;
   }
 }
 

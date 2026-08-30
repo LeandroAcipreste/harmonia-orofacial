@@ -27,6 +27,14 @@ export const initPreloader = () => {
         return;
     }
 
+    /* O <head> já decidiu que esta visita não abre com o preloader. A
+       camada nunca chegou a pintar; aqui ela só sai do documento, sem
+       travar a rolagem e sem animação de saída para desfazer. */
+    if (document.documentElement.classList.contains("sem-preloader")) {
+        preloader.remove();
+        return;
+    }
+
     document.documentElement.classList.add("esta-carregando");
 
     /* Assume o controle e desliga a rede de segurança em CSS. */

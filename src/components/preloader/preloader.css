@@ -5,6 +5,14 @@ html.esta-carregando body {
   overflow: hidden;
 }
 
+/*
+ * Visita que não abre com o preloader (voltou de outra página do site).
+ * Quem decide é o script no <head>; aqui a camada não chega a pintar.
+ */
+html.sem-preloader .preloader {
+  display: none;
+}
+
 .preloader {
   position: fixed;
   inset: 0;

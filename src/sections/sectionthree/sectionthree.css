@@ -9,9 +9,10 @@
   margin: 0 auto;
 }
 
+/* Celular: um cartão embaixo do outro. As colunas entram a partir do tablete. */
 .s3__grade {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.25rem;
 }
 
@@ -197,20 +198,24 @@
 
 /* Responsivo */
 
-/* Celular: 2rem de folga num cartão estreito sobra pouco para a foto */
 @media (max-width: 480px) {
   .s3__corpo {
     gap: 1rem;
     padding: 1.25rem;
   }
+}
 
+/* Em coluna o cartão ocupa a largura toda, e a área da foto acompanha:
+   na altura de dois cartões lado a lado ela viraria uma tira. */
+@media (max-width: 767px) {
   .s3__etapas {
-    height: 6.5rem;
+    height: 11rem;
   }
 }
 
-/* Tela baixa em 2 colunas: as duas fileiras precisam caber na dobra presa */
-@media (max-height: 700px) and (max-width: 1023px) {
+/* Tela baixa em 2 colunas: as duas fileiras precisam caber na dobra presa.
+   Só existe dobra presa a partir de 768px — ver sectionthree.js. */
+@media (max-height: 700px) and (min-width: 768px) and (max-width: 1023px) {
   .s3.js-sequencia {
     padding-top: 4.5rem;
     padding-bottom: 1.5rem;
@@ -228,6 +233,12 @@
   .s3__icone {
     width: 2.25rem;
     height: 2.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .s3__grade {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

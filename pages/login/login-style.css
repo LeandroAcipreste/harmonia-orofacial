@@ -1,0 +1,493 @@
+@import "../../src/core/base.css";
+
+/*
+ * Página de entrada.
+ *
+ * O feixe vertical da home volta aqui como `.trilho`, separando a coluna
+ * da marca da coluna do formulário. Ele não é enfeite: acende conforme
+ * `--progresso`, que o JS atualiza à medida que os campos ficam válidos.
+ */
+
+.acesso {
+  --progresso: 0;
+  --eixo: to right;
+
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 5.5rem 1.25rem 3rem;
+}
+
+/* Voltar */
+
+.acesso__voltar {
+  position: absolute;
+  top: 1.75rem;
+  left: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: var(--slate-500);
+  transition: color 0.3s;
+}
+
+.acesso__voltar svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.acesso__voltar:hover,
+.acesso__voltar:focus-visible {
+  color: var(--gold-300);
+}
+
+/* Cartão */
+
+.acesso__cartao {
+  display: grid;
+  gap: 2.25rem;
+  width: 100%;
+  max-width: 60rem;
+  padding: 2.25rem 1.5rem 2.5rem;
+  border: 1px solid rgb(226 232 240 / 0.08);
+  border-radius: 1.5rem;
+  background-color: rgb(10 17 40 / 0.6);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 40px 90px -50px rgb(0 0 0 / 0.95);
+}
+
+/* Coluna da marca */
+
+.acesso__marca-img {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+}
+
+.acesso__marca-nome {
+  margin-top: 1.25rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  color: var(--slate-300);
+}
+
+.acesso__marca-tipo {
+  margin-top: 0.3rem;
+  font-size: 0.625rem;
+  letter-spacing: 0.28em;
+  color: var(--slate-500);
+}
+
+.acesso__titulo {
+  margin-top: 1.75rem;
+  font-size: clamp(2rem, 6vw, 2.75rem);
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--white);
+}
+
+.acesso__texto {
+  margin-top: 0.875rem;
+  max-width: 24rem;
+  font-size: 0.9375rem;
+  color: var(--slate-400);
+}
+
+/* Trilho de luz */
+
+.trilho {
+  position: relative;
+  height: 2px;
+}
+
+.trilho__halo,
+.trilho__base,
+.trilho__fill {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.trilho__halo {
+  inset: -0.75rem -1rem;
+  background-image: linear-gradient(
+    var(--eixo),
+    transparent,
+    rgb(253 186 116 / 0.28),
+    transparent
+  );
+  filter: blur(14px);
+  opacity: var(--progresso);
+  transition: opacity 0.5s ease;
+}
+
+.trilho__base {
+  background-image: linear-gradient(
+    var(--eixo),
+    transparent,
+    rgb(148 163 184 / 0.22),
+    transparent
+  );
+}
+
+.trilho__fill {
+  background-image: linear-gradient(
+    var(--eixo),
+    rgb(103 232 249 / 0.5),
+    var(--gold-300)
+  );
+  transform: scaleX(var(--progresso));
+  transform-origin: left center;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.trilho__ponto {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--progresso) * 100%);
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background-color: var(--gold-200);
+  box-shadow: 0 0 12px 2px rgb(253 186 116 / 0.6);
+  opacity: var(--progresso);
+  transform: translate(-50%, -50%);
+  transition: left 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
+}
+
+/* Formulário */
+
+.acesso__form {
+  display: flex;
+  flex-direction: column;
+}
+
+.acesso__alerta {
+  padding: 0.75rem 0.875rem;
+  border: 1px solid rgb(253 186 116 / 0.35);
+  border-radius: 0.625rem;
+  background-color: rgb(253 186 116 / 0.08);
+  font-size: 0.8125rem;
+  color: var(--gold-200);
+}
+
+/* Campo */
+
+.campo {
+  margin-top: 1.75rem;
+}
+
+.campo__label {
+  display: block;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--slate-500);
+  transition: color 0.3s;
+}
+
+.campo__wrap {
+  position: relative;
+  display: block;
+}
+
+.campo__input {
+  width: 100%;
+  padding: 0.75rem 0 0.7rem;
+  border: 0;
+  border-bottom: 1px solid rgb(226 232 240 / 0.14);
+  border-radius: 0;
+  background-color: transparent;
+  color: var(--white);
+  font-family: inherit;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.campo__wrap .campo__input {
+  padding-right: 2.75rem;
+}
+
+.campo__input::placeholder {
+  color: var(--slate-600);
+}
+
+.campo__input:focus {
+  outline: none;
+  border-bottom-color: var(--gold-300);
+}
+
+.campo:focus-within .campo__label {
+  color: var(--gold-300);
+}
+
+/* O preenchimento automático do navegador não pode devolver a caixa branca. */
+.campo__input:-webkit-autofill,
+.campo__input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--white);
+  -webkit-box-shadow: 0 0 0 100px var(--navy-800) inset;
+  caret-color: var(--white);
+}
+
+.campo__olho {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.5rem;
+  background-color: transparent;
+  color: var(--slate-500);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: color 0.3s;
+}
+
+.campo__olho:hover,
+.campo__olho:focus-visible {
+  color: var(--gold-300);
+}
+
+.campo__olho-icone {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.campo__olho-icone--ocultar,
+.campo__olho[aria-pressed="true"] .campo__olho-icone--ver {
+  display: none;
+}
+
+.campo__olho[aria-pressed="true"] .campo__olho-icone--ocultar {
+  display: block;
+}
+
+.campo__erro {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--gold-200);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.campo.is-invalido .campo__input {
+  border-bottom-color: rgb(253 186 116 / 0.7);
+}
+
+.campo.is-invalido .campo__erro {
+  opacity: 1;
+}
+
+/* Opções */
+
+.acesso__opcoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-top: 1.75rem;
+}
+
+.marcar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  cursor: pointer;
+}
+
+.marcar__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.marcar__caixa {
+  display: grid;
+  place-items: center;
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 1px solid rgb(226 232 240 / 0.22);
+  border-radius: 0.3125rem;
+  color: var(--navy-900);
+  transition: background-color 0.25s, border-color 0.25s;
+}
+
+.marcar__caixa svg {
+  width: 0.75rem;
+  height: 0.75rem;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.marcar__input:checked + .marcar__caixa {
+  border-color: var(--gold-300);
+  background-color: var(--gold-300);
+}
+
+.marcar__input:checked + .marcar__caixa svg {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.marcar__input:focus-visible + .marcar__caixa {
+  outline: 2px solid var(--gold-300);
+  outline-offset: 2px;
+}
+
+.marcar__texto {
+  font-size: 0.8125rem;
+  color: var(--slate-400);
+}
+
+.acesso__esqueci {
+  font-size: 0.8125rem;
+  color: var(--slate-400);
+  text-decoration: underline;
+  text-decoration-color: rgb(148 163 184 / 0.35);
+  text-underline-offset: 4px;
+  transition: color 0.3s, text-decoration-color 0.3s;
+}
+
+.acesso__esqueci:hover,
+.acesso__esqueci:focus-visible {
+  color: var(--gold-300);
+  text-decoration-color: var(--gold-300);
+}
+
+/* Botão */
+
+.acesso__enviar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  margin-top: 2rem;
+  padding: 0.9375rem 1.5rem;
+  border: 0;
+  border-radius: 0.75rem;
+  background-image: linear-gradient(135deg, var(--gold-200), var(--gold-400));
+  color: var(--navy-900);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.25s, box-shadow 0.3s, filter 0.3s;
+}
+
+.acesso__enviar:hover,
+.acesso__enviar:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px -12px rgb(251 146 60 / 0.6);
+}
+
+.acesso__enviar:active {
+  transform: translateY(0);
+}
+
+.acesso__enviar[disabled] {
+  cursor: progress;
+  filter: saturate(0.6);
+}
+
+.acesso__enviar-giro {
+  display: none;
+  width: 0.875rem;
+  height: 0.875rem;
+  border: 2px solid rgb(5 10 28 / 0.25);
+  border-top-color: var(--navy-900);
+  border-radius: 9999px;
+  animation: giro 0.7s linear infinite;
+}
+
+.acesso__enviar.is-enviando .acesso__enviar-giro {
+  display: block;
+}
+
+@keyframes giro {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Foco visível */
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--gold-300);
+  outline-offset: 3px;
+}
+
+.campo__input:focus-visible {
+  outline-offset: 6px;
+}
+
+/* Duas colunas: marca à esquerda, formulário à direita, o feixe entre eles. */
+
+@media (min-width: 900px) {
+  .acesso {
+    --eixo: to bottom;
+  }
+
+  .acesso__cartao {
+    grid-template-columns: 1fr 2px 1fr;
+    gap: 0 3.5rem;
+    align-items: center;
+    padding: 3.5rem 3.25rem;
+  }
+
+  .acesso__marca {
+    padding-right: 1rem;
+  }
+
+  .trilho {
+    align-self: stretch;
+    min-height: 22rem;
+  }
+
+  .trilho__halo {
+    inset: -1rem -0.75rem;
+  }
+
+  .trilho__fill {
+    transform: scaleY(var(--progresso));
+    transform-origin: center bottom;
+  }
+
+  .trilho__ponto {
+    top: auto;
+    bottom: calc(var(--progresso) * 100%);
+    left: 50%;
+    transform: translate(-50%, 50%);
+    transition: bottom 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trilho__fill,
+  .trilho__ponto,
+  .acesso__enviar {
+    transition: none;
+  }
+
+  .acesso__enviar-giro {
+    animation-duration: 2s;
+  }
+}
