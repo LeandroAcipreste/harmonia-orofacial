@@ -109,7 +109,20 @@
 
 /* Medalhão da marca */
 
-/* Tamanho pela menor dimensão da janela */
+/*
+ * Tamanho pela menor dimensão da janela.
+ *
+ * As duas sombras — o halo dourado que envolve a peça e a projetada que a
+ * assenta — vivem aqui, por `box-shadow`, e não na imagem por
+ * `drop-shadow`. A imagem é recortada em círculo pelo `border-radius`,
+ * então as duas dão exatamente o mesmo desenho; a diferença é que
+ * `filter` obriga o navegador a rasterizar a peça de novo a cada mudança
+ * de escala, e a rolagem encolhe o medalhão até 0,85 quadro a quadro.
+ * `box-shadow` acompanha a transformação sem refazer nada.
+ *
+ * A projetada é âmbar escuro, e não navy: em azul ela clareava o fundo e
+ * virava um halo azul em volta do medalhão.
+ */
 .hero__medalhao {
   --tamanho: min(76vw, 56vh, 34rem);
   position: relative;
@@ -117,14 +130,11 @@
   width: var(--tamanho);
   height: var(--tamanho);
   border-radius: 9999px;
+  box-shadow:
+    0 0 46px rgb(253 186 116 / 0.55),
+    0 24px 52px rgb(251 146 60 / 0.42);
 }
 
-/*
- * Sombra por `drop-shadow`: segue o alpha, não a caixa. São duas: um halo
- * dourado centrado, que envolve a peça por inteiro, e a sombra projetada
- * embaixo, que a assenta. A projetada é âmbar escuro, e não navy: em azul
- * ela clareava o fundo e virava um halo azul em volta do medalhão.
- */
 .hero__medalhao-img {
   position: absolute;
   inset: 0;
@@ -132,9 +142,6 @@
   height: 100%;
   object-fit: cover;
   border-radius: 9999px;
-  filter:
-    drop-shadow(0 0 32px rgb(253 186 116 / 0.4))
-    drop-shadow(0 25px 45px rgb(69 26 3 / 0.75));
 }
 
 /* Dois anéis concêntricos. O interno nasce do externo, por pseudo, para
