@@ -21,7 +21,7 @@ const ROLAGEM_DA_TELA = 1;
  * o painel, `.s3__linha` para o card. Assim os dois usam o mesmo modelo de
  * projeção, e não uma perspectiva de parente e outra de peça.
  */
-const DEITADO = { rotateX: 90, scaleX: 0.44, yPercent: 28, opacity: 0 };
+const DEITADO = { rotateX: 90, scaleX: 0.44, yPercent: 44, opacity: 0 };
 const DE_FRENTE = { rotateX: 0, scaleX: 1, yPercent: 0, opacity: 1 };
 
 /* Unidades da timeline gastas no desdobramento. */

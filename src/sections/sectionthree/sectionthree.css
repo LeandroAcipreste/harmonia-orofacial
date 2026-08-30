@@ -12,24 +12,19 @@
   perspective: 1400px;
 }
 
-/*
- * A tela: o painel que sobe deitado e desdobra até ficar de frente. Nasce
- * de frente e opaco — quem deita é o JS, no primeiro quadro. Sem
- * JavaScript, ou sem GSAP, os cards ficam visíveis em vez de presos de
- * perfil, invisíveis para sempre.
- */
-/* Argolas de neon dourado ao fundo */
+/* Película dourada ao fundo */
 
 /*
- * A caixa cobre a seção inteira e recorta o que passar dela, para as
- * argolas não vazarem nas dobras vizinhas.
+ * O card subindo só se percebe contra alguma coisa parada. Sobre navy
+ * liso e vazio, uma peça que sobe enquanto aparece lê como simples
+ * esmaecimento — não há referência para o olho medir o movimento. Esta
+ * camada é essa referência.
  *
- * Por `clip-path`, e não por `overflow: hidden`. `overflow` cria um
- * contêiner de rolagem, e o `sticky` logo abaixo passaria a se prender a
- * ele, que nunca rola — as argolas congelariam no topo da seção em vez de
- * acompanhar a tela. `clip-path` recorta sem criar esse contêiner.
+ * Recortada por `clip-path` e não por `overflow`: `overflow` cria um
+ * contêiner de rolagem, e o `sticky` mais abaixo passaria a se prender a
+ * ele, que nunca rola.
  */
-.s3__aureolas {
+.s3__pelicula {
   position: absolute;
   inset: 0;
   z-index: 0;
@@ -38,53 +33,63 @@
 }
 
 /*
- * Grudado no topo: as argolas ficam paradas no meio da tela enquanto a
- * seção passa por trás. Sem isto elas ficariam ancoradas ao meio da
- * seção, que no celular tem uns dois mil e quinhentos pixels — apareceriam
- * num trecho só, e os cards das pontas rolariam sobre fundo vazio.
+ * A purpurina. É a mesma textura de glitter do hero, com os níveis
+ * esmagados até sobrarem só as palhetas, usada como máscara de um
+ * gradiente dourado: o dourado aparece onde há palheta e some no resto.
+ * Máscara em vez de imagem tingida por `filter` — filtro sobre uma camada
+ * do tamanho da seção custa uma repintura inteira.
  */
-.s3__aureolas-palco {
+.s3__pelicula-grao {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background-image: linear-gradient(
+    140deg,
+    var(--gold-200),
+    var(--gold-400) 45%,
+    var(--gold-300)
+  );
+  -webkit-mask-image: url("../../../assets/purpurina.webp");
+  mask-image: url("../../../assets/purpurina.webp");
+  -webkit-mask-size: 24rem;
+  mask-size: 24rem;
+  opacity: 0.42;
+}
+
+/* Grudada no topo: o brilho fica parado no meio da tela enquanto a seção
+   passa por trás, e é ele que destaca o card que está subindo naquele
+   momento. Ancorado ao meio da seção só apareceria num trecho. */
+.s3__pelicula-palco {
   position: sticky;
   top: 0;
   height: 100vh;
 }
 
-/*
- * O neon é o traço mais dois halos: um por fora e um por dentro. As
- * argolas do hero têm só o traço, e sobre o azul da seção isso lê como um
- * risco fino, não como luz.
- */
-.s3__aureola {
+.s3__pelicula-luz {
   position: absolute;
   top: 50%;
   left: 50%;
   display: block;
-  width: var(--anel);
-  height: var(--anel);
-  border: 1px solid rgb(253 186 116 / 0.3);
-  border-radius: 9999px;
-  box-shadow:
-    0 0 28px rgb(253 186 116 / 0.16),
-    inset 0 0 28px rgb(253 186 116 / 0.1);
+  width: min(150vw, 70rem);
+  height: min(120vh, 52rem);
+  background-image: radial-gradient(
+    ellipse 50% 42% at 50% 50%,
+    rgb(253 186 116 / 0.16),
+    rgb(251 146 60 / 0.06) 45%,
+    transparent 72%
+  );
   transform: translate(-50%, -50%);
 }
 
-.s3__aureola--larga {
-  --anel: min(94vw, 46rem);
-}
-
-.s3__aureola--media {
-  --anel: min(68vw, 33rem);
-  border-color: rgb(253 186 116 / 0.22);
-}
-
-.s3__aureola--curta {
-  --anel: min(44vw, 21rem);
-  border-color: rgb(253 186 116 / 0.16);
-}
-
-/* O painel fica por cima: as argolas são fundo, e um elemento posicionado
-   pinta acima do conteúdo que não está posicionado. */
+/*
+ * A tela: o painel que sobe deitado e desdobra até ficar de frente. Nasce
+ * de frente e opaco — quem deita é o JS, no primeiro quadro. Sem
+ * JavaScript, ou sem GSAP, os cards ficam visíveis em vez de presos de
+ * perfil, invisíveis para sempre.
+ *
+ * Fica por cima da película: elemento posicionado pinta acima de conteúdo
+ * que não está posicionado.
+ */
 .s3__palco {
   position: relative;
   z-index: 1;
