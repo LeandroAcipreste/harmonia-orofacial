@@ -89,6 +89,72 @@
     radial-gradient(ellipse 90% 55% at 50% 118%, rgb(5 10 28 / 0.95), transparent 72%);
 }
 
+/* Cortina da passagem entre a primeira e a segunda dobra */
+
+/*
+ * Duas folhas na cor do fundo cobrem a seção e se afastam para os lados
+ * conforme a página sobe. A linha em que se separam é a mesma vertical
+ * do feixe dourado do hero: a cortina parece rasgar a partir dele.
+ *
+ * Nasce aberta. Quem fecha é o GSAP, no primeiro quadro, e só depois de
+ * confirmar que tem com o que animar — sem JavaScript, ou sem GSAP, a
+ * seção fica visível em vez de ficar tapada para sempre.
+ */
+.cortina {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.cortina__folha {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: block;
+
+  /* Meio ponto a mais que a metade: em largura ímpar, duas folhas de 50%
+     exatos deixam uma fresta de um pixel no meio. */
+  width: 50.5%;
+  background-color: var(--navy-900);
+}
+
+.cortina__folha--esq {
+  left: 0;
+  transform: translateX(-100%);
+}
+
+.cortina__folha--dir {
+  right: 0;
+  transform: translateX(100%);
+}
+
+/* Fio dourado na borda que abre: é ele que faz a separação ser vista
+   como uma cortina, e não como a seção simplesmente aparecendo. */
+.cortina__folha::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-image: linear-gradient(
+    to bottom,
+    transparent,
+    rgb(253 186 116 / 0.5) 22%,
+    rgb(253 186 116 / 0.5) 78%,
+    transparent
+  );
+}
+
+.cortina__folha--esq::after {
+  right: 0;
+}
+
+.cortina__folha--dir::after {
+  left: 0;
+}
+
 /* Conteúdo */
 
 .s2__inner {

@@ -38,7 +38,46 @@ export const initSectionTwo = () => {
         return;
     }
 
+    abrirCortina(secao);
     animarLustre(secao);
+};
+
+/*
+ * A cortina fecha a seção e abre para os lados enquanto a página sobe.
+ *
+ * O `fromTo` é o que fecha: com scrub, o estado inicial é aplicado assim
+ * que o gatilho nasce, então a seção já entra tapada. É por isso que o
+ * CSS deixa as folhas abertas — fechar é decisão deste módulo, e quem
+ * não chega aqui vê a seção inteira.
+ *
+ * Termina em `top top`: a abertura acompanha exatamente o trecho em que
+ * a segunda dobra toma o lugar da primeira.
+ */
+const abrirCortina = (secao) => {
+    if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") {
+        return;
+    }
+
+    const esquerda = secao.querySelector(".cortina__folha--esq");
+    const direita = secao.querySelector(".cortina__folha--dir");
+
+    if (!esquerda || !direita) {
+        return;
+    }
+
+    const linha = gsap.timeline({
+        defaults: { ease: "power2.inOut" },
+        scrollTrigger: {
+            trigger: secao,
+            start: "top bottom",
+            end: "top top",
+            scrub: true,
+        },
+    });
+
+    linha
+        .fromTo(esquerda, { xPercent: 0 }, { xPercent: -100 }, 0)
+        .fromTo(direita, { xPercent: 0 }, { xPercent: 100 }, 0);
 };
 
 /* As duas fotos andam em velocidades diferentes, o que dá profundidade
