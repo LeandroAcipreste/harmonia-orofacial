@@ -35,12 +35,17 @@
   display: grid;
 
   /*
-   * A mesma perspectiva que o `.s3` dá ao painel no desktop. Ela precisa
-   * morar aqui porque `perspective` só alcança os filhos diretos, e o card
-   * é neto do `.s3` — sem isto o `rotateX` vira um achatamento vertical
-   * chapado em vez de uma peça girando para a frente.
+   * Perspectiva do card. Precisa morar aqui porque `perspective` só
+   * alcança os filhos diretos, e o card é neto do `.s3`.
+   *
+   * O valor não é o mesmo do painel, e não pode ser: `perspective` é uma
+   * distância absoluta, então o que define a força da dobra é a razão
+   * entre a altura da peça e essa distância. O painel tem cerca de 508px
+   * de altura para 1400px de perspectiva, razão 0,36. O card tem 248px —
+   * com os mesmos 1400px a razão cairia para 0,18, metade da fuga, e o
+   * giro viraria um achatamento chapado. 680px devolve a mesma razão.
    */
-  perspective: 1400px;
+  perspective: 680px;
 }
 
 /* Celular: um cartão embaixo do outro. As colunas entram a partir do tablete. */

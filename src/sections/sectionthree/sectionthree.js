@@ -21,7 +21,7 @@ const ROLAGEM_DA_TELA = 1;
  * o painel, `.s3__linha` para o card. Assim os dois usam o mesmo modelo de
  * projeção, e não uma perspectiva de parente e outra de peça.
  */
-const DEITADO = { rotateX: 90, scaleX: 0.44, yPercent: 14, opacity: 0 };
+const DEITADO = { rotateX: 90, scaleX: 0.44, yPercent: 28, opacity: 0 };
 const DE_FRENTE = { rotateX: 0, scaleX: 1, yPercent: 0, opacity: 1 };
 
 /* Unidades da timeline gastas no desdobramento. */
@@ -122,36 +122,60 @@ const ligarSequencia = (secao) => {
      * card está, e a sequência de um card corre antes de ele chegar.
      */
     consulta.add(CONSULTA_SOLTA, () => {
-        cards.forEach((card) => {
-            const linha = gsap.timeline({
-                scrollTrigger: {
-                    /*
-                     * O gatilho é a linha, não o card. O card se deita, e
-                     * sob `rotateX(90deg)` o retângulo dele fica achatado a
-                     * zero — é pelo retângulo que o ScrollTrigger calcula
-                     * início e fim, e a conta sairia toda errada. A linha
-                     * nunca se transforma, então a caixa dela é estável e
-                     * mede o lugar certo.
-                     */
-                    trigger: card.parentElement,
-                    start: "top 82%",
-                    end: "bottom 35%",
-                    scrub: true,
-                    invalidateOnRefresh: true,
-                },
-            });
-
-            linha
-                .fromTo(
-                    card,
-                    { ...DEITADO },
-                    { ...DE_FRENTE, duration: ABERTURA, ease: "power3.out" },
-                    0
-                )
-                .add(criarSequenciaDoCard(card), ABERTURA + RESPIRO_ENTRADA)
-                .to({}, { duration: RESPIRO_SAIDA });
-        });
+        cards.forEach(montarCardSolto);
     });
+};
+
+/*
+ * O desdobramento em si. Uma função só, usada pelo painel no desktop e
+ * por cada card no celular: é o mesmo movimento, então tem que ser o
+ * mesmo código — foi tentar manter duas versões que fez as duas
+ * divergirem.
+ *
+ * `fromTo` e não `from`: com `scrub`, o estado inicial é aplicado assim
+ * que o gatilho nasce, então a peça já entra deitada, e o estado final
+ * fica escrito por extenso em vez de depender do que o navegador tinha
+ * calculado.
+ */
+const desdobrar = (linha, peca, posicao) => {
+    linha.fromTo(
+        peca,
+        { ...DEITADO },
+        { ...DE_FRENTE, duration: ABERTURA, ease: "power3.out" },
+        posicao
+    );
+};
+
+/*
+ * A entrada de um card no celular, de ponta a ponta.
+ *
+ * O gatilho é a linha, não o card. O card se deita, e sob `rotateX(90deg)`
+ * o retângulo dele fica achatado a zero — é pelo retângulo que o
+ * ScrollTrigger calcula início e fim, e a conta sairia toda errada. A
+ * linha nunca se transforma, então a caixa dela é estável.
+ *
+ * A ordem é a mesma do desktop: a peça desdobra, o nome do procedimento
+ * fica parado o tempo de ser lido, entra o antes, entra o depois, e o
+ * depois permanece enquanto o card sai pelo topo.
+ */
+const montarCardSolto = (card) => {
+    const linha = gsap.timeline({
+        scrollTrigger: {
+            trigger: card.parentElement,
+            start: "top 88%",
+            end: "bottom 28%",
+            scrub: true,
+            invalidateOnRefresh: true,
+        },
+    });
+
+    desdobrar(linha, card, 0);
+
+    linha
+        .add(criarSequenciaDoCard(card), ABERTURA + RESPIRO_ENTRADA)
+        .to({}, { duration: RESPIRO_SAIDA });
+
+    return linha;
 };
 
 const montarMestre = (secao, cards, gatilho) => {
@@ -175,11 +199,8 @@ const montarMestre = (secao, cards, gatilho) => {
 };
 
 /*
- * A tela sobe deitada e desdobra até ficar de frente.
- *
- * `fromTo` e não `from`: com `scrub`, o estado inicial é aplicado assim
- * que o gatilho nasce, então a peça já entra deitada, e o estado final é
- * escrito por extenso em vez de depender do que o navegador calculou.
+ * A tela do desktop: o painel inteiro desdobra antes de os cards
+ * começarem a trocar de etapa.
  *
  * O `border-radius` não entra na animação de propósito. Girar e esmaecer
  * são trabalho do compositor e não custam nada; mudar o raio a cada
@@ -194,12 +215,7 @@ const abrirTela = (linha, secao) => {
         return;
     }
 
-    linha.fromTo(
-        tela,
-        { ...DEITADO },
-        { ...DE_FRENTE, duration: ABERTURA, ease: "power3.out" },
-        0
-    );
+    desdobrar(linha, tela, 0);
 
     /* Um respiro antes do primeiro card trocar de etapa: a tela precisa
        chegar e ser vista de frente antes de algo se mexer dentro dela. */
