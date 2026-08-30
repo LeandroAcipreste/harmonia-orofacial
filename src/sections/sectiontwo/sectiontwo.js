@@ -34,11 +34,23 @@ export const initSectionTwo = () => {
     revelarAoEntrar(lista.querySelectorAll(".s2__item"), { margem: MARGEM_LISTA });
     revelarAoEntrar(secao.querySelectorAll(".s2-reveal"), { margem: MARGEM_LISTA });
 
+    /*
+     * A cortina roda mesmo com movimento reduzido, e é o mesmo critério
+     * que o hero já aplica em `ligarAtracaoDoCursor`: ela não anda
+     * sozinha. Está amarrada por `scrub` à rolagem real, então só se move
+     * enquanto a pessoa rola, na velocidade em que ela rola, e para
+     * quando ela para. Quem barra movimento automático não está pedindo
+     * para a página parar de responder ao próprio gesto.
+     *
+     * O parallax do lustre continua barrado logo abaixo: aquele corre
+     * sozinho.
+     */
+    abrirCortina(secao);
+
     if (prefereMovimentoReduzido) {
         return;
     }
 
-    abrirCortina(secao);
     animarLustre(secao);
 };
 
@@ -58,6 +70,10 @@ const abrirCortina = (secao) => {
         return;
     }
 
+    /* O hero registra o plugin, mas desiste antes disso quando o
+       movimento é reduzido — e é justamente aí que esta função roda. */
+    gsap.registerPlugin(ScrollTrigger);
+
     const esquerda = secao.querySelector(".cortina__folha--esq");
     const direita = secao.querySelector(".cortina__folha--dir");
 
@@ -75,9 +91,19 @@ const abrirCortina = (secao) => {
         },
     });
 
+    /*
+     * `x: 0` nos dois lados não é enfeite, é o que faz a cortina existir.
+     *
+     * O CSS deixa as folhas abertas com `translateX(±100%)`. O GSAP lê a
+     * matriz de transformação já resolvida pelo navegador, que vem em
+     * pixels, e guarda esse valor em `x` — não em `xPercent`. Animando só
+     * `xPercent`, o deslocamento em pixels continua somado e a folha nunca
+     * chega a cobrir a seção. Zerar `x` explicitamente tira da frente o
+     * que o navegador resolveu e devolve o controle ao percentual.
+     */
     linha
-        .fromTo(esquerda, { xPercent: 0 }, { xPercent: -100 }, 0)
-        .fromTo(direita, { xPercent: 0 }, { xPercent: 100 }, 0);
+        .fromTo(esquerda, { x: 0, xPercent: 0 }, { x: 0, xPercent: -100 }, 0)
+        .fromTo(direita, { x: 0, xPercent: 0 }, { x: 0, xPercent: 100 }, 0);
 };
 
 /* As duas fotos andam em velocidades diferentes, o que dá profundidade
