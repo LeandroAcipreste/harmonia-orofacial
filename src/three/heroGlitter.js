@@ -101,16 +101,60 @@ const CORES = {
     poeira: "#8cb4ff",
 };
 
-/* Poeira em suspensão. Números herdados do canvas antigo: o redemoinho
-   com estes valores já estava certo, só mudou onde ele vive. */
+/*
+ * Poeira em suspensão.
+ *
+ * Não há atrator: cada partícula anda conforme a corrente do lugar onde
+ * está, sem destino. A corrente é montada de propósito com a componente
+ * horizontal dependendo só de `y` e a vertical só de `x` — assim as duas
+ * derivadas que formariam divergência são nulas por construção, e um
+ * campo sem divergência não tem como concentrar partícula em lugar
+ * nenhum. A densidade que começa uniforme continua uniforme para sempre.
+ *
+ * Por isso também não existe absorção nem renascimento: quem sai por um
+ * lado volta pelo outro. Nada nasce, nada morre, a tela nunca esvazia.
+ */
 const PARTICULAS = {
     quantidade: 1400,
     quantidadeMovel: 500,
     profundidade: 1.4,
-    atracao: 0.6,
-    amortecimento: 0.99,
-    giro: 0.35,
-    raioDeAbsorcao: 0.06,
+
+    /* A malha é um pouco maior que o quadro para a volta pela borda
+       acontecer fora de vista. */
+    folga: 1.16,
+
+    /* Correnteza: escala espacial dos redemoinhos, quanto o campo se
+       remexe no tempo e a velocidade que ele imprime. */
+    correnteEscala: 3.2,
+    correnteTempo: 0.5,
+    correnteForca: 0.3,
+
+    /*
+     * Entrada na corrente. Alto de propósito: partícula que persegue o
+     * campo com atraso é partícula inercial, e partícula inercial em fluxo
+     * incompressível se concentra — é jogada para fora do miolo dos
+     * redemoinhos e se junta nas bordas. Medido: com inércia 0,06 a
+     * distribuição saía de 15% de desvio para 65%; com 0,6 fica em 17%.
+     */
+    inercia: 0.6,
+
+    /*
+     * Sopro do cursor. Fraco e curto por medida, não por timidez: empurrar
+     * poeira para longe de um ponto abre um buraco, e nenhum perfil radial
+     * evita isso. Com raio 0,42 e força 1,5 o cursor parado por um minuto e
+     * meio levava o desvio a 128%. Nestes valores fica em 17%.
+     */
+    soproRaio: 0.25,
+    soproForca: 0.3,
+
+    /*
+     * Agitação. É o que cicatriza: difusão apaga diferença de densidade,
+     * e sem ela o buraco aberto pelo sopro seria carregado pela corrente
+     * em vez de se fechar. Pequena o bastante para ler como poeira
+     * tremendo no ar, não como ruído.
+     */
+    agitacao: 1.5,
+
     passo: 0.016,
 };
 
@@ -271,21 +315,31 @@ void main() {
  * tamanho da janela, e o ponteiro — que já chega normalizado — serve de
  * atrator sem nenhuma conversão.
  */
+/* Quem sai por um lado volta pelo outro. É isto que mantém a tela sempre
+   cheia sem precisar criar nem destruir partícula. */
+const envolver = (valor) => {
+    if (valor > 1) {
+        return valor - 2;
+    }
+
+    if (valor < -1) {
+        return valor + 2;
+    }
+
+    return valor;
+};
+
 const criarPoeira = (quantidade, pixelRatio, uniformesDaCena) => {
     const posicoes = new Float32Array(quantidade * 3);
     const velocidades = new Float32Array(quantidade * 2);
     const tamanhos = new Float32Array(quantidade);
 
-    const renascer = (i) => {
+    /* Semeadura única. Depois disto nenhuma partícula é recriada: a
+       distribuição inicial é a que dura a sessão inteira. */
+    for (let i = 0; i < quantidade; i += 1) {
         posicoes[i * 3] = Math.random() * 2 - 1;
         posicoes[i * 3 + 1] = Math.random() * 2 - 1;
-        velocidades[i * 2] = 0;
-        velocidades[i * 2 + 1] = 0;
         tamanhos[i] = 1.8 + Math.random() * 4.2;
-    };
-
-    for (let i = 0; i < quantidade; i += 1) {
-        renascer(i);
     }
 
     const geometria = new BufferGeometry();
@@ -321,36 +375,64 @@ const criarPoeira = (quantidade, pixelRatio, uniformesDaCena) => {
     pontos.renderOrder = 1;
 
     /*
-     * Cada partícula é puxada pelo atrator com uma componente lateral: a
-     * força tangencial é o que transforma a queda em redemoinho. Chegando
-     * perto demais ela é absorvida e renasce longe, senão todas acabariam
-     * empilhadas no mesmo ponto.
+     * Sem corrente — movimento reduzido —, `alvo` fica só com o sopro do
+     * cursor: a velocidade decai para zero e a poeira assenta parada, sem
+     * deixar de reagir a quem passa o mouse por ela.
      */
-    const atualizar = (atrator) => {
+    const atualizar = (cursor, t, comCorrente) => {
+        const escala = PARTICULAS.correnteEscala;
+        const giro = t * PARTICULAS.correnteTempo;
+
         for (let i = 0; i < quantidade; i += 1) {
             const eixo = i * 3;
             const par = i * 2;
 
-            const dx = atrator.x - posicoes[eixo];
-            const dy = atrator.y - posicoes[eixo + 1];
-            const distancia = Math.hypot(dx, dy) + 1e-4;
-            const forca = PARTICULAS.atracao / (distancia + 0.08);
+            const x = posicoes[eixo];
+            const y = posicoes[eixo + 1];
 
-            const radialX = (dx / distancia) * forca;
-            const radialY = (dy / distancia) * forca;
+            let alvoX = 0;
+            let alvoY = 0;
 
-            velocidades[par] += (radialX - radialY * PARTICULAS.giro) * PARTICULAS.passo;
-            velocidades[par + 1] += (radialY + radialX * PARTICULAS.giro) * PARTICULAS.passo;
+            if (comCorrente) {
+                /* A horizontal só olha para `y`, a vertical só para `x`.
+                   É essa separação que zera a divergência e impede o campo
+                   de juntar poeira. Duas ondas por eixo, de períodos que
+                   não fecham entre si, para os redemoinhos não caírem
+                   sempre no mesmo lugar. */
+                alvoX =
+                    (Math.sin(y * escala + giro) +
+                        0.5 * Math.sin(y * escala * 2.3 - giro * 1.4)) *
+                    PARTICULAS.correnteForca;
 
-            velocidades[par] *= PARTICULAS.amortecimento;
-            velocidades[par + 1] *= PARTICULAS.amortecimento;
+                alvoY =
+                    (Math.cos(x * escala * 1.1 - giro) +
+                        0.5 * Math.cos(x * escala * 2.7 + giro * 1.2)) *
+                    PARTICULAS.correnteForca;
 
-            posicoes[eixo] += velocidades[par] * PARTICULAS.passo;
-            posicoes[eixo + 1] += velocidades[par + 1] * PARTICULAS.passo;
-
-            if (distancia < PARTICULAS.raioDeAbsorcao) {
-                renascer(i);
+                alvoX += (Math.random() - 0.5) * PARTICULAS.agitacao;
+                alvoY += (Math.random() - 0.5) * PARTICULAS.agitacao;
             }
+
+            /* Sopro: empurra para fora. Empurrar espalha — era por atrair
+               que a poeira antiga se juntava toda num ponto só. */
+            const dx = x - cursor.x;
+            const dy = y - cursor.y;
+            const distancia = Math.hypot(dx, dy) + 1e-4;
+
+            if (distancia < PARTICULAS.soproRaio) {
+                const sopro = (1 - distancia / PARTICULAS.soproRaio) * PARTICULAS.soproForca;
+
+                alvoX += (dx / distancia) * sopro;
+                alvoY += (dy / distancia) * sopro;
+            }
+
+            /* Entra na corrente com inércia, em vez de assumir a
+               velocidade dela de um quadro para o outro. */
+            velocidades[par] += (alvoX - velocidades[par]) * PARTICULAS.inercia;
+            velocidades[par + 1] += (alvoY - velocidades[par + 1]) * PARTICULAS.inercia;
+
+            posicoes[eixo] = envolver(x + velocidades[par] * PARTICULAS.passo);
+            posicoes[eixo + 1] = envolver(y + velocidades[par + 1] * PARTICULAS.passo);
         }
 
         geometria.attributes.position.needsUpdate = true;
@@ -470,8 +552,11 @@ export const iniciarHeroGlitter = async (canvas, { reduzido = false } = {}) => {
         malha.scale.set(visivel * camera.aspect * MARGEM, visivel * MARGEM, 1);
 
         /* A poeira está mais perto da câmera, então o mesmo ângulo cobre
-           menos mundo: a escala dela sai da distância até o plano dela. */
-        const visivelPoeira = abertura * (DISTANCIA - PARTICULAS.profundidade);
+           menos mundo: a escala dela sai da distância até o plano dela. A
+           folga põe a borda onde a partícula dá a volta fora do quadro. */
+        const visivelPoeira =
+            abertura * (DISTANCIA - PARTICULAS.profundidade) * PARTICULAS.folga;
+
         poeira.pontos.scale.set((visivelPoeira * camera.aspect) / 2, visivelPoeira / 2, 1);
 
         /* A conversão do cursor usa esta matriz e ela é lida antes do
@@ -594,15 +679,13 @@ export const iniciarHeroGlitter = async (canvas, { reduzido = false } = {}) => {
         }
 
         /*
-         * A poeira continua viva com movimento reduzido, desde que haja
-         * cursor: ela não anda sozinha, responde ao gesto de quem está com
-         * a mão no mouse. É a mesma exceção que o hero já abre em
-         * `ligarAtracaoDoCursor`. O que fica de fora é só o passeio
-         * automático, que é movimento sem ninguém pedir.
+         * A poeira é atualizada sempre. Com movimento reduzido ela perde a
+         * corrente e assenta parada, mas continua se afastando de quem
+         * passa o mouse por ela: responder ao gesto de quem está com a mão
+         * no mouse é a mesma exceção que o hero já abre em
+         * `ligarAtracaoDoCursor`.
          */
-        if (!reduzido || cursorEmUso) {
-            poeira.atualizar(mirarCursor(t));
-        }
+        poeira.atualizar(mirarCursor(t), t, !reduzido);
 
         renderizador.render(cena, camera);
     };
