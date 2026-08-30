@@ -27,6 +27,21 @@
      * src/components/preloader.
      */
     (function () {
+        /*
+         * Recarregar sempre devolve o visitante ao hero.
+         *
+         * O navegador guarda a posição de rolagem e a restaura sozinho, e
+         * faz isso cedo — antes de qualquer módulo com `defer` rodar. Por
+         * isso a recusa mora aqui, no primeiro script da página, e não em
+         * src/core/scroll.js: lá ela chegava depois da restauração já ter
+         * acontecido, e a pessoa reabria o site no meio de uma dobra, com
+         * as animações de entrada já passadas. O módulo continua rolando
+         * para o topo, mas quem impede a restauração é esta linha.
+         */
+        if ("scrollRestoration" in history) {
+            history.scrollRestoration = "manual";
+        }
+
         var entradas = performance.getEntriesByType
             ? performance.getEntriesByType("navigation")
             : [];

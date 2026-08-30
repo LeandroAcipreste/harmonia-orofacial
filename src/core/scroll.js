@@ -56,16 +56,15 @@ export const initScroll = () => {
 };
 
 /*
- * Recarregar a página tem que devolver o visitante ao hero. Sem isto o
- * navegador restaura sozinho a posição anterior, e a pessoa cai no meio
- * de uma dobra com as animações de entrada já passadas. O `load` repete
- * a chamada porque a restauração acontece depois do primeiro quadro.
+ * Recarregar a página devolve o visitante ao hero.
+ *
+ * Quem recusa a restauração do navegador é o script no <head>: este
+ * módulo tem `defer` e chegaria tarde demais para isso. Aqui só se
+ * completa o serviço, rolando para o topo — inclusive no `load`, porque
+ * o preloader trava a rolagem durante o carregamento e o Lenis, quando
+ * existe, mantém a própria posição, que precisa ser zerada junto.
  */
 const comecarNoTopo = () => {
-    if ("scrollRestoration" in history) {
-        history.scrollRestoration = "manual";
-    }
-
     window.scrollTo(0, 0);
 
     window.addEventListener(
