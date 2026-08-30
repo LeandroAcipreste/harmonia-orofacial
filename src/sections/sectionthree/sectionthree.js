@@ -14,8 +14,15 @@ const ROLAGEM_POR_CARD = 0.9;
 const CONSULTA_PRESA = "(min-width: 768px)";
 const CONSULTA_SOLTA = "(max-width: 767px)";
 
-/* Folga de rolagem, em telas, para a sequência solta não correr apressada. */
-const FOLGA_SOLTA = 0.6;
+/*
+ * Respiro das pontas da sequência solta, nas mesmas unidades da timeline
+ * do card. Na entrada, é o tempo em que o nome do procedimento fica
+ * parado na tela antes de a primeira foto trocar — sem ele o card já
+ * chega trocando, e ninguém sabe do que aquele antes e depois é. Na
+ * saída, é o tempo em que o depois permanece antes de o card subir.
+ */
+const RESPIRO_ENTRADA = 0.9;
+const RESPIRO_SAIDA = 0.7;
 
 /* Unidades da timeline de um card: troca de etapa e respiro entre elas. */
 const TRANSICAO = 1;
@@ -87,10 +94,31 @@ const ligarSequencia = (secao) => {
         return () => secao.classList.remove("js-sequencia");
     });
 
+    /*
+     * Solto, cada card tem o próprio gatilho, ancorado nele mesmo.
+     *
+     * Uma timeline só para a seção inteira, que era o que havia aqui,
+     * encadeia as quatro sequências em fila e as espalha pela altura da
+     * seção. Com os cards lado a lado isso funcionava, porque todos
+     * estavam na tela ao mesmo tempo. Empilhados em coluna, não: a
+     * timeline avança com a rolagem sem nenhuma relação com onde cada
+     * card está, e a sequência de um card corre antes de ele chegar.
+     */
     consulta.add(CONSULTA_SOLTA, () => {
-        montarMestre(secao, cards, {
-            start: "top 85%",
-            end: () => `+=${secao.offsetHeight + window.innerHeight * FOLGA_SOLTA}`,
+        cards.forEach((card) => {
+            const linha = gsap.timeline({
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 78%",
+                    end: "bottom 30%",
+                    scrub: true,
+                    invalidateOnRefresh: true,
+                },
+            });
+
+            linha
+                .add(criarSequenciaDoCard(card), RESPIRO_ENTRADA)
+                .to({}, { duration: RESPIRO_SAIDA });
         });
     });
 };
