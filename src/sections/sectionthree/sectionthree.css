@@ -18,7 +18,76 @@
  * JavaScript, ou sem GSAP, os cards ficam visíveis em vez de presos de
  * perfil, invisíveis para sempre.
  */
+/* Argolas de neon dourado ao fundo */
+
+/*
+ * A caixa cobre a seção inteira e recorta o que passar dela, para as
+ * argolas não vazarem nas dobras vizinhas.
+ *
+ * Por `clip-path`, e não por `overflow: hidden`. `overflow` cria um
+ * contêiner de rolagem, e o `sticky` logo abaixo passaria a se prender a
+ * ele, que nunca rola — as argolas congelariam no topo da seção em vez de
+ * acompanhar a tela. `clip-path` recorta sem criar esse contêiner.
+ */
+.s3__aureolas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  clip-path: inset(0);
+  pointer-events: none;
+}
+
+/*
+ * Grudado no topo: as argolas ficam paradas no meio da tela enquanto a
+ * seção passa por trás. Sem isto elas ficariam ancoradas ao meio da
+ * seção, que no celular tem uns dois mil e quinhentos pixels — apareceriam
+ * num trecho só, e os cards das pontas rolariam sobre fundo vazio.
+ */
+.s3__aureolas-palco {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+/*
+ * O neon é o traço mais dois halos: um por fora e um por dentro. As
+ * argolas do hero têm só o traço, e sobre o azul da seção isso lê como um
+ * risco fino, não como luz.
+ */
+.s3__aureola {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  width: var(--anel);
+  height: var(--anel);
+  border: 1px solid rgb(253 186 116 / 0.3);
+  border-radius: 9999px;
+  box-shadow:
+    0 0 28px rgb(253 186 116 / 0.16),
+    inset 0 0 28px rgb(253 186 116 / 0.1);
+  transform: translate(-50%, -50%);
+}
+
+.s3__aureola--larga {
+  --anel: min(94vw, 46rem);
+}
+
+.s3__aureola--media {
+  --anel: min(68vw, 33rem);
+  border-color: rgb(253 186 116 / 0.22);
+}
+
+.s3__aureola--curta {
+  --anel: min(44vw, 21rem);
+  border-color: rgb(253 186 116 / 0.16);
+}
+
+/* O painel fica por cima: as argolas são fundo, e um elemento posicionado
+   pinta acima do conteúdo que não está posicionado. */
 .s3__palco {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 72rem;
   margin: 0 auto;
