@@ -160,7 +160,7 @@ const RECORTE_FINAL = { desktop: "11vw", movel: "28vw" };
  * O vão da coluna da esquerda, embaixo da apresentação, é o único lugar
  * da dobra onde a marca não passa por cima de texto.
  */
-const POUSO_FINAL = { desktop: "46.6% 87.7%", movel: "50% 61.2%" };
+const POUSO_FINAL = { desktop: "46.6% 87.7%", movel: "50% 9.6%" };
 
 /*
  * Onde o recorte começa. Está repetido no CSS, que é quem desenha o

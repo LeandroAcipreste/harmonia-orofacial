@@ -29,6 +29,7 @@ const aviso = (recado, bom = true) =>
  * variável de CSS chega como texto e ele a repassaria sem animar. São as
  * mesmas de src/core/base.css e têm que continuar batendo com as de lá.
  */
+const APAGADO = "#0a1128"; /* --navy-800, quase a cor do fundo */
 const OURO = "#fdba74"; /* --gold-300 */
 const CALMO = "#94a3b8"; /* --slate-400 */
 const DISCRETO = "#64748b"; /* --slate-500 */
@@ -46,6 +47,21 @@ const CRO = 0.7;
 const BIO = 1;
 const PRIMEIRA_AREA = 2.5;
 const PASSO_DA_AREA = 0.95;
+
+/*
+ * O arrasto do conteúdo, para telas em que a dobra não cabe.
+ *
+ * Começa um pouco antes da primeira área e termina com a última: é
+ * exatamente o trecho em que a leitura desce pela lista, e é aí que ela
+ * precisa que a lista suba ao seu encontro. Antes disso a apresentação
+ * está no quadro e não há por que mexer nela.
+ *
+ * A folga é o respiro que sobra abaixo da última área — sem ela a lista
+ * termina colada na borda de baixo.
+ */
+const ARRASTO_DE = PRIMEIRA_AREA - 0.3;
+const ARRASTO_ATE = PRIMEIRA_AREA + 3 * PASSO_DA_AREA + 0.8;
+const FOLGA_DO_ARRASTO = 48;
 
 /*
  * Quebra o texto em palavras para poder acender uma de cada vez.
@@ -108,10 +124,23 @@ const onda = (linha, palavras, quando, percurso, corFinal) => {
         return;
     }
 
+    /*
+     * O apagado entra aqui, e não só no CSS.
+     *
+     * O CSS o declara para não haver piscada antes de o script chegar, mas
+     * quem manda na animação é este módulo: escrito em estilo embutido, o
+     * ponto de partida vale mesmo que alguma regra de mídia diga outra
+     * coisa. Confiar só no CSS já custou uma onda que começava clara —
+     * uma regra de `prefers-reduced-motion` sobrescrevia o azul e o GSAP
+     * lia o valor errado como início.
+     */
+    gsap.set(palavras, { color: APAGADO });
+
     linha.to(
         palavras,
         {
             keyframes: [
+                { color: APAGADO, duration: 0 },
                 { color: OURO, duration: 0.15, ease: "none" },
                 { color: corFinal, duration: 0.35, ease: "none" },
             ],
@@ -236,9 +265,37 @@ export const montarLeituraDaDobra = (linha, posicao) => {
         );
     });
 
+    /*
+     * E, se a dobra não couber na tela, ela sobe enquanto é lida.
+     *
+     * Presa, a dobra não rola: o que estiver abaixo da linha d'água acende
+     * sem ninguém ver. No retrato isso são as duas últimas áreas — mais de
+     * quinhentos pixels de texto que se iluminavam fora do quadro.
+     *
+     * Então a leitura arrasta o conteúdo para cima no mesmo compasso em
+     * que acende, e cada área chega ao quadro na hora de ser lida. No
+     * desktop a dobra cabe inteira e a conta dá zero: não há tween, não há
+     * arrasto, e nada muda.
+     *
+     * A distância vem de função, e não de número: com `invalidateOnRefresh`
+     * no gatilho ela é refeita a cada medida, o que importa num retrato
+     * onde a barra do navegador entra e sai e a altura da tela muda.
+     */
+    const inner = secao.querySelector(".s4__inner");
+    const sobra = () =>
+        Math.max(0, secao.getBoundingClientRect().height - window.innerHeight + FOLGA_DO_ARRASTO);
+
+    if (inner && sobra() > 0) {
+        linha.to(
+            inner,
+            { y: () => -sobra(), ease: "none", duration: ARRASTO_ATE - ARRASTO_DE },
+            posicao + ARRASTO_DE
+        );
+    }
+
     aviso(
         `ESTOU FUNCIONANDO: leitura pendurada em ${posicao.toFixed(2)}; ` +
             `${nome.length} palavras no nome, ${bio.length} na apresentação, ` +
-            `${areas.length} áreas`
+            `${areas.length} áreas; arrasto de ${Math.round(sobra())}px`
     );
 };

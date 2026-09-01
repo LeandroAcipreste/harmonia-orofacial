@@ -4,23 +4,28 @@
 }
 
 /*
- * O vão entre a apresentação e as áreas de atuação.
+ * No retrato, a faixa acima do cabeçalho onde a marca do dente encaixa.
  *
- * No retrato ele é maior, e não por respiro: é o lugar onde a marca do
- * dente encaixa no fim do recolhimento. Sem ele a marca cairia por cima
- * de "Implantes" e "Estética do sorriso", que é o que acontecia — no
- * desktop a apresentação divide a tela em duas colunas e o vão já existe
- * sozinho na da esquerda, mas em coluna única o texto ocupa tudo.
+ * A conta tem três parcelas e nenhuma é folgada: 64px do menu, que é
+ * fixo e cobre o topo; 73px do dente, que pousa com 28vw de largura numa
+ * imagem de proporção 3:2; e 16px de ar, oito de cada lado. Dá 153px, ou
+ * 39vw na largura de referência.
  *
- * A medida vem do desenho: o dente pousa em 28vw de largura, o que dá
- * cerca de 19vw de altura, e o vão precisa caber isso com folga.
+ * Menos que isso e o dente entra por baixo do menu — foi o que aconteceu
+ * quando a conta esqueceu que a barra é fixa.
  *
- * A partir de 900px o `gap` volta a ser de respiro, lá embaixo junto com
- * as duas colunas.
+ * No desktop não é preciso: a apresentação divide a tela em duas colunas
+ * e a marca encaixa no vão que sobra na da esquerda.
  */
+@media (max-width: 899px) {
+  .s4 {
+    padding-top: 39vw;
+  }
+}
+
 .s4__inner {
   display: grid;
-  gap: 24vw;
+  gap: 3.5rem;
   max-width: 72rem;
   margin: 0 auto;
 }
@@ -182,10 +187,10 @@
 }
 
 /*
- * Não há bloco de  aqui, e a ausência é
+ * Não há bloco de `prefers-reduced-motion` aqui, e a ausência é
  * deliberada.
  *
- * O estado escondido acima só existe sob , e essa classe só
+ * O estado escondido acima só existe sob `.js-leitura`, e essa classe só
  * é posta quando a leitura monta — o que já não acontece com movimento
  * reduzido, porque o recolhimento inteiro desiste antes. Uma regra de
  * mídia desfazendo o estado seria uma terceira opinião sobre a mesma
