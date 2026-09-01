@@ -160,7 +160,7 @@ const RECORTE_FINAL = { desktop: "11vw", movel: "28vw" };
  * O vão da coluna da esquerda, embaixo da apresentação, é o único lugar
  * da dobra onde a marca não passa por cima de texto.
  */
-const POUSO_FINAL = { desktop: "46.6% 87.7%", movel: "50% 9.6%" };
+const POUSO_FINAL = { desktop: "46.6% 87.7%", movel: "50% 11.7%" };
 
 /*
  * Onde o recorte começa. Está repetido no CSS, que é quem desenha o
@@ -343,6 +343,20 @@ export const initTransicao = ({ aoRecolher } = {}) => {
                 },
             },
             1.5
+        );
+
+        /*
+         * A placa dourada acende junto com o pouso, não antes.
+         *
+         * Antes o dente ainda é uma forma grande varrendo o quadro, e um
+         * quadrado de ouro atrás dele apareceria como um objeto solto. Só
+         * quando o traço já encolheu ao tamanho de marca é que a placa faz
+         * sentido: aí ela é o chão em que a marca se apoia.
+         */
+        linha.to(
+            ".transicao__placa",
+            { opacity: 1, ease: "power2.out", duration: 0.5 },
+            1.8
         );
 
         /* No fim a chapa afrouxa um fio, e a marca deixa passar um

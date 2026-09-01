@@ -332,6 +332,19 @@
   <div class="transicao">
 
     <!--
+      A placa dourada, que entra atrás da marca no fim do recolhimento.
+
+      Ela fica exatamente onde o dente pousa: o traço do dente é a única
+      coisa que a máscara deixa em pé ali, e tudo o que ela recorta fora
+      passa a mostrar ouro em vez do azul do fundo. O desenho da marca
+      fica gravado na placa.
+
+      Mora fora do letreiro de propósito — dentro dele seria recortada
+      pela mesma máscara e não sobraria nada.
+    -->
+    <span class="transicao__placa" aria-hidden="true"></span>
+
+    <!--
       O letreiro anuncia o nome antes da dobra da doutora. São três faixas
       correndo com a rolagem (src/sections/letreiro), direita / esquerda /
       direita: a do meio contra as duas de fora é o que faz o cruzamento
@@ -458,11 +471,34 @@
   <section class="s5" id="sectionfive">
     <div class="s5__inner">
 
-      <header class="s5__cabecalho">
-        <p class="s5__eyebrow s5-anim">A clínica</p>
-      </header>
+      <!--
+        A coluna que fica parada enquanto as fotos correm ao lado. O texto
+        se revela letra a letra com a rolagem (src/sections/sectionfive).
+      -->
+      <div class="s5__texto">
+        <p class="s5__eyebrow">A clínica</p>
 
-      <div class="s5__grade">
+        <!-- Texto do cliente, palavra por palavra. Só a acentuação e a
+             pontuação foram acertadas; nada foi reescrito. -->
+        <p class="s5__paragrafo">
+          Tudo foi pensado em harmonia desde a escolha da localização do
+          nosso espaço, para ser de fácil acesso ao paciente, sendo
+          localizado próximo ao mini shopping São Brás.
+        </p>
+
+        <p class="s5__paragrafo">
+          A nossa recepção climatizada com poltronas confortáveis,
+          iluminação, decoração e ambiente climatizado desde a entrada à
+          sala de espera.
+        </p>
+
+        <p class="s5__paragrafo">
+          Com uma dentista classificada por muitos pacientes da região
+          como excelente em seu trabalho.
+        </p>
+      </div>
+
+      <div class="s5__coluna">
         <figure class="s5__foto shell-card">
           <img class="s5__img" src="assets/clinica/1.webp" srcset="assets/clinica/1-400.webp 400w, assets/clinica/1-800.webp 800w, assets/clinica/1.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Fachada da clínica, com o letreiro Harmonia Orofacial e a bandeira azul na calçada" loading="lazy" decoding="async" />
         </figure>

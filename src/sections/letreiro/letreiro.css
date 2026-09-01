@@ -18,6 +18,62 @@
   position: relative;
 }
 
+/*
+ * A placa dourada sob a marca.
+ *
+ * Fica no mesmo ponto em que o dente pousa, e um degrau abaixo dele: o
+ * `z-index` 1 a põe acima da dobra da doutora e abaixo do letreiro, que é
+ * 2. Assim o traço do dente — a única coisa que a máscara deixa em pé no
+ * fim — se apoia nela, e o vazado em volta mostra ouro.
+ *
+ * O ponto é o mesmo que `POUSO_FINAL` resolve em letreiro.js, escrito
+ * aqui em `left`/`top` porque aqui é uma caixa comum e não uma máscara:
+ * 47% / 83% no desktop, 50% / 14,8% no retrato. Se aquele valor mudar,
+ * este muda junto.
+ *
+ * A vertical vai em `svh` e não em porcentagem, e essa é a diferença
+ * entre encaixar e não encaixar. A máscara resolve contra a caixa do
+ * letreiro, que tem 100svh; a placa mora no bloco da transição, que é
+ * alto o bastante para conter a dobra inteira. Em porcentagem as duas
+ * mediam réguas diferentes e a placa caía longe do dente.
+ *
+ * O tamanho vem do desenho. O dente ocupa 7,72vw × 6,56vw no desktop e
+ * 19,7vw × 16,7vw no retrato; a placa é o quadrado que os cobre com uma
+ * margem de folga, para o traço se apoiar nela e não encostar na borda.
+ */
+.transicao__placa {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 14.77svh;
+  width: 27vw;
+  height: 27vw;
+  translate: -50% -50%;
+
+  background-image: url("../../../assets/fundo-dente-vazado.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (min-width: 900px) {
+  .transicao__placa {
+    left: 47%;
+    top: 83svh;
+    width: 11vw;
+    height: 11vw;
+  }
+}
+
+/* Sem recolhimento não há marca, e uma placa dourada solta no meio da
+   dobra seria um enfeite sem motivo. */
+.transicao.sem-transicao .transicao__placa {
+  display: none;
+}
+
 .letreiro {
   /*
    * Cobre a primeira tela da dobra de baixo, em vez de empurrá-la para

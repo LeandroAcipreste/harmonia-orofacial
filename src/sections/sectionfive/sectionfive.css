@@ -10,8 +10,43 @@
 
 /* Cabeçalho */
 
-.s5__cabecalho {
+/*
+ * Duas colunas: o texto para de um lado, as fotos correm do outro.
+ *
+ * A coluna do texto é `sticky` e a das fotos é alta — é dessa diferença
+ * que sai o efeito. Ninguém precisa animar as fotos: elas sobem porque a
+ * página sobe, e o que fica parado ao lado é que faz o movimento delas
+ * aparecer. Um `pin` aqui seria uma terceira rolagem presa logo depois da
+ * dobra da doutora, que já prende cinco telas e meia.
+ */
+.s5__texto {
   margin-bottom: 3rem;
+}
+
+@media (min-width: 900px) {
+  /*
+   * A coluna das fotos tem largura fixa e a do texto fica com o resto.
+   *
+   * Fixa porque o papel dela é passar, não ocupar: fotos grandes demais
+   * viram o assunto da dobra e engolem o texto, que é quem conta o que
+   * ali importa. Em 24rem elas correm ao lado da leitura sem disputar
+   * com ela.
+   */
+  .s5__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 24rem);
+    gap: 4.5rem;
+    align-items: start;
+  }
+
+  .s5__texto {
+    position: sticky;
+
+    /* Abaixo da barra fixa, que tem 64px, com ar. */
+    top: 8rem;
+    margin-bottom: 0;
+    padding-bottom: 4rem;
+  }
 }
 
 .s5__eyebrow {
@@ -41,12 +76,14 @@
   color: var(--white);
 }
 
-/* Grade de fotos */
+/* Coluna de fotos */
 
-.s5__grade {
+/* Empilhadas numa coluna só: é essa pilha que corre ao lado do texto
+   parado. Sem colunas nem linhas de altura fixa — a proporção vem de
+   cada foto, e é ela que dá o ritmo da subida. */
+.s5__coluna {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
 /* Em coluna única a proporção vem da própria foto: linha de altura fixa
@@ -120,83 +157,65 @@
   pointer-events: none;
 }
 
-/* Entrada */
+/* O texto que se revela */
 
-.s5.js-anim .s5-anim {
+.s5__paragrafo {
+  margin-top: 1.5rem;
+  max-width: 34rem;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--slate-400);
+}
+
+/*
+ * As letras sobem de dentro da própria palavra.
+ *
+ * A palavra é a máscara: `overflow: hidden` nela, e a letra parte de
+ * baixo da linha de base. Recortar por palavra e não por linha é o que
+ * faz isto sobreviver ao redimensionamento — linha é medida, e medida
+ * muda quando a caixa muda; palavra é estrutura.
+ *
+ * O par recuo/margem devolve o espaço que o recorte comeria das descidas
+ * do "p" e do "g". Sem ele a máscara corta a perna das letras.
+ */
+.s5__palavra {
+  display: inline-block;
+  overflow: hidden;
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+  vertical-align: bottom;
+}
+
+.s5__letra {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* Estado inicial, e só com a classe: sem script o texto é texto. */
+.s5.js-letras .s5__letra {
+  transform: translateY(100%);
   opacity: 0;
-  transform: translateY(28px);
-  transition:
-    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
-.s5.js-anim .s5-anim.is-visivel {
-  opacity: 1;
-  transform: none;
-}
-
-/* Entrada demorada de propósito: as fotos assentam uma depois da outra */
-.s5__grade.js-anim .s5__foto {
-  opacity: 0;
-  transform: translateY(40px);
-  transition:
-    opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.s5__grade.js-anim.is-visivel .s5__foto {
-  opacity: 1;
-  transform: none;
-}
-
-.s5__grade.js-anim.is-visivel .s5__foto:nth-child(2) { transition-delay: 240ms; }
-.s5__grade.js-anim.is-visivel .s5__foto:nth-child(3) { transition-delay: 480ms; }
-.s5__grade.js-anim.is-visivel .s5__foto:nth-child(4) { transition-delay: 720ms; }
-.s5__grade.js-anim.is-visivel .s5__foto:nth-child(5) { transition-delay: 960ms; }
 
 /* Responsivo */
-
-/* A partir de duas colunas a altura da linha assume, e é ela que mantém
-   as fotos alinhadas mesmo com originais em retrato e paisagem */
-@media (min-width: 640px) {
-  .s5__grade {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-auto-rows: 18rem;
-  }
-
-  .s5__foto,
-  .s5__foto--larga {
-    aspect-ratio: auto;
-  }
-
-  .s5__foto--larga {
-    grid-column: span 2;
-  }
-}
 
 @media (min-width: 1024px) {
   .s5 {
     padding: 7rem 1.5rem 8rem;
   }
-
-  .s5__cabecalho {
-    margin-bottom: 4rem;
-  }
-
-  .s5__grade {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-auto-rows: 22rem;
-  }
 }
 
-/* Movimento reduzido: entra por opacidade e a foto não cresce */
+/*
+ * Movimento reduzido: as fotos param de respirar.
+ *
+ * E só isso. Nada aqui desfaz o estado inicial das letras, e a ausência é
+ * deliberada: `.js-letras` só é posta quando a revelação monta, e uma
+ * regra de mídia dizendo o contrário seria uma segunda opinião sobre a
+ * mesma coisa. Escrita antes, era ela que deixava as letras já visíveis
+ * no começo do percurso e comia a revelação inteira — o mesmo erro que a
+ * dobra da doutora já tinha cometido.
+ */
 @media (prefers-reduced-motion: reduce) {
-  .s5.js-anim .s5-anim,
-  .s5__grade.js-anim .s5__foto {
-    transform: none;
-    transition: opacity 0.5s ease;
-  }
-
   .s5__img {
     animation: none;
   }

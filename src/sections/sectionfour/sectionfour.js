@@ -281,13 +281,37 @@ export const montarLeituraDaDobra = (linha, posicao) => {
      * no gatilho ela é refeita a cada medida, o que importa num retrato
      * onde a barra do navegador entra e sai e a altura da tela muda.
      */
+    const bloco = secao.closest(".transicao");
     const inner = secao.querySelector(".s4__inner");
     const sobra = () =>
         Math.max(0, secao.getBoundingClientRect().height - window.innerHeight + FOLGA_DO_ARRASTO);
 
-    if (inner && sobra() > 0) {
+    /*
+     * Sobe o texto e a marca do dente juntos.
+     *
+     * A marca não é um enfeite grudado no quadro: ela pousou num lugar da
+     * página, acima do cabeçalho, e pertence àquele lugar. Subindo só o
+     * texto, ela ficava presa na tela feito adesivo e o conteúdo passava
+     * por trás dela — que é o contrário de estar num lugar.
+     *
+     * Levando as duas no mesmo tween, a marca sai de cena pelo topo junto
+     * com o cabeçalho que ela encima, e volta quando a rolagem volta: é o
+     * `scrub` desfazendo o caminho, sem nada a mais para escrever.
+     *
+     * Quem carrega a marca são duas peças: o próprio letreiro, porque o
+     * dente é o que sobrou dele depois do recolhimento e mover o elemento
+     * move o recorte; e a placa dourada, que é o chão da marca e tem que
+     * andar colada nela.
+     */
+    const sobem = [
+        inner,
+        bloco && bloco.querySelector(".letreiro"),
+        bloco && bloco.querySelector(".transicao__placa"),
+    ].filter(Boolean);
+
+    if (sobem.length && sobra() > 0) {
         linha.to(
-            inner,
+            sobem,
             { y: () => -sobra(), ease: "none", duration: ARRASTO_ATE - ARRASTO_DE },
             posicao + ARRASTO_DE
         );

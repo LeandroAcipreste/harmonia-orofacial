@@ -7,19 +7,21 @@
  * No retrato, a faixa acima do cabeçalho onde a marca do dente encaixa.
  *
  * A conta tem três parcelas e nenhuma é folgada: 64px do menu, que é
- * fixo e cobre o topo; 73px do dente, que pousa com 28vw de largura numa
- * imagem de proporção 3:2; e 16px de ar, oito de cada lado. Dá 153px, ou
- * 39vw na largura de referência.
+ * fixo e cobre o topo; 105px da placa dourada, que é o que de fato ocupa
+ * a faixa — ela é maior que o dente, que mede 73px; e 16px de ar, oito de
+ * cada lado. Dá 185px, ou 48vw na largura de referência.
  *
- * Menos que isso e o dente entra por baixo do menu — foi o que aconteceu
- * quando a conta esqueceu que a barra é fixa.
+ * Duas contas erradas moram nesta linha, e as duas se viam na tela: uma
+ * esqueceu que o menu é fixo e enfiou o dente por baixo dele; a outra
+ * mediu o dente em vez da placa, e a placa, sendo maior, voltou a
+ * encostar no menu.
  *
  * No desktop não é preciso: a apresentação divide a tela em duas colunas
  * e a marca encaixa no vão que sobra na da esquerda.
  */
 @media (max-width: 899px) {
   .s4 {
-    padding-top: 39vw;
+    padding-top: 48vw;
   }
 }
 

@@ -213,14 +213,20 @@ const montarCardSolto = (card) => {
              *
              *     vão entre linhas = (início − fim) × altura da tela
              *
-             * Aqui a diferença é 72% − 40% = 32%, e o `row-gap` da grade
+             * Aqui a diferença é 58% − 26% = 32%, e o `row-gap` da grade
              * no celular é 32vh. Mexer num sem mexer no outro faz as
              * sequências voltarem a se sobrepor, ou abre rolagem morta
              * entre elas.
+             *
+             * Os dois desceram juntos, de 72/40 para 58/26, e a diferença
+             * ficou de pé: o card passou a levantar quando o topo dele já
+             * subiu mais na tela, ou seja, depois de mais rolagem. Descer
+             * só o início quebraria a conta acima e as sequências
+             * voltariam a se atravessar.
              */
             trigger: card.parentElement,
-            start: "top 72%",
-            end: "bottom 40%",
+            start: "top 58%",
+            end: "bottom 26%",
             scrub: true,
             invalidateOnRefresh: true,
         },

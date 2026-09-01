@@ -107,7 +107,7 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 84rem;
+  max-width: 114rem;
   margin: 0 auto;
   transform-origin: center center;
 }
@@ -396,6 +396,18 @@
 @media (min-width: 1024px) {
   .s3:not(.js-sequencia) {
     padding: 6rem 1.5rem 7rem;
+  }
+
+  /*
+   * A área da imagem cresce de novo no desktop largo.
+   *
+   * É ela que dá a altura do card, e o card estava pequeno para a tela
+   * que tem: numa janela de 1920 o palco travado em 84rem ocupava 70% da
+   * largura, e as fotos de antes e depois, que são o assunto, saíam
+   * pequenas demais para comparar.
+   */
+  .s3__etapas {
+    height: 24rem;
   }
 
   .s3__grade {
