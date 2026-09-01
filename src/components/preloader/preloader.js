@@ -1,3 +1,5 @@
+import { prefereMovimentoReduzido } from "../../utils/movimento.js";
+
 /* Pré-loader: o dente dourado enche de baixo para cima acompanhando o carregamento. */
 
 /*
@@ -18,7 +20,7 @@ const DURACAO_FECHO = 0.6;
  */
 const LIMITE_SEGURANCA = 3500;
 
-const reduzido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const reduzido = prefereMovimentoReduzido();
 
 export const initPreloader = () => {
     const preloader = document.querySelector(".preloader");

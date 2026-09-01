@@ -533,7 +533,16 @@ const carregarTextura = (anisotropia) =>
  * quem chamou mostra o fundo estático: sem WebGL a página não pode ficar
  * sem hero.
  */
-export const iniciarHeroGlitter = async (canvas, { reduzido = false } = {}) => {
+/*
+ * `superficie: false` deixa só a poeira.
+ *
+ * A chapa de glitter é a parte cara desta cena: uma malha de 72 por 72
+ * com a foto entrando três vezes no shader, cobrindo o quadro inteiro com
+ * mistura ligada. A poeira, ao lado disso, é um punhado de sprites de
+ * poucos pixels. Sem a chapa a textura nem é baixada, e some junto o
+ * arquivo de imagem que só ela usava.
+ */
+export const iniciarHeroGlitter = async (canvas, { reduzido = false, superficie = true } = {}) => {
     let renderizador;
 
     try {
@@ -555,7 +564,9 @@ export const iniciarHeroGlitter = async (canvas, { reduzido = false } = {}) => {
     const movel = window.innerWidth < LARGURA_MOVEL;
     const segmentos = movel ? SEGMENTOS_MOVEL : SEGMENTOS;
 
-    const textura = await carregarTextura(renderizador.capabilities.getMaxAnisotropy());
+    const textura = superficie
+        ? await carregarTextura(renderizador.capabilities.getMaxAnisotropy())
+        : null;
 
     const uniformes = {
         uMapa: { value: textura },
@@ -574,19 +585,23 @@ export const iniciarHeroGlitter = async (canvas, { reduzido = false } = {}) => {
         uCorQuente: { value: new Color(CORES.quente) },
     };
 
-    const malha = new Mesh(
-        new PlaneGeometry(1, 1, segmentos, segmentos),
-        new ShaderMaterial({
-            uniforms: uniformes,
-            vertexShader: VERTICE,
-            fragmentShader: FRAGMENTO,
-            transparent: true,
-            depthWrite: false,
-        })
-    );
+    const malha = superficie
+        ? new Mesh(
+              new PlaneGeometry(1, 1, segmentos, segmentos),
+              new ShaderMaterial({
+                  uniforms: uniformes,
+                  vertexShader: VERTICE,
+                  fragmentShader: FRAGMENTO,
+                  transparent: true,
+                  depthWrite: false,
+              })
+          )
+        : null;
 
-    malha.rotation.x = INCLINACAO;
-    cena.add(malha);
+    if (malha) {
+        malha.rotation.x = INCLINACAO;
+        cena.add(malha);
+    }
 
     const semCursor = window.matchMedia(CONSULTA_SEM_CURSOR).matches;
 
@@ -618,7 +633,10 @@ export const iniciarHeroGlitter = async (canvas, { reduzido = false } = {}) => {
            o enquadramento em qualquer proporção de tela. */
         const abertura = 2 * Math.tan((CAMPO_DE_VISAO * Math.PI) / 360);
         const visivel = abertura * DISTANCIA;
-        malha.scale.set(visivel * camera.aspect * MARGEM, visivel * MARGEM, 1);
+
+        if (malha) {
+            malha.scale.set(visivel * camera.aspect * MARGEM, visivel * MARGEM, 1);
+        }
 
         /* A poeira está mais perto da câmera, então o mesmo ângulo cobre
            menos mundo: a escala dela sai da distância até o plano dela. A
@@ -742,7 +760,9 @@ export const iniciarHeroGlitter = async (canvas, { reduzido = false } = {}) => {
 
             /* Rolagem lenta da chapa. Junto com a respiração da câmera
                acima, são os movimentos que se percebem sem olhar. */
-            malha.rotation.z = Math.sin(t * 0.06) * 0.035;
+            if (malha) {
+                malha.rotation.z = Math.sin(t * 0.06) * 0.035;
+            }
         }
 
         /*
@@ -764,7 +784,32 @@ export const iniciarHeroGlitter = async (canvas, { reduzido = false } = {}) => {
         renderizador.render(cena, camera);
     };
 
-    agendarQuadro(desenhar);
+    /*
+     * Só desenha enquanto está na tela.
+     *
+     * Esta página tem duas cenas WebGL, esta e a espiral do hero. Rodando
+     * as duas ao mesmo tempo elas disputam a GPU e o quadro, e a que está
+     * fora da janela não é vista por ninguém.
+     *
+     * O portão fica aqui, dentro da chamada, e não no agendamento: o laço
+     * é o ticker do GSAP, compartilhado com o resto da página, e tirar e
+     * repor a função nele custaria mais do que sair cedo.
+     */
+    let naTela = true;
+
+    if (typeof IntersectionObserver === "function") {
+        naTela = false;
+
+        new IntersectionObserver(([entrada]) => (naTela = entrada.isIntersecting), {
+            threshold: 0,
+        }).observe(canvas);
+    }
+
+    agendarQuadro((agora) => {
+        if (naTela) {
+            desenhar(agora);
+        }
+    });
 
     return true;
 };

@@ -44,13 +44,36 @@
   height: 100vh;
 }
 
+/* A superfície de glitter (ver src/three/heroGlitter.js) */
+.s3__pelicula-gl {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * Este elemento virou só o suporte do véu. A foto que ele trazia é agora
+ * o plano B: volta quando não há WebGL, no mesmo lugar e com o mesmo véu
+ * por cima, para a dobra nunca ficar sobre navy vazio.
+ */
 .s3__pelicula-imagem {
   position: absolute;
   inset: 0;
+  z-index: 1;
   display: block;
-  background-image: url("../../../assets/fundo-resultados.webp");
   background-position: center;
   background-size: cover;
+}
+
+.s3.is-sem-gl .s3__pelicula-gl {
+  display: none;
+}
+
+.s3.is-sem-gl .s3__pelicula-imagem {
+  background-image: url("../../../assets/fundo-resultados.webp");
 }
 
 /*
@@ -84,7 +107,7 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 72rem;
+  max-width: 84rem;
   margin: 0 auto;
   transform-origin: center center;
 }
@@ -202,12 +225,19 @@
   color: var(--gold-300);
 }
 
-/* Etapas: procedimento, antes e depois ocupam a mesma área do cartão,
-   com a altura que o ícone e o nome ocupavam antes */
+/*
+ * Etapas: procedimento, antes e depois ocupam a mesma área do cartão.
+ *
+ * É esta altura que dá o tamanho do card, porque o resto do corpo é só
+ * texto e recuo. A dobra fica presa numa tela inteira e os cards ocupavam
+ * pouco mais de um quinto dela — sobrava vazio em cima e embaixo, e as
+ * fotos de antes e depois, que são o assunto, saíam pequenas demais para
+ * se comparar.
+ */
 .s3__etapas {
   position: relative;
   width: 100%;
-  height: 7.5rem;
+  height: 11rem;
 }
 
 .s3__etapa {
@@ -259,8 +289,8 @@
 }
 
 .s3__icone {
-  width: 3rem;
-  height: 3rem;
+  width: 3.75rem;
+  height: 3.75rem;
   color: var(--slate-300);
   transition: color 0.5s, transform 0.5s;
 }
@@ -301,7 +331,7 @@
   /* Em coluna o cartão ocupa a largura toda, e a área da foto acompanha:
      na altura de dois cartões lado a lado ela viraria uma tira. */
   .s3__etapas {
-    height: 11rem;
+    height: 14rem;
   }
 
   /*
@@ -335,7 +365,7 @@
   }
 
   .s3__etapas {
-    height: 5.5rem;
+    height: 7rem;
   }
 
   .s3__icone {

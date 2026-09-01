@@ -1,10 +1,11 @@
 /* Procedimentos: parallax do lustre e entrada da lista. */
 
 import { revelarAoEntrar } from "../../utils/reveal.js";
+import { prefereMovimentoReduzido } from "../../utils/movimento.js";
 
 const MARGEM_LISTA = "0px 0px -15% 0px";
 
-const prefereMovimentoReduzido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const movimentoReduzido = prefereMovimentoReduzido();
 
 export const initSectionTwo = () => {
     const secao = document.querySelector(".s2");
@@ -47,7 +48,7 @@ export const initSectionTwo = () => {
      */
     abrirCortina(secao);
 
-    if (prefereMovimentoReduzido) {
+    if (movimentoReduzido) {
         return;
     }
 

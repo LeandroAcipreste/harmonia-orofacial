@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Espiral dourada · Harmonia Orofacial</title>
+  <link rel="icon" href="../../../assets/favicon-32.png" />
+
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      background: #03071a;
+      overflow: hidden;
+    }
+
+    /*
+     * O canvas fica com a cor do fundo da cena para que o quadro em branco,
+     * entre o carregamento das texturas e o primeiro desenho, não pisque
+     * claro no meio do escuro.
+     */
+    #espiral {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: #03071a;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="espiral"></canvas>
+
+  <script type="module">
+    /*
+     * Chrome sem cabeça responde "reduce" a prefers-reduced-motion mesmo
+     * sem ninguém ter pedido isso, e a cena aparece congelada na captura
+     * de tela sem nenhum sinal de erro. Por isso ?movimento=1 força o
+     * movimento, e ?parado=1 força o contrário, para conferir um quadro
+     * exato. O padrão continua sendo respeitar a preferência do sistema.
+     */
+    import { iniciarEspiralDourada } from "../../three/espiralDourada.js";
+
+    const busca = new URLSearchParams(location.search);
+    const preferencia = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const reduzido = busca.has("parado")
+      ? true
+      : busca.has("movimento")
+        ? false
+        : preferencia;
+
+    iniciarEspiralDourada(document.getElementById("espiral"), {
+      reduzido,
+      tempoInicial: Number(busca.get("t") ?? 0),
+    }).then((assumiu) => {
+      if (!assumiu) {
+        document.body.style.background = "radial-gradient(circle at 50% 50%, #0d3f8f, #03071a 70%)";
+      }
+      window.__espiralPronta = assumiu;
+    });
+  </script>
+</body>
+
+</html>

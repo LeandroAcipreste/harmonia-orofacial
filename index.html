@@ -144,26 +144,9 @@
   <section class="hero" id="hero">
     <canvas class="hero__gl" id="hero-gl" width="1920" height="1080"></canvas>
 
-    <div class="hero__laser" id="hero-laser" aria-hidden="true">
-      <div class="hero__laser-inner">
-        <span class="laser-pulse hero__laser-halo"></span>
-        <span class="laser-pulse hero__laser-glow"></span>
-        <span class="laser-pulse hero__laser-core"></span>
-        <span class="laser-pulse hero__laser-dot"></span>
-      </div>
-    </div>
-
-    <div class="hero__medalhao hero-el flash-card" id="torus">
-      <img class="hero__medalhao-img" src="assets/logo-hero.png" alt="Harmonia Orofacial · Clínica Odontológica" />
-      <span class="hero__medalhao-orbita"></span>
-    </div>
-
+    <!-- O título fica só para leitor de tela e busca: a marca que se vê é
+         a que a própria cena desenha, no miolo do vórtice. -->
     <h1 class="sr-only">Harmonia Orofacial · Clínica Odontológica</h1>
-
-    <div class="hero__scroll hero-el">
-      <span class="hero__scroll-label">ROLAR</span>
-      <svg class="hero__scroll-arrow" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
-    </div>
   </section>
 
   <section class="s2" id="sectiontwo">
@@ -207,9 +190,12 @@
   <section class="s3" id="sectionthree">
 
     <!-- Fundo da dobra. Fica grudado na tela: é a referência parada contra
-         a qual se percebe o card subindo. -->
+         a qual se percebe o card subindo. A superfície de glitter que era
+         do hero mora aqui agora; o véu por cima é o que a mantém como
+         fundo, e não como assunto. -->
     <div class="s3__pelicula" aria-hidden="true">
       <div class="s3__pelicula-palco">
+        <canvas class="s3__pelicula-gl" id="s3-gl" width="1920" height="1080"></canvas>
         <span class="s3__pelicula-imagem"></span>
       </div>
     </div>
@@ -334,69 +320,140 @@
     </div>
   </section>
 
-  <section class="s4" id="sectionfour">
-    <div class="s4__inner">
+  <!--
+    A transição: o letreiro por cima, a dobra da doutora por baixo.
 
-      <div class="s4__apresentacao">
-        <p class="s4__eyebrow s4-anim">Conheça a Dra. Célia</p>
+    Os dois moram no mesmo bloco porque um descobre o outro. O letreiro
+    cobre a primeira tela da dobra e é recortado pelo desenho do dente;
+    esse recorte começa tão grande que não se nota, e encolhe com a
+    rolagem até o letreiro inteiro ter se recolhido para dentro do traço
+    do dente — e o que estava atrás aparece.
+  -->
+  <div class="transicao">
 
-        <div class="s4__nome-mascara">
-          <h2 class="s4__nome serif">Dra. Célia Rodrigues de Lima</h2>
-        </div>
+    <!--
+      O letreiro anuncia o nome antes da dobra da doutora. São três faixas
+      correndo com a rolagem (src/sections/letreiro), direita / esquerda /
+      direita: a do meio contra as duas de fora é o que faz o cruzamento
+      aparecer, e é o cruzamento que dá o movimento.
 
-        <p class="s4__cro s4-anim">CRO/SE 04799</p>
-
-        <p class="s4__bio s4-anim">
-          Cirurgiã-dentista com especialização em Implantodontia e em
-          Odontologia Estética. Reabilita quem perdeu dentes e cuida da
-          estética do sorriso na mesma clínica, do implante planejado
-          digitalmente às facetas e à harmonização do rosto.
-        </p>
-
-        <div class="s4__video s4-anim">
-          <video class="s4__video-fonte" src="assets/dra-celia.mp4" poster="assets/dra-celia-poster.jpg" muted loop playsinline preload="metadata"></video>
-        </div>
-      </div>
-
-      <ul class="s4__areas">
-        <li class="s4__area s4-anim">
-          <h3 class="s4__area-nome">Implantes</h3>
-          <p class="s4__area-texto">
-            Especialista em Implantodontia e credenciada em cirurgia
-            guiada. A posição de cada implante é planejada no computador
-            antes do procedimento, o que torna a cirurgia mais previsível.
-          </p>
-        </li>
-
-        <li class="s4__area s4-anim">
-          <h3 class="s4__area-nome">Estética do sorriso</h3>
-          <p class="s4__area-texto">
-            Especialista em Odontologia Estética, com formação em
-            laminados cerâmicos: lâminas finas que recobrem o dente e
-            corrigem forma, cor e alinhamento.
-          </p>
-        </li>
-
-        <li class="s4__area s4-anim">
-          <h3 class="s4__area-nome">Harmonização orofacial</h3>
-          <p class="s4__area-texto">
-            Capacitada para toxina botulínica tipo A e ácido hialurônico,
-            aplicados em preenchimento facial e aumento labial.
-          </p>
-        </li>
-
-        <li class="s4__area s4-anim">
-          <h3 class="s4__area-nome">Traumatismo dentário</h3>
-          <p class="s4__area-texto">
-            Formação em mínima intervenção no traumatismo dentário e em
-            autotransplante, que é o reaproveitamento do próprio dente do
-            paciente para repor um perdido.
-          </p>
-        </li>
-      </ul>
-
+      O nome vai uma vez só para quem lê por leitor de tela — o resto é
+      repetição de desenho, e vem marcado como tal.
+    -->
+    <section class="letreiro" id="letreiro" aria-label="Clínica Harmonia Orofacial">
+    <div class="letreiro__linha letreiro__linha--dir" aria-hidden="true">
+      <h2 class="letreiro__texto">Clínica Harmonia Orofacial</h2>
+      <span class="letreiro__marca"></span>
+      <h2 class="letreiro__texto letreiro__texto--vazado">Clínica Harmonia Orofacial</h2>
+      <span class="letreiro__marca"></span>
+      <h2 class="letreiro__texto">Clínica Harmonia Orofacial</h2>
+      <span class="letreiro__marca"></span>
+      <h2 class="letreiro__texto letreiro__texto--vazado">Clínica Harmonia Orofacial</h2>
+      <span class="letreiro__marca"></span>
+      <h2 class="letreiro__texto">Clínica Harmonia Orofacial</h2>
+      <span class="letreiro__marca"></span>
     </div>
-  </section>
+
+    <div class="letreiro__linha letreiro__linha--esq" aria-hidden="true">
+      <span class="letreiro__marca"></span>
+      <h2 class="letreiro__texto letreiro__texto--vazado">Clínica Harmonia Orofacial</h2>
+      <span class="letreiro__marca"></span>
+      <h2 class="letreiro__texto">Clínica Harmonia Orofacial</h2>
+      <span class="letreiro__marca"></span>
+      <h2 class="letreiro__texto letreiro__texto--vazado">Clínica Harmonia Orofacial</h2>
+      <span class="letreiro__marca"></span>
+      <h2 class="letreiro__texto">Clínica Harmonia Orofacial</h2>
+      <span class="letreiro__marca"></span>
+      <h2 class="letreiro__texto letreiro__texto--vazado">Clínica Harmonia Orofacial</h2>
+    </div>
+
+    <div class="letreiro__linha letreiro__linha--dir" aria-hidden="true">
+      <h2 class="letreiro__texto">Clínica Harmonia Orofacial</h2>
+      <span class="letreiro__marca"></span>
+      <h2 class="letreiro__texto letreiro__texto--vazado">Clínica Harmonia Orofacial</h2>
+      <span class="letreiro__marca"></span>
+      <h2 class="letreiro__texto">Clínica Harmonia Orofacial</h2>
+      <span class="letreiro__marca"></span>
+      <h2 class="letreiro__texto letreiro__texto--vazado">Clínica Harmonia Orofacial</h2>
+      <span class="letreiro__marca"></span>
+      <h2 class="letreiro__texto">Clínica Harmonia Orofacial</h2>
+      <span class="letreiro__marca"></span>
+    </div>
+
+      <!-- Chapa lisa da cor do letreiro, que entra por cima das faixas no
+           fim do recolhimento. É ela que fecha o dente num desenho só, em
+           vez de deixá-lo cheio de pedaços de letra. -->
+      <div class="letreiro__sobreposicao" aria-hidden="true"></div>
+    </section>
+
+    <section class="s4" id="sectionfour">
+
+      <div class="s4__inner">
+
+        <div class="s4__apresentacao">
+          <p class="s4__eyebrow">Conheça a Dra. Célia</p>
+
+          <h2 class="s4__nome serif">Dra. Célia Rodrigues de Lima</h2>
+
+          <!-- A régua dourada que desenha sob o nome. Ela sai na frente
+               das palavras, como o traço de quem escreve. -->
+          <span class="s4__regua" aria-hidden="true"></span>
+
+          <p class="s4__cro">CRO/SE 04799</p>
+
+          <p class="s4__bio">
+            Cirurgiã-dentista com especialização em Implantodontia e em
+            Odontologia Estética. Reabilita quem perdeu dentes e cuida da
+            estética do sorriso na mesma clínica, do implante planejado
+            digitalmente às facetas e à harmonização do rosto.
+          </p>
+        </div>
+
+        <ul class="s4__areas">
+          <li class="s4__area">
+            <span class="s4__area-regua" aria-hidden="true"></span>
+            <h3 class="s4__area-nome">Implantes</h3>
+            <p class="s4__area-texto">
+              Especialista em Implantodontia e credenciada em cirurgia
+              guiada. A posição de cada implante é planejada no computador
+              antes do procedimento, o que torna a cirurgia mais previsível.
+            </p>
+          </li>
+
+          <li class="s4__area">
+            <span class="s4__area-regua" aria-hidden="true"></span>
+            <h3 class="s4__area-nome">Estética do sorriso</h3>
+            <p class="s4__area-texto">
+              Especialista em Odontologia Estética, com formação em
+              laminados cerâmicos: lâminas finas que recobrem o dente e
+              corrigem forma, cor e alinhamento.
+            </p>
+          </li>
+
+          <li class="s4__area">
+            <span class="s4__area-regua" aria-hidden="true"></span>
+            <h3 class="s4__area-nome">Harmonização orofacial</h3>
+            <p class="s4__area-texto">
+              Capacitada para toxina botulínica tipo A e ácido hialurônico,
+              aplicados em preenchimento facial e aumento labial.
+            </p>
+          </li>
+
+          <li class="s4__area">
+            <span class="s4__area-regua" aria-hidden="true"></span>
+            <h3 class="s4__area-nome">Traumatismo dentário</h3>
+            <p class="s4__area-texto">
+              Formação em mínima intervenção no traumatismo dentário e em
+              autotransplante, que é o reaproveitamento do próprio dente do
+              paciente para repor um perdido.
+            </p>
+          </li>
+        </ul>
+
+      </div>
+    </section>
+
+  </div>
 
   <section class="s5" id="sectionfive">
     <div class="s5__inner">

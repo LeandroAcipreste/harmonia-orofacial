@@ -1,18 +1,4 @@
-/* Hero: comportamento e animações. O fundo 3D vive em src/three. */
-
-import { porQuadro } from "../../utils/porQuadro.js";
-
-const ENTRADA = {
-    duracao: 1.2,
-    stagger: 0.14,
-    atraso: 0.25,
-    deslocamento: 40,
-    desfoque: 12,
-};
-
-const FLASHLIGHT_ALCANCE = 220;
-
-const prefereMovimentoReduzido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+/* Hero: só a espiral. A cena inteira vive em src/three/espiralDourada.js. */
 
 export const initHero = () => {
     const hero = document.querySelector(".hero");
@@ -23,31 +9,31 @@ export const initHero = () => {
 
     carregarFundo(hero);
 
-    if (typeof gsap === "undefined") {
-        return;
-    }
-
-    const medalhao = hero.querySelector(".hero__medalhao");
-
-    animarEntrada(hero);
-
-    /* Só acende a borda cônica: não desloca a peça. */
-    ligarFlashlight(medalhao);
-
-    if (prefereMovimentoReduzido || typeof ScrollTrigger === "undefined") {
+    /*
+     * O esmaecimento não é opcional por preferência de movimento.
+     *
+     * Ele não é enfeite: é o que tira a cena da tela antes que a rolagem
+     * suave comece a reamostrá-la em posição fracionária e borrar a marca.
+     * Deixá-lo de fora para quem pediu movimento reduzido daria a essas
+     * pessoas justamente a versão pior, com a marca borrada o resto da
+     * visita. E ele não move nada: só apaga, amarrado à rolagem.
+     */
+    if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") {
         return;
     }
 
     gsap.registerPlugin(ScrollTrigger);
-    animarFundo();
     animarNaRolagem(hero);
 };
 
 /*
- * O three.js pesa 655 kB e o hero não pode esperar por ele para aparecer.
- * Por isso o módulo entra por import dinâmico: a marca e o texto já estão
- * na tela, o fundo 3D assume quando chega. Falhando qualquer etapa — sem
- * WebGL, arquivo fora do ar — a seção fica com o fundo estático do CSS.
+ * O three.js pesa 655 kB e a página não pode esperar por ele para
+ * aparecer. Por isso o módulo entra por import dinâmico. Falhando
+ * qualquer etapa, sem WebGL ou com o arquivo fora do ar, a seção fica com
+ * o vórtice parado do CSS.
+ *
+ * A espiral desenha a própria marca, no miolo do vórtice: não existe peça
+ * de HTML por cima dela.
  */
 const carregarFundo = (hero) => {
     const canvas = hero.querySelector("#hero-gl");
@@ -58,10 +44,21 @@ const carregarFundo = (hero) => {
 
     const semGl = () => hero.classList.add("is-sem-gl");
 
-    import("../../three/heroGlitter.js")
-        .then(({ iniciarHeroGlitter }) =>
-            iniciarHeroGlitter(canvas, { reduzido: prefereMovimentoReduzido })
-        )
+    /*
+     * A espiral gira sempre, inclusive para quem pediu movimento reduzido.
+     *
+     * A preferência existe contra movimento que compete com a leitura:
+     * paralaxe presa à rolagem, coisa que pisca, peça que atravessa a
+     * tela. Esta é uma deriva de uma volta a cada 48 segundos, sem
+     * sobressalto e sem nada amarrado ao scroll, e é a identidade da
+     * página: parada, o hero vira uma imagem chapada.
+     *
+     * Quem quiser devolver o congelamento troca `false` nesta linha por
+     * `window.matchMedia("(prefers-reduced-motion: reduce)").matches`, e
+     * mais nada.
+     */
+    import("../../three/espiralDourada.js")
+        .then(({ iniciarEspiralDourada }) => iniciarEspiralDourada(canvas, { reduzido: false }))
         .then((assumiu) => {
             if (!assumiu) {
                 semGl();
@@ -70,71 +67,37 @@ const carregarFundo = (hero) => {
         .catch(semGl);
 };
 
-/* Animações */
-
-const animarEntrada = (hero) => {
-    gsap.fromTo(
-        hero.querySelectorAll(".hero-el"),
-        { opacity: 0, y: ENTRADA.deslocamento, filter: `blur(${ENTRADA.desfoque}px)` },
-        {
-            opacity: 1,
-            y: 0,
-            filter: "blur(0px)",
-            duration: ENTRADA.duracao,
-            stagger: ENTRADA.stagger,
-            ease: "power3.out",
-            delay: ENTRADA.atraso,
-        }
-    );
-};
-
-const animarFundo = () => {
-    const trilho = { trigger: document.body, start: "top top", end: "bottom bottom" };
-
-    gsap.to(".fundo__brilhos", { yPercent: -18, ease: "none", scrollTrigger: { ...trilho, scrub: 1.2 } });
-    gsap.to(".fundo__estrelas", { yPercent: -35, ease: "none", scrollTrigger: { ...trilho, scrub: 0.8 } });
-};
-
 /*
- * O medalhão fica parado. Saíram as três coisas que o moviam: o giro de 25
- * graus com o encolhimento na rolagem, a flutuação em laço e a atração
- * pelo cursor. Qualquer uma delas disputa o olho justamente na passagem em
- * que a cortina da segunda dobra abre.
+ * O hero sai de cena conforme a rolagem desce, e some por inteiro.
  *
- * Sobra o esmaecimento do hero inteiro, que não move nada — prepara a
- * troca em vez de competir com ela.
+ * Antes ele parava em 0.15 e ficava por baixo do resto da página. Uma
+ * peça com opacidade entre 0 e 1 vira camada composta, e o navegador a
+ * reamostra em posição fracionária a cada quadro da rolagem suave: a
+ * marca, que tem texto e um aro fino, saía borrada, e assim ficava o
+ * resto da visita. Chegando a zero o problema deixa de existir, porque
+ * não sobra nada para reamostrar.
+ *
+ * Passado o fim do caminho, `is-fora` tira o canvas do layout. Não é
+ * enfeite: o observador dentro do módulo da espiral vê o canvas sem
+ * área, entende que saiu da tela e desliga o laço de desenho. Enquanto
+ * o hero só esmaecia, a cena continuava sendo desenhada quadro a quadro
+ * para ninguém ver, disputando a GPU com a rolagem.
+ *
+ * Voltando ao topo, o `scrub` refaz o caminho ao contrário: a classe sai,
+ * o laço volta, e a marca reaparece em opacidade 1, sem camada composta e
+ * portanto nítida como no primeiro quadro.
  */
 const animarNaRolagem = (hero) => {
     gsap.to(hero, {
-        opacity: 0.15,
+        opacity: 0,
         ease: "none",
-        scrollTrigger: { trigger: hero, start: "40% top", end: "bottom top", scrub: true },
+        scrollTrigger: {
+            trigger: hero,
+            start: "top top",
+            end: "60% top",
+            scrub: true,
+            onLeave: () => hero.classList.add("is-fora"),
+            onEnterBack: () => hero.classList.remove("is-fora"),
+        },
     });
 };
-
-/*
- * Borda cônica que acende conforme o cursor se aproxima da peça.
- *
- * Uma vez por quadro: aqui há `getBoundingClientRect`, que força o
- * navegador a recalcular layout na hora. A cada evento de um mouse de
- * 1000 Hz, isso sozinho engasga a rolagem.
- */
-const ligarFlashlight = (medalhao) => {
-    const aoMover = (evento) => {
-        const caixa = medalhao.getBoundingClientRect();
-        const dx = evento.clientX - (caixa.left + caixa.width / 2);
-        const dy = evento.clientY - (caixa.top + caixa.height / 2);
-        const angulo = (Math.atan2(dy, dx) * 180) / Math.PI + 90;
-        const distancia = Math.sqrt(dx * dx + dy * dy);
-        const meiaLargura = caixa.width / 2;
-        const meiaAltura = caixa.height / 2;
-        const borda = Math.sqrt(meiaLargura * meiaLargura + meiaAltura * meiaAltura);
-        const proximidade = Math.max(0, 1 - Math.abs(distancia - borda) / FLASHLIGHT_ALCANCE);
-
-        medalhao.style.setProperty("--cursor-angle", `${angulo}deg`);
-        medalhao.style.setProperty("--proximity", proximidade.toFixed(3));
-    };
-
-    window.addEventListener("pointermove", porQuadro(aoMover));
-};
-

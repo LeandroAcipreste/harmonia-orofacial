@@ -1,6 +1,7 @@
 /* Destaques: cada card percorre procedimento → antes → depois com a rolagem. */
 
 import { ligarBrilhoDoCursor } from "../../components/shellcard/shellcard.js";
+import { prefereMovimentoReduzido } from "../../utils/movimento.js";
 
 /* Alturas de viewport de rolagem por card. Define o ritmo da sequência. */
 const ROLAGEM_POR_CARD = 0.9;
@@ -58,6 +59,8 @@ export const initSectionThree = () => {
         return;
     }
 
+    carregarFundo(secao);
+
     ligarBrilhoDoCursor(secao.querySelectorAll(".shell-card"));
 
     /*
@@ -67,6 +70,43 @@ export const initSectionThree = () => {
      * desdobramento que valia. Uma entrada só, e é essa.
      */
     ligarSequencia(secao);
+};
+
+/*
+ * Só a poeira em suspensão. A chapa de glitter que vinha junto saiu: era
+ * uma malha cobrindo o quadro inteiro com mistura ligada, e numa placa
+ * integrada isso disputa cada quadro com a rolagem.
+ *
+ * Entra por import dinâmico pelo motivo de sempre: o three.js pesa 655 kB
+ * e os cards não podem esperar por ele. Falhando qualquer etapa, a dobra
+ * cai na foto do CSS.
+ *
+ * O canvas está dentro do `sticky` de 100vh, então ele tem sempre o
+ * tamanho da tela, e não o da dobra inteira, que no celular passa de dois
+ * mil e quinhentos pixels.
+ */
+const carregarFundo = (secao) => {
+    const canvas = secao.querySelector("#s3-gl");
+
+    if (!canvas) {
+        return;
+    }
+
+    const semGl = () => secao.classList.add("is-sem-gl");
+
+    import("../../three/heroGlitter.js")
+        .then(({ iniciarHeroGlitter }) =>
+            iniciarHeroGlitter(canvas, {
+                reduzido: prefereMovimentoReduzido(),
+                superficie: false,
+            })
+        )
+        .then((assumiu) => {
+            if (!assumiu) {
+                semGl();
+            }
+        })
+        .catch(semGl);
 };
 
 /*
@@ -250,7 +290,7 @@ const criarSequenciaDoCard = (card) => {
     const depois = card.querySelector(".s3__etapa--depois");
     const trilho = card.querySelector(".s3__trilho");
 
-    const reduzido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduzido = prefereMovimentoReduzido();
     const entrada = reduzido ? 1 : ESCALA_ENTRADA;
     const saida = reduzido ? 1 : ESCALA_SAIDA;
 
