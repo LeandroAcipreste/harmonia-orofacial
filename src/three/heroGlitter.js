@@ -93,7 +93,7 @@ const OITO_LACO_CURTO = 0.42;
  * no medalhão e na poeira, onde é acento, e não superfície.
  */
 const CORES = {
-    fundo: "#050a1c",
+    fundo: "#0d0a47",
     aco: "#33507f",
     fria: "#67e8f9",
     luz: "#a8c8ff",

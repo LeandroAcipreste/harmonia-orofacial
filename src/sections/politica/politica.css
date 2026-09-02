@@ -1,0 +1,246 @@
+/* Design de Luxo Editorial - Política de Privacidade Harmonia Orofacial */
+
+:root {
+  --politica-bg: #00185e;
+  --politica-card-bg: rgba(0, 24, 94, 0.55);
+  --politica-ouro-luz: #fefcc4;
+  --politica-ouro-corpo: #dfb76c;
+  --politica-ouro-sombra: #603505;
+  --politica-borda-ouro: rgba(223, 183, 108, 0.25);
+  --politica-texto: #e2e8f0;
+}
+
+body.pagina-politica {
+  background-color: var(--politica-bg);
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(0, 39, 154, 0.8) 0%, transparent 70%),
+    radial-gradient(circle at 50% 100%, rgba(0, 15, 60, 0.9) 0%, transparent 70%);
+  color: var(--politica-texto);
+  font-family: system-ui, -apple-system, sans-serif;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Marca d'água de fundo luxuosa */
+.politica-watermark {
+  position: fixed;
+  top: 52%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(80vw, 700px);
+  height: auto;
+  opacity: 0.04;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 0 50px rgba(253, 186, 116, 0.3));
+}
+
+/* Header de Luxo Minimalista */
+.politica-header {
+  position: relative;
+  z-index: 10;
+  padding: 2.25rem 2rem;
+  border-bottom: 1px solid var(--politica-borda-ouro);
+  background: rgba(0, 20, 75, 0.85);
+  backdrop-filter: blur(16px);
+}
+
+.politica-header__inner {
+  max-width: 72rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.politica-header__logo {
+  height: 3.5rem;
+  width: auto;
+}
+
+.politica-header__voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--politica-ouro-luz);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.65rem 1.4rem;
+  border: 1px solid var(--politica-borda-ouro);
+  border-radius: 9999px;
+  background: rgba(223, 183, 108, 0.06);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.politica-header__voltar:hover {
+  background: rgba(223, 183, 108, 0.2);
+  border-color: var(--politica-ouro-luz);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(223, 183, 108, 0.2);
+}
+
+/* Container Principal */
+.politica-container {
+  position: relative;
+  z-index: 5;
+  max-width: 62rem;
+  margin: 4rem auto 7rem;
+  padding: 0 1.5rem;
+}
+
+.politica-hero {
+  text-align: center;
+  margin-bottom: 4.5rem;
+}
+
+.politica-hero__linha-decorativa {
+  width: 4rem;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--politica-ouro-corpo), transparent);
+  margin: 0 auto 1.75rem;
+}
+
+.politica-titulo {
+  font-family: var(--font-serif, "Cinzel", "Playfair Display", serif);
+  font-size: clamp(2.4rem, 5.5vw, 4rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 1.25rem;
+  background: linear-gradient(120deg, #ffffff 0%, var(--politica-ouro-luz) 45%, var(--politica-ouro-corpo) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 4px 30px rgba(253, 186, 116, 0.15);
+}
+
+.politica-subtitulo {
+  font-size: 1.125rem;
+  color: #94a3b8;
+  max-width: 44rem;
+  margin: 0 auto;
+  line-height: 1.75;
+  font-weight: 300;
+}
+
+/* Artigos Editoriais */
+.politica-conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 2.75rem;
+}
+
+.politica-secao {
+  position: relative;
+  background: var(--politica-card-bg);
+  border: 1px solid var(--politica-borda-ouro);
+  border-left: 3px solid var(--politica-ouro-corpo);
+  border-radius: 0.75rem;
+  padding: 2.75rem;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.politica-secao:hover {
+  border-color: rgba(223, 183, 108, 0.5);
+  border-left-color: var(--politica-ouro-luz);
+  transform: translateY(-2px);
+}
+
+.politica-secao__titulo {
+  font-family: var(--font-serif, serif);
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--politica-ouro-luz);
+  margin: 0 0 1.25rem;
+  letter-spacing: -0.01em;
+}
+
+.politica-secao__texto {
+  font-size: 1.0625rem;
+  line-height: 1.85;
+  color: #cbd5e1;
+  margin: 0 0 1.25rem;
+  font-weight: 300;
+}
+
+.politica-secao__texto:last-child {
+  margin-bottom: 0;
+}
+
+.politica-secao__texto strong {
+  color: var(--politica-ouro-luz);
+  font-weight: 600;
+}
+
+.politica-secao__lista {
+  margin: 1.25rem 0;
+  padding-left: 1.25rem;
+  color: #cbd5e1;
+  line-height: 1.85;
+  list-style-type: none;
+}
+
+.politica-secao__lista li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.politica-secao__lista li::before {
+  content: "◆";
+  position: absolute;
+  left: 0;
+  top: 0.15rem;
+  font-size: 0.65rem;
+  color: var(--politica-ouro-corpo);
+}
+
+.politica-secao__lista li strong {
+  color: var(--politica-ouro-luz);
+}
+
+/* Rodapé Elegante */
+.politica-footer {
+  position: relative;
+  z-index: 10;
+  border-top: 1px solid var(--politica-borda-ouro);
+  background: rgba(0, 12, 45, 0.95);
+  padding: 3.5rem 1.5rem;
+  text-align: center;
+}
+
+.politica-footer__inner {
+  max-width: 62rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.75rem;
+}
+
+.politica-footer__texto {
+  color: #64748b;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.politica-footer__contato-link {
+  color: var(--politica-ouro-corpo);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.politica-footer__contato-link:hover {
+  color: var(--politica-ouro-luz);
+  text-decoration: underline;
+}

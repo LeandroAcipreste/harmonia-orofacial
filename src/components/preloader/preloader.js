@@ -3,22 +3,14 @@ import { prefereMovimentoReduzido } from "../../utils/movimento.js";
 /* Pré-loader: o dente dourado enche de baixo para cima acompanhando o carregamento. */
 
 /*
- * A rampa sobe sozinha até 90% e só fecha quando a página realmente
- * termina de carregar. É o mesmo princípio de uma barra de progresso de
- * navegador: nunca finge que acabou antes da hora, nem trava esperando
- * um número exato que o navegador não sabe informar.
+ * O dente preenche de forma puramente estética e fluida em 5 segundos cravados,
+ * garantindo que a animação não dê saltos ("trancos") esperando eventos do
+ * navegador enquanto o vídeo do hero carrega no fundo.
  */
-const DURACAO_RAMPA = 2.2;
-const TETO_RAMPA = 0.9;
-const DURACAO_FECHO = 0.6;
+const DURACAO_TOTAL = 5.0;
 
-/*
- * Recurso que nunca chega não pode prender a página. O `load` só dispara
- * depois de imagens e metadados de vídeo, o que numa rede de celular
- * demora, então este limite é curto de propósito: passou disto, a página
- * abre mesmo que algo ainda esteja vindo.
- */
-const LIMITE_SEGURANCA = 3500;
+/* Limite de segurança para caso a animação de saída falhe */
+const LIMITE_SEGURANCA = 6000;
 
 const reduzido = prefereMovimentoReduzido();
 
@@ -75,39 +67,18 @@ export const initPreloader = () => {
 
     pintar();
 
-    const rampa = gsap.to(estado, {
-        progresso: TETO_RAMPA,
-        duration: DURACAO_RAMPA,
-        ease: "power2.out",
+    /*
+     * Uma única animação fluida de 0 a 100% que dura exatamente 5 segundos.
+     * Assim o carregamento visual não sofre engasgos com a latência de rede
+     * do vídeo do hero, e entrega a experiência premium pedida.
+     */
+    gsap.to(estado, {
+        progresso: 1,
+        duration: DURACAO_TOTAL,
+        ease: "power1.inOut",
         onUpdate: pintar,
+        onComplete: () => sair(preloader)
     });
-
-    let fechado = false;
-
-    const concluir = () => {
-        if (fechado) {
-            return;
-        }
-
-        fechado = true;
-        rampa.kill();
-
-        gsap.to(estado, {
-            progresso: 1,
-            duration: DURACAO_FECHO,
-            ease: "power2.inOut",
-            onUpdate: pintar,
-            onComplete: () => sair(preloader),
-        });
-    };
-
-    if (document.readyState === "complete") {
-        concluir();
-    } else {
-        window.addEventListener("load", concluir, { once: true });
-    }
-
-    window.setTimeout(concluir, LIMITE_SEGURANCA);
 };
 
 /*

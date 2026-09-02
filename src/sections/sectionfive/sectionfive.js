@@ -12,7 +12,6 @@
  */
 
 import { ligarBrilhoDoCursor } from "../../components/shellcard/shellcard.js";
-import { prefereMovimentoReduzido, movimentoDestravado } from "../../utils/movimento.js";
 
 /*
  * O passo entre uma letra e a seguinte, e quanto cada uma leva.
@@ -92,13 +91,6 @@ export const initSectionFive = () => {
         return;
     }
 
-    /* O destravamento de localhost vale aqui pelo mesmo motivo que vale
-       no letreiro: é coreografia de rolagem, e quem constrói precisa vê-la.
-       As partículas e o preloader continuam obedecendo à preferência. */
-    if (prefereMovimentoReduzido() && !movimentoDestravado) {
-        return;
-    }
-
     gsap.registerPlugin(ScrollTrigger);
 
     const coluna = secao.querySelector(".s5__texto");
@@ -123,16 +115,7 @@ export const initSectionFive = () => {
 
     secao.classList.add("js-letras");
 
-    /*
-     * O gatilho é a coluna das fotos, e não a do texto.
-     *
-     * As duas coisas têm que acontecer juntas: as letras aparecendo
-     * enquanto as fotos correm. Medindo pela coluna do texto — que é
-     * curta e fica parada — a revelação terminava nos primeiros
-     * seiscentos pixels e sobravam dois mil e seiscentos de fotos
-     * passando por um texto já pronto. Medindo pela pilha de fotos, que é
-     * quem de fato rola, as letras chegam no compasso delas.
-     */
+    /* 1. Revelação das letras do texto conforme o scroll */
     gsap.fromTo(
         letras,
         { y: "100%", opacity: 0 },
@@ -143,12 +126,40 @@ export const initSectionFive = () => {
             duration: DURACAO_DA_LETRA,
             stagger: PASSO_DA_LETRA,
             scrollTrigger: {
-                trigger: fotos,
-                start: "top 85%",
+                trigger: secao,
+                start: "top 75%",
                 end: "bottom 85%",
                 scrub: ARRASTO,
                 invalidateOnRefresh: true,
             },
         }
     );
+
+    /*
+     * 2. Carrossel Infinito das fotos da clínica:
+     * As fotos deslizam continuamente em loop infinito (-50% a 0%),
+     * com aceleração fluida sincronizada com a velocidade da rolagem do scroll.
+     */
+    if (fotos) {
+        const loopFotos = gsap.to(fotos, {
+            xPercent: -50,
+            ease: "none",
+            duration: 22,
+            repeat: -1,
+        });
+
+        /* Aceleração interativa proporcional à velocidade do scroll */
+        ScrollTrigger.create({
+            trigger: secao,
+            start: "top bottom",
+            end: "bottom top",
+            onUpdate: (self) => {
+                const velocidade = Math.abs(self.getVelocity() / 250);
+                if (velocidade > 0.1) {
+                    gsap.to(loopFotos, { timeScale: 1 + Math.min(velocidade, 3.5), duration: 0.25, overwrite: "auto" });
+                    gsap.to(loopFotos, { timeScale: 1, duration: 1.2, delay: 0.25, overwrite: false });
+                }
+            },
+        });
+    }
 };

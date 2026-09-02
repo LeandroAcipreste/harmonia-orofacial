@@ -1,11 +1,20 @@
 .s5 {
   position: relative;
-  padding: 6rem 1.5rem 7rem;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1.5rem;
+  box-sizing: border-box;
 }
 
 .s5__inner {
-  max-width: 72rem;
+  width: 100%;
+  max-width: 84rem;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
 }
 
 /* Cabeçalho */
@@ -32,21 +41,16 @@
    * ali importa. Em 24rem elas correm ao lado da leitura sem disputar
    * com ela.
    */
-  .s5__inner {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 24rem);
-    gap: 4.5rem;
-    align-items: start;
-  }
+.s5__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
 
-  .s5__texto {
-    position: sticky;
-
-    /* Abaixo da barra fixa, que tem 64px, com ar. */
-    top: 8rem;
-    margin-bottom: 0;
-    padding-bottom: 4rem;
-  }
+.s5__texto {
+  max-width: 44rem;
+  margin-bottom: 0;
+}
 }
 
 .s5__eyebrow {
@@ -81,16 +85,30 @@
 /* Empilhadas numa coluna só: é essa pilha que corre ao lado do texto
    parado. Sem colunas nem linhas de altura fixa — a proporção vem de
    cada foto, e é ela que dá o ritmo da subida. */
-.s5__coluna {
-  display: grid;
-  gap: 1.5rem;
+/* Faixa horizontal de fotos (em linha) */
+
+.s5__coluna-wrap {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  padding: 1rem 0;
+  -webkit-mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
 }
 
-/* Em coluna única a proporção vem da própria foto: linha de altura fixa
-   aqui espremeria as verticais numa faixa deitada */
+.s5__coluna {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.5rem;
+  width: max-content;
+  will-change: transform;
+}
+
 .s5__foto {
   position: relative;
   margin: 0;
+  flex: 0 0 20rem;
   aspect-ratio: 4 / 5;
   overflow: hidden;
   border: 1px solid rgb(253 186 116 / 0.45);
@@ -100,6 +118,7 @@
 }
 
 .s5__foto--larga {
+  flex: 0 0 26rem;
   aspect-ratio: 4 / 3;
 }
 

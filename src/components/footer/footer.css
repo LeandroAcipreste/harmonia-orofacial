@@ -4,7 +4,22 @@
   position: relative;
   z-index: 10;
   padding: 5rem 1.5rem 3rem;
-  border-top: 1px solid rgb(255 255 255 / 0.08);
+  /* A imagem entra como fundo com uma máscara escura por cima para
+     preservar a leitura do conteúdo. O `fixed` dá um leve parallax:
+     conforme a página sobe, a imagem se move mais devagar, criando
+     profundidade sem nenhum JavaScript. */
+  background-image:
+    linear-gradient(
+      to bottom,
+      rgb(0 39 154 / 0.82) 0%,
+      rgb(0 39 154 / 0.68) 40%,
+      rgb(0 39 154 / 0.80) 100%
+    ),
+    url("../../../assets/fundo-resultados.webp");
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+  border-top: none;
 }
 
 .rodape__inner {
@@ -128,8 +143,19 @@
 
 .rodape__direitos {
   font-size: 0.75rem;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   color: var(--slate-600);
+}
+
+.rodape__politica-link {
+  color: var(--gold-300, #dfb76c);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.rodape__politica-link:hover {
+  color: #fefcc4;
+  text-decoration: underline;
 }
 
 .rodape__voltar {

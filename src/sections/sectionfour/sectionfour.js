@@ -29,7 +29,7 @@ const aviso = (recado, bom = true) =>
  * variável de CSS chega como texto e ele a repassaria sem animar. São as
  * mesmas de src/core/base.css e têm que continuar batendo com as de lá.
  */
-const APAGADO = "#0a1128"; /* --navy-800, quase a cor do fundo */
+const APAGADO = "#00279a"; /* --navy-900: idêntico ao fundo, texto invisível */
 const OURO = "#fdba74"; /* --gold-300 */
 const CALMO = "#94a3b8"; /* --slate-400 */
 const DISCRETO = "#64748b"; /* --slate-500 */
@@ -298,16 +298,10 @@ export const montarLeituraDaDobra = (linha, posicao) => {
      * com o cabeçalho que ela encima, e volta quando a rolagem volta: é o
      * `scrub` desfazendo o caminho, sem nada a mais para escrever.
      *
-     * Quem carrega a marca são duas peças: o próprio letreiro, porque o
-     * dente é o que sobrou dele depois do recolhimento e mover o elemento
-     * move o recorte; e a placa dourada, que é o chão da marca e tem que
-     * andar colada nela.
+     * Quem carrega a marca é o próprio letreiro: o dente é o que sobrou
+     * dele depois do recolhimento, e mover o elemento move o recorte.
      */
-    const sobem = [
-        inner,
-        bloco && bloco.querySelector(".letreiro"),
-        bloco && bloco.querySelector(".transicao__placa"),
-    ].filter(Boolean);
+    const sobem = [inner, bloco && bloco.querySelector(".letreiro")].filter(Boolean);
 
     if (sobem.length && sobra() > 0) {
         linha.to(

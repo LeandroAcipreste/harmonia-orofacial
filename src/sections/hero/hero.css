@@ -1,62 +1,51 @@
 /*
  * O hero é a cena e mais nada.
  *
- * Não existe mais medalhão de HTML, órbita, feixe vertical nem indicador
- * de rolagem por cima: a marca que se vê é a que a espiral desenha no
- * miolo, e qualquer peça sobreposta deixava de ser a cena que foi feita.
+ * Não existe medalhão de HTML, órbita, feixe vertical nem indicador de
+ * rolagem por cima: a marca que se vê é a que o vídeo mostra no miolo do
+ * vórtice, e qualquer peça sobreposta deixava de ser a cena que foi
+ * feita.
+ *
+ * O fundo fica com o mesmo quadro que o vídeo abre. Assim, entre a
+ * primeira pintura e o vídeo começar a tocar, não há troca nenhuma para
+ * se ver — nem uma faixa escura, nem um pisco.
  */
 .hero {
   position: relative;
   min-height: 100vh;
   overflow: hidden;
-}
+  background-color: var(--navy-900);
+  background-image: url("../../../assets/hero-espiral.webp");
+  background-position: center;
 
-/* A espiral (ver src/three/espiralDourada.js) */
 
-.hero__gl {
+/*
+ * O vídeo cobre a dobra inteira.
+ *
+ * `object-fit: cover` porque o arquivo é 16:9 e a dobra não é: numa
+ * janela alta ele sobra pelos lados, numa larga sobra por cima e por
+ * baixo, e o corte cai sempre no que é fundo. O miolo, que é onde está a
+ * marca, fica centrado nos dois casos.
+ */
+.hero__video {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  object-fit: cover;
   pointer-events: none;
 }
 
-/*
- * Sem WebGL o vórtice entra parado, em CSS.
- *
- * Os anéis saem de um `repeating-radial-gradient` com as paradas em
- * porcentagem: como a caixa é elíptica, as paradas acompanham a proporção
- * da janela e o desenho continua fechando no centro. O que se perde é o
- * fio, o desfoque e o giro, não a figura.
- */
-.hero.is-sem-gl {
-  background-image:
-    radial-gradient(circle at 50% 50%, rgb(42 127 216 / 0.35), transparent 34%),
-    repeating-radial-gradient(
-      circle at 50% 50%,
-      transparent 0 2.6%,
-      rgb(243 194 77 / 0.22) 2.6% 3.4%,
-      transparent 3.4% 4.4%
-    ),
-    radial-gradient(ellipse 78% 68% at 50% 50%, transparent 40%, var(--navy-900) 96%);
-  background-color: var(--navy-900);
-  background-position: center;
-  background-size: cover;
-}
 
-.hero.is-sem-gl .hero__gl {
-  display: none;
-}
 
 /*
- * Passado o fim do esmaecimento, a cena sai do layout.
+ * Passado o fim do esmaecimento, o vídeo sai do layout.
  *
  * `display: none` e não `visibility: hidden` de propósito: só o primeiro
- * zera a área do elemento, que é o que o observador dentro do módulo lê
- * para desligar o laço de desenho. Escondido por `visibility`, o canvas
- * continua com a mesma caixa, o observador continua dizendo que ele está
- * na tela, e a espiral segue sendo desenhada para ninguém.
+ * faz o navegador parar de decodificar quadros. Escondido por
+ * `visibility`, o vídeo continua rodando para ninguém, gastando
+ * decodificação enquanto a pessoa lê o resto da página.
  */
-.hero.is-fora .hero__gl {
+.hero.is-fora .hero__video {
   display: none;
 }

@@ -111,10 +111,6 @@
 
 <header class="nav" id="nav">
   <nav class="nav__inner">
-    <div class="nav__grupo">
-      <a class="nav-link" href="#sectiontwo">PROCEDIMENTOS</a>
-      <a class="nav-link" href="#sectionthree">RESULTADOS</a>
-    </div>
 
     <a class="nav__marca" href="#hero" aria-label="Harmonia Orofacial, início">
       <img class="nav__marca-img" src="assets/favicon-180.png" alt="" />
@@ -127,6 +123,8 @@
     </button>
 
     <div class="nav__grupo nav__grupo--dir">
+      <a class="nav-link" href="#sectiontwo">PROCEDIMENTOS</a>
+      <a class="nav-link" href="#sectionthree">RESULTADOS</a>
       <a class="nav-link" href="#sectionfour">A DENTISTA</a>
       <a class="nav-link" href="#sectionfive">A CLÍNICA</a>
       <a class="nav-link" href="#contato">CONTATO</a>
@@ -142,10 +140,32 @@
 <main class="pagina">
 
   <section class="hero" id="hero">
-    <canvas class="hero__gl" id="hero-gl" width="1920" height="1080"></canvas>
+    <!--
+      A espiral, em vídeo.
+
+      O `poster` é o primeiro quadro do próprio laço: enquanto o vídeo
+      carrega, o que se vê é exatamente o que ele vai mostrar no primeiro
+      quadro, então a troca não pisca.
+
+      Sem `loop`: quem dá a volta é o script, porque o arquivo não é
+      cíclico (ver src/sections/hero/hero.js).
+    -->
+    <video
+      class="hero__video"
+      id="hero-video"
+      src="assets/hero-espiral.mp4"
+      poster="assets/hero-espiral.webp"
+      autoplay
+      loop
+      muted
+      playsinline
+      preload="auto"
+      aria-hidden="true"
+      tabindex="-1"
+    ></video>
 
     <!-- O título fica só para leitor de tela e busca: a marca que se vê é
-         a que a própria cena desenha, no miolo do vórtice. -->
+         a que o próprio vídeo mostra, no miolo do vórtice. -->
     <h1 class="sr-only">Harmonia Orofacial · Clínica Odontológica</h1>
   </section>
 
@@ -186,6 +206,27 @@
       <span class="cortina__folha cortina__folha--dir"></span>
     </div>
   </section>
+
+  <!-- Faixa marquee: a marca desliza para a esquerda conforme o scroll -->
+  <div class="faixa-marquee" aria-hidden="true">
+    <span class="faixa-marquee__fade-topo"></span>
+    <div class="faixa-marquee__trilho" id="faixa-marquee-trilho">
+      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
+      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
+      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
+      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
+      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
+      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
+      <!-- duplicata para loop perfeito -->
+      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
+      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
+      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
+      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
+      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
+      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
+    </div>
+    <span class="faixa-marquee__fade-base"></span>
+  </div>
 
   <section class="s3" id="sectionthree">
 
@@ -330,19 +371,6 @@
     do dente — e o que estava atrás aparece.
   -->
   <div class="transicao">
-
-    <!--
-      A placa dourada, que entra atrás da marca no fim do recolhimento.
-
-      Ela fica exatamente onde o dente pousa: o traço do dente é a única
-      coisa que a máscara deixa em pé ali, e tudo o que ela recorta fora
-      passa a mostrar ouro em vez do azul do fundo. O desenho da marca
-      fica gravado na placa.
-
-      Mora fora do letreiro de propósito — dentro dele seria recortada
-      pela mesma máscara e não sobraria nada.
-    -->
-    <span class="transicao__placa" aria-hidden="true"></span>
 
     <!--
       O letreiro anuncia o nome antes da dobra da doutora. São três faixas
@@ -498,22 +526,34 @@
         </p>
       </div>
 
-      <div class="s5__coluna">
-        <figure class="s5__foto shell-card">
-          <img class="s5__img" src="assets/clinica/1.webp" srcset="assets/clinica/1-400.webp 400w, assets/clinica/1-800.webp 800w, assets/clinica/1.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Fachada da clínica, com o letreiro Harmonia Orofacial e a bandeira azul na calçada" loading="lazy" decoding="async" />
-        </figure>
-        <figure class="s5__foto shell-card">
-          <img class="s5__img" src="assets/clinica/2.webp" srcset="assets/clinica/2-400.webp 400w, assets/clinica/2-800.webp 800w, assets/clinica/2.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Vista ampla da recepção, com o balcão branco, o lustre aceso e as poltronas azuis" loading="lazy" decoding="async" />
-        </figure>
-        <figure class="s5__foto shell-card">
-          <img class="s5__img" src="assets/clinica/3.webp" srcset="assets/clinica/3-400.webp 400w, assets/clinica/3-800.webp 800w, assets/clinica/3.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Lustre dourado aceso sobre o balcão da recepção" loading="lazy" decoding="async" />
-        </figure>
-        <figure class="s5__foto shell-card">
-          <img class="s5__img" src="assets/clinica/4.webp" srcset="assets/clinica/4-400.webp 400w, assets/clinica/4-800.webp 800w, assets/clinica/4.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Sala de espera com cadeiras azuis e o corredor dos consultórios ao fundo" loading="lazy" decoding="async" />
-        </figure>
-        <figure class="s5__foto s5__foto--larga shell-card">
-          <img class="s5__img" src="assets/clinica/5.webp" srcset="assets/clinica/5-400.webp 400w, assets/clinica/5-800.webp 800w, assets/clinica/5.webp 1600w" sizes="(min-width: 1024px) 728px, 94vw" width="1600" height="1200" alt="Balcão da recepção com o dente vazado em dourado, o lustre e a marca na parede" loading="lazy" decoding="async" />
-        </figure>
+      <div class="s5__coluna-wrap">
+        <div class="s5__coluna">
+          <figure class="s5__foto shell-card">
+            <img class="s5__img" src="assets/clinica/1.webp" srcset="assets/clinica/1-400.webp 400w, assets/clinica/1-800.webp 800w, assets/clinica/1.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Fachada da clínica, com o letreiro Harmonia Orofacial e a bandeira azul na calçada" loading="lazy" decoding="async" />
+          </figure>
+          <figure class="s5__foto shell-card">
+            <img class="s5__img" src="assets/clinica/2.webp" srcset="assets/clinica/2-400.webp 400w, assets/clinica/2-800.webp 800w, assets/clinica/2.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Vista ampla da recepção, com o balcão branco, o lustre aceso e as poltronas azuis" loading="lazy" decoding="async" />
+          </figure>
+          <figure class="s5__foto shell-card">
+            <img class="s5__img" src="assets/clinica/3.webp" srcset="assets/clinica/3-400.webp 400w, assets/clinica/3-800.webp 800w, assets/clinica/3.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Lustre dourado aceso sobre o balcão da recepção" loading="lazy" decoding="async" />
+          </figure>
+          <figure class="s5__foto shell-card">
+            <img class="s5__img" src="assets/clinica/4.webp" srcset="assets/clinica/4-400.webp 400w, assets/clinica/4-800.webp 800w, assets/clinica/4.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Sala de espera com cadeiras azuis e o corredor dos consultórios ao fundo" loading="lazy" decoding="async" />
+          </figure>
+          <!-- duplicata para carrossel infinito -->
+          <figure class="s5__foto shell-card">
+            <img class="s5__img" src="assets/clinica/1.webp" srcset="assets/clinica/1-400.webp 400w, assets/clinica/1-800.webp 800w, assets/clinica/1.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Fachada da clínica, com o letreiro Harmonia Orofacial e a bandeira azul na calçada" loading="lazy" decoding="async" />
+          </figure>
+          <figure class="s5__foto shell-card">
+            <img class="s5__img" src="assets/clinica/2.webp" srcset="assets/clinica/2-400.webp 400w, assets/clinica/2-800.webp 800w, assets/clinica/2.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Vista ampla da recepção, com o balcão branco, o lustre aceso e as poltronas azuis" loading="lazy" decoding="async" />
+          </figure>
+          <figure class="s5__foto shell-card">
+            <img class="s5__img" src="assets/clinica/3.webp" srcset="assets/clinica/3-400.webp 400w, assets/clinica/3-800.webp 800w, assets/clinica/3.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Lustre dourado aceso sobre o balcão da recepção" loading="lazy" decoding="async" />
+          </figure>
+          <figure class="s5__foto shell-card">
+            <img class="s5__img" src="assets/clinica/4.webp" srcset="assets/clinica/4-400.webp 400w, assets/clinica/4-800.webp 800w, assets/clinica/4.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Sala de espera com cadeiras azuis e o corredor dos consultórios ao fundo" loading="lazy" decoding="async" />
+          </figure>
+        </div>
       </div>
 
     </div>
@@ -562,7 +602,9 @@
     </div>
 
     <div class="rodape__base rodape-anim">
-      <p class="rodape__direitos">© 2026 Harmonia Orofacial</p>
+      <p class="rodape__direitos">
+        © 2026 Harmonia Orofacial • <a class="rodape__politica-link" href="politica-de-privacidade.html">Política de Privacidade e Segurança ERP</a>
+      </p>
       <a class="rodape__voltar" href="#hero">
         VOLTAR AO TOPO
         <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"></path></svg>

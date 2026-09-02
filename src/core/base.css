@@ -1,11 +1,14 @@
 /* Tokens da marca, reset e camadas de fundo. Compartilhado por todas as
    páginas do site, por isso vive fora do style.css da home. */
 
-
 :root {
-  /* superfícies */
-  --navy-900: #050a1c;
-  --navy-800: #0a1128;
+  /*
+   * Paleta exata definida pelo cliente. 
+   * A página vai variar exatamente nessas tonalidades de azul puro,
+   * começando do tom mais escuro exigido (#00279a) até o mais claro.
+   */
+  --navy-900: #00279a;   /* Fundo principal do site */
+  --navy-800: #002db3;   /* Superfícies secundárias */
 
   /* texto */
   --white: #ffffff;
@@ -15,15 +18,26 @@
   --slate-500: #64748b;
   --slate-600: #475569;
 
-  /* acento (o dourado da marca ocupa aqui o lugar do laranja da referência) */
+  /* Azul da marca / destaque */
+  --indigo-marca: #0033cd;
+
+  /* Chapa do letreiro */
+  --indigo-chapa: #003ae6;
+
+  /* Ouro da placa do dente — mantido (Ouro clássico) */
+  --ouro-chapa-sombra: #603505;
+  --ouro-chapa: #cea149;
+  --ouro-chapa-luz: #fefcc4;
+
+  /* Dourado da marca */
   --gold-200: #fed7aa;
   --gold-300: #fdba74;
   --gold-400: #fb923c;
 
-  /* luzes frias do fundo */
-  --blue-400: #60a5fa;
-  --cyan-200: #a5f3fc;
-  --cyan-300: #67e8f9;
+  /* Luzes de realce — o tom mais claro da escala */
+  --blue-400: #0040ff;
+  --cyan-200: #9999ff;
+  --cyan-300: #6666ff;
 
   /* tipografia */
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -127,42 +141,45 @@ a {
   transform: translate(-50%, -50%);
 }
 
+/* Brilho maior - #003ae6 */
 .brilho--azul {
   top: 18%;
   left: 22%;
+  width: 64rem;
+  height: 64rem;
+  background-image: radial-gradient(
+    closest-side,
+    rgb(0 58 230 / 0.40),
+    rgb(0 58 230 / 0.15) 50%,
+    transparent 75%
+  );
+}
+
+/* Brilho lateral - #0040ff */
+.brilho--indigo {
+  top: 48%;
+  left: 88%;
   width: 52rem;
   height: 52rem;
   background-image: radial-gradient(
     closest-side,
-    rgb(29 78 216 / 0.24),
-    rgb(29 78 216 / 0.09) 48%,
-    transparent 74%
+    rgb(0 64 255 / 0.30),
+    rgb(0 64 255 / 0.10) 50%,
+    transparent 75%
   );
 }
 
-.brilho--indigo {
-  top: 48%;
-  left: 88%;
-  width: 42rem;
-  height: 42rem;
-  background-image: radial-gradient(
-    closest-side,
-    rgb(79 70 229 / 0.18),
-    rgb(79 70 229 / 0.07) 48%,
-    transparent 74%
-  );
-}
-
+/* Brilho base - mix azul claro/ciano */
 .brilho--ciano {
   top: 84%;
   left: 30%;
-  width: 46rem;
-  height: 46rem;
+  width: 52rem;
+  height: 52rem;
   background-image: radial-gradient(
     closest-side,
-    rgb(8 145 178 / 0.13),
-    rgb(8 145 178 / 0.05) 48%,
-    transparent 74%
+    rgb(102 102 255 / 0.22),
+    rgb(102 102 255 / 0.08) 50%,
+    transparent 75%
   );
 }
 
@@ -180,12 +197,13 @@ a {
   background-color: rgb(255 255 255 / 0.5);
 }
 
-.estrela--1 { top: 20%; right: 25%; background-color: rgb(255 255 255 / 0.6); }
-.estrela--2 { top: 35%; left: 15%; background-color: rgb(255 255 255 / 0.4); }
-.estrela--3 { top: 60%; right: 10%; width: 6px; height: 6px; background-color: rgb(253 186 116 / 0.5); }
-.estrela--4 { top: 75%; left: 30%; }
-.estrela--5 { top: 15%; left: 45%; background-color: rgb(103 232 249 / 0.5); }
-.estrela--6 { top: 85%; right: 40%; background-color: rgb(255 255 255 / 0.4); }
+/* Partículas de luz como as do vídeo: brancas e douradas */
+.estrela--1 { top: 20%; right: 25%; background-color: rgb(255 255 255 / 0.55); }
+.estrela--2 { top: 35%; left: 15%; background-color: rgb(255 255 255 / 0.35); }
+.estrela--3 { top: 60%; right: 10%; width: 6px; height: 6px; background-color: rgb(253 186 116 / 0.65); }
+.estrela--4 { top: 75%; left: 30%; background-color: rgb(255 255 255 / 0.35); }
+.estrela--5 { top: 15%; left: 45%; background-color: rgb(253 186 116 / 0.45); }
+.estrela--6 { top: 85%; right: 40%; background-color: rgb(255 255 255 / 0.35); }
 
 .fundo__grade {
   position: absolute;

@@ -10,6 +10,46 @@
   position: relative;
   padding: 6rem 1.5rem;
   perspective: 1400px;
+  background-color: var(--navy-900);
+}
+
+/*
+ * Transição de gradiente no topo e na base da 3ª dobra:
+ * - Em cima (após o marquee): parte de var(--navy-900) sem nenhuma linha de corte.
+ * - Embaixo: transiciona suavemente até a divisa.
+ */
+.s3::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 14rem;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    var(--navy-900) 0%,
+    rgb(0 39 154 / 0.8) 40%,
+    transparent 100%
+  );
+}
+
+.s3::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 14rem;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgb(0 39 154 / 0.5) 40%,
+    var(--navy-900) 100%
+  );
 }
 
 /* Fundo da dobra */
@@ -105,7 +145,7 @@
  */
 .s3__palco {
   position: relative;
-  z-index: 1;
+  z-index: 3;
   width: 100%;
   max-width: 114rem;
   margin: 0 auto;

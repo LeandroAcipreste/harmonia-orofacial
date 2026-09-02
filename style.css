@@ -6,6 +6,7 @@
 @import "./src/sections/sectiontwo/sectiontwo.css";
 @import "./src/sections/sectionthree/sectionthree.css";
 @import "./src/sections/letreiro/letreiro.css";
+@import "./src/components/faixa-marquee/faixa-marquee.css";
 @import "./src/sections/sectionfour/sectionfour.css";
 @import "./src/sections/sectionfive/sectionfive.css";
 @import "./src/core/base.css";

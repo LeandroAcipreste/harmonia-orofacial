@@ -150,12 +150,18 @@
   opacity: 0;
 }
 
-/* As palavras nascem quase da cor do fundo: estão lá, mas ainda não
-   foram lidas. A onda dourada é que as acende. */
+/* Todo o texto de corpo some até ser acendido: os próprios elementos pai
+   também ficam da cor do fundo, sem depender só dos spans filhos. */
+.s4.js-leitura .s4__bio,
+.s4.js-leitura .s4__cro,
+.s4.js-leitura .s4__area-texto {
+  color: var(--navy-900);
+}
+
 .s4.js-leitura .s4__bio .s4__palavra,
 .s4.js-leitura .s4__cro .s4__palavra,
 .s4.js-leitura .s4__area-texto .s4__palavra {
-  color: var(--navy-800);
+  color: var(--navy-900);
 }
 
 /*

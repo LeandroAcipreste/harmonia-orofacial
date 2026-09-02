@@ -1,5 +1,3 @@
-import { movimentoForcado, motivoDoMovimento } from "./movimento.js";
-
 /* Relatório no console do que pode impedir as animações de rodar. */
 
 const ESTILO_OK = "color:#22c55e;font-weight:bold";
@@ -27,30 +25,21 @@ export const relatarEstado = () => {
     linha("IntersectionObserver", typeof IntersectionObserver, typeof IntersectionObserver !== "undefined");
 
     /*
-     * Ligado, isto desliga quase tudo: o letreiro, o recolhimento e as
-     * entradas de texto verificam esta preferência e desistem por conta
-     * própria. Marcava OK antes, o que é enganoso — é a causa mais
-     * silenciosa que existe aqui, porque nada quebra, tudo só some.
+     * A preferência do sistema, e o que ela ainda desliga.
      *
-     * A leitura aqui é crua, direto do sistema, e não pela chave de
-     * movimento.js: esta linha existe para dizer o que o sistema pede, e
-     * a de baixo para dizer se estamos obedecendo.
+     * Já não é causa de dobra vazia: a coreografia de rolagem — o
+     * recolhimento, a leitura da dobra da doutora, as letras da clínica —
+     * roda sempre, em qualquer máquina. O que ela contém é o movimento de
+     * ambiente: preloader, cascata dos procedimentos e as partículas.
+     *
+     * Por isso a linha é informativa, e não um alarme.
      */
     const reduzido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     linha(
         "movimento reduzido",
         reduzido ? "LIGADO no sistema" : "desligado",
-        !reduzido || movimentoForcado,
-        reduzido && !movimentoForcado
-            ? "desliga as animações; abra com ?movimento=sempre para destravar"
-            : ""
-    );
-
-    linha(
-        "animações",
-        movimentoForcado ? "DESTRAVADAS" : "contidas",
-        movimentoForcado || !reduzido,
-        motivoDoMovimento
+        true,
+        reduzido ? "contém só o movimento de ambiente; a coreografia roda" : ""
     );
 
     const item = document.querySelector(".s2__item");

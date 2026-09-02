@@ -1,5 +1,3 @@
-import { prefereMovimentoReduzido, movimentoDestravado } from "../../utils/movimento.js";
-
 /*
  * Aviso no console de que cada função desta dobra rodou, e de onde ela
  * parou quando parou.
@@ -62,11 +60,6 @@ export const initLetreiro = () => {
        que continua sendo o nome da clínica escrito grande. */
     if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") {
         aviso("initLetreiro", "PAREI: sem GSAP ou ScrollTrigger", false);
-        return;
-    }
-
-    if (prefereMovimentoReduzido() && !movimentoDestravado) {
-        aviso("initLetreiro", "PAREI: obedecendo ao movimento reduzido do sistema", false);
         return;
     }
 
@@ -153,14 +146,16 @@ const RECORTE_FINAL = { desktop: "11vw", movel: "28vw" };
  * ponto da imagem com o mesmo ponto em porcentagem do quadro, então o
  * valor que se escreve aqui não é onde o dente aparece — é preciso
  * resolver para trás. Medida a caixa do traço no arquivo, o centro dele
- * cai a 50,07% / 47,46% da imagem; daí, para o centro pousar em 47% / 83%
+ * cai a 50,07% / 47,46% da imagem; daí, para o centro pousar em 47% / 91%
  * da tela com o recorte final em 11vw, a posição é esta. Mexer no tamanho
  * final obriga a refazer a conta: os dois andam juntos.
  *
- * O vão da coluna da esquerda, embaixo da apresentação, é o único lugar
- * da dobra onde a marca não passa por cima de texto.
+ * No desktop a marca desce até encostar na divisa: 91% da tela põe a base
+ * da placa a dois pixels do fim da dobra, e ela passa a ler como o traço
+ * que separa a doutora da clínica. Mais baixo que isso a placa é cortada
+ * pelo recorte do letreiro — 93% já estoura em 16px.
  */
-const POUSO_FINAL = { desktop: "46.6% 87.7%", movel: "50% 11.7%" };
+const POUSO_FINAL = { desktop: "46.6% 96.8%", movel: "50% 11.7%" };
 
 /*
  * Onde o recorte começa. Está repetido no CSS, que é quem desenha o
@@ -210,12 +205,6 @@ export const initTransicao = ({ aoRecolher } = {}) => {
     if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") {
         bloco.classList.add("sem-transicao");
         aviso("initTransicao", "PAREI: sem GSAP ou ScrollTrigger", false);
-        return;
-    }
-
-    if (prefereMovimentoReduzido() && !movimentoDestravado) {
-        bloco.classList.add("sem-transicao");
-        aviso("initTransicao", "PAREI: obedecendo ao movimento reduzido do sistema", false);
         return;
     }
 
@@ -346,26 +335,17 @@ export const initTransicao = ({ aoRecolher } = {}) => {
         );
 
         /*
-         * A placa dourada acende junto com o pouso, não antes.
+         * Não há placa, e a ausência é o ponto.
          *
-         * Antes o dente ainda é uma forma grande varrendo o quadro, e um
-         * quadrado de ouro atrás dele apareceria como um objeto solto. Só
-         * quando o traço já encolheu ao tamanho de marca é que a placa faz
-         * sentido: aí ela é o chão em que a marca se apoia.
+         * Houve aqui um quadrado de ouro que entrava atrás da marca no
+         * fim. Ele existia de quando a chapa era azul: o dente saía azul
+         * e precisava de um chão dourado para ser marca. Com a chapa
+         * dourada o dente já sai de ouro, e o quadrado passou a ser uma
+         * moldura sobrando em volta de uma coisa que já estava pronta.
+         *
+         * O que fica é o traço dourado direto no azul da página — que é o
+         * mesmo material que cobriu a tela, recolhido ao tamanho de marca.
          */
-        linha.to(
-            ".transicao__placa",
-            { opacity: 1, ease: "power2.out", duration: 0.5 },
-            1.8
-        );
-
-        /* No fim a chapa afrouxa um fio, e a marca deixa passar um
-           respiro do que está atrás em vez de ficar um decalque opaco. */
-        linha.to(".letreiro__sobreposicao", {
-            opacity: 0.9,
-            ease: "none",
-            duration: 0.3,
-        });
 
         /*
          * Aqui o recolhimento acaba e a dobra de baixo pendura a leitura
@@ -385,7 +365,9 @@ export const initTransicao = ({ aoRecolher } = {}) => {
         }
 
         return () => {
-            gsap.set(letreiro, { clearProps: "maskSize,maskPosition,webkitMaskSize,webkitMaskPosition" });
+            gsap.set(letreiro, {
+                clearProps: "maskSize,maskPosition,webkitMaskSize,webkitMaskPosition,opacity",
+            });
             gsap.set(".letreiro__sobreposicao", { clearProps: "opacity" });
         };
     };

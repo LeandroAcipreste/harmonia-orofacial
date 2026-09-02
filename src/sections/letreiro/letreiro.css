@@ -7,6 +7,10 @@
  * tamanho que a página usa, e faz a troca para a dobra de baixo: é ele
  * quem a cobre, e é recolhendo-se para dentro do desenho do dente que ele
  * a descobre.
+ *
+ * A chapa é dourada, o mesmo ouro da placa em que ela pousa. Do começo
+ * ao fim é o mesmo metal: o que cobre a tela, o que se recolhe e a placa
+ * que fica. O que se recolhe até virar dente já era dente.
  */
 
 /*
@@ -16,62 +20,6 @@
  */
 .transicao {
   position: relative;
-}
-
-/*
- * A placa dourada sob a marca.
- *
- * Fica no mesmo ponto em que o dente pousa, e um degrau abaixo dele: o
- * `z-index` 1 a põe acima da dobra da doutora e abaixo do letreiro, que é
- * 2. Assim o traço do dente — a única coisa que a máscara deixa em pé no
- * fim — se apoia nela, e o vazado em volta mostra ouro.
- *
- * O ponto é o mesmo que `POUSO_FINAL` resolve em letreiro.js, escrito
- * aqui em `left`/`top` porque aqui é uma caixa comum e não uma máscara:
- * 47% / 83% no desktop, 50% / 14,8% no retrato. Se aquele valor mudar,
- * este muda junto.
- *
- * A vertical vai em `svh` e não em porcentagem, e essa é a diferença
- * entre encaixar e não encaixar. A máscara resolve contra a caixa do
- * letreiro, que tem 100svh; a placa mora no bloco da transição, que é
- * alto o bastante para conter a dobra inteira. Em porcentagem as duas
- * mediam réguas diferentes e a placa caía longe do dente.
- *
- * O tamanho vem do desenho. O dente ocupa 7,72vw × 6,56vw no desktop e
- * 19,7vw × 16,7vw no retrato; a placa é o quadrado que os cobre com uma
- * margem de folga, para o traço se apoiar nela e não encostar na borda.
- */
-.transicao__placa {
-  position: absolute;
-  z-index: 1;
-  left: 50%;
-  top: 14.77svh;
-  width: 27vw;
-  height: 27vw;
-  translate: -50% -50%;
-
-  background-image: url("../../../assets/fundo-dente-vazado.png");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-
-  opacity: 0;
-  pointer-events: none;
-}
-
-@media (min-width: 900px) {
-  .transicao__placa {
-    left: 47%;
-    top: 83svh;
-    width: 11vw;
-    height: 11vw;
-  }
-}
-
-/* Sem recolhimento não há marca, e uma placa dourada solta no meio da
-   dobra seria um enfeite sem motivo. */
-.transicao.sem-transicao .transicao__placa {
-  display: none;
 }
 
 .letreiro {
@@ -93,7 +41,42 @@
   align-items: center;
   justify-content: center;
   gap: 1.5vw;
-  background-color: var(--navy-800);
+}
+
+/*
+ * Gradiente de fusão no topo do letreiro:
+ * Dissolve completamente a linha horizontal seca entre a dobra dos cards de procedimentos (.s3) e a chapa dourada.
+ */
+.letreiro::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  height: 12rem;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    var(--navy-900) 0%,
+    rgb(0 39 154 / 0.75) 45%,
+    transparent 100%
+  );
+}
+
+.letreiro {
+  /*
+   * A chapa é dourada, e é o mesmo ouro da placa em que ela vai pousar.
+   */
+  background-color: var(--ouro-chapa);
+  background-image: linear-gradient(
+    118deg,
+    var(--ouro-chapa-sombra) 0%,
+    var(--ouro-chapa) 24%,
+    var(--ouro-chapa-luz) 47%,
+    var(--ouro-chapa) 68%,
+    var(--ouro-chapa-sombra) 100%
+  );
 
   /*
    * As faixas são mais largas que a tela de propósito e sobram para os
@@ -157,15 +140,27 @@
  * A chapa que apaga as faixas.
  *
  * Ela entra enquanto o recorte ainda é maior que a tela, e é ela que dá o
- * segundo movimento: o letreiro esmaece e sobra a tela chapada de azul,
- * sem nada escrito. É desse azul que o dente vai nascer, encolhendo — e
- * não de dentro das letras, que viraria sujeira em vez de marca.
+ * segundo movimento: o letreiro esmaece e sobra a tela cheia de ouro, sem
+ * nada escrito. É desse ouro que o dente vai nascer, encolhendo — e não
+ * de dentro das letras, que viraria sujeira em vez de marca.
  */
 .letreiro__sobreposicao {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background-color: var(--navy-800);
+
+  /* O mesmo metal da chapa, na mesma varredura: é este véu que produz a
+     tela cheia do segundo movimento, e ele tem que ser indistinguível do
+     que está por baixo. */
+  background-color: var(--ouro-chapa);
+  background-image: linear-gradient(
+    118deg,
+    var(--ouro-chapa-sombra) 0%,
+    var(--ouro-chapa) 24%,
+    var(--ouro-chapa-luz) 47%,
+    var(--ouro-chapa) 68%,
+    var(--ouro-chapa-sombra) 100%
+  );
   opacity: 0;
   pointer-events: none;
 }
@@ -200,7 +195,9 @@
   line-height: 1;
   letter-spacing: -0.01em;
   text-transform: uppercase;
-  color: var(--gold-300);
+  /* Azul sobre ouro. Antes era ouro sobre azul; com a chapa dourada o
+     texto teria que ser lido contra a própria cor dele. */
+  color: var(--indigo-marca);
 }
 
 /*
@@ -209,13 +206,13 @@
  * passa a parecer um letreiro que corre.
  */
 .letreiro__texto--vazado {
-  color: rgb(253 186 116 / 0.35);
+  color: rgb(29 11 152 / 0.38);
 }
 
 @supports (-webkit-text-stroke: 1px currentColor) {
   .letreiro__texto--vazado {
     color: transparent;
-    -webkit-text-stroke: 1px rgb(253 186 116 / 0.55);
+    -webkit-text-stroke: 1px rgb(29 11 152 / 0.6);
   }
 }
 
@@ -226,7 +223,7 @@
   flex-shrink: 0;
   width: clamp(0.5rem, 1.4vw, 1.5rem);
   height: clamp(0.5rem, 1.4vw, 1.5rem);
-  background-color: var(--gold-400);
+  background-color: var(--indigo-marca);
   rotate: 45deg;
 }
 
@@ -243,12 +240,13 @@
   transform: translateX(-20%);
 }
 
-/* Movimento reduzido: as faixas ficam paradas, e o nome continua lá. */
-@media (prefers-reduced-motion: reduce) {
-  .letreiro__linha--dir {
-    transform: none;
-  }
-}
+/*
+ * Não há regra de `prefers-reduced-motion` para as faixas.
+ *
+ * Elas fazem parte da coreografia de rolagem, que roda sempre — e uma
+ * regra zerando o recuo inicial só criaria um pisco entre o CSS carregar
+ * e o GSAP escrever a primeira posição.
+ */
 
 /*
  * Sem script — ou com movimento reduzido — não há recolhimento, e um

@@ -1,0 +1,99 @@
+/* Faixa de marcas deslizando para a esquerda */
+
+.faixa-marquee {
+  position: relative;
+  z-index: 10;
+  overflow: hidden;
+  padding: 4rem 0;
+  background-color: var(--navy-900);
+}
+
+/* Máscaras de esfumaçamento horizontal (esquerda/direita) */
+.faixa-marquee::before,
+.faixa-marquee::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 6;
+  width: 14rem;
+  pointer-events: none;
+}
+
+.faixa-marquee::before {
+  left: 0;
+  background: linear-gradient(to right, var(--navy-900) 0%, rgba(0, 39, 154, 0.7) 40%, transparent 100%);
+}
+
+.faixa-marquee::after {
+  right: 0;
+  background: linear-gradient(to left, var(--navy-900) 0%, rgba(0, 39, 154, 0.7) 40%, transparent 100%);
+}
+
+/* Esfumaçamento vertical interno (topo e base dentro da faixa) */
+.faixa-marquee__fade-topo,
+.faixa-marquee__fade-base {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  height: 4.5rem;
+  pointer-events: none;
+}
+
+.faixa-marquee__fade-topo {
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--navy-900) 0%,
+    rgba(0, 39, 154, 0.85) 30%,
+    rgba(0, 39, 154, 0.35) 70%,
+    transparent 100%
+  );
+}
+
+.faixa-marquee__fade-base {
+  bottom: 0;
+  background: linear-gradient(
+    to top,
+    var(--navy-900) 0%,
+    rgba(0, 39, 154, 0.85) 30%,
+    rgba(0, 39, 154, 0.35) 70%,
+    transparent 100%
+  );
+}
+
+/* O trilho: uma fila horizontal de logos animada via GSAP ScrollTrigger */
+.faixa-marquee__trilho {
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+  width: max-content;
+  will-change: transform;
+}
+
+/* Fallback CSS puro caso JS esteja desativado */
+html.no-js .faixa-marquee__trilho {
+  animation: marqueeSlide 30s linear infinite;
+}
+
+@keyframes marqueeSlide {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Cada logo na fila com brilho e névoa */
+.faixa-marquee__item {
+  flex: none;
+  height: 3.75rem;
+  width: auto;
+  object-fit: contain;
+  opacity: 0.9;
+  transition: opacity 0.3s, filter 0.3s;
+  filter: drop-shadow(0 0 16px rgb(253 186 116 / 0.35)) drop-shadow(0 0 32px rgb(0 64 255 / 0.45));
+}
+
+.faixa-marquee__item:hover {
+  opacity: 1;
+  filter: drop-shadow(0 0 24px rgb(253 186 116 / 0.6)) drop-shadow(0 0 45px rgb(0 64 255 / 0.6));
+}

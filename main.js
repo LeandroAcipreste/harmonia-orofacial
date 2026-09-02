@@ -7,6 +7,7 @@ import { initFooter } from "./src/components/footer/footer.js";
 import { initHero } from "./src/sections/hero/hero.js";
 import { initSectionTwo } from "./src/sections/sectiontwo/sectiontwo.js";
 import { initSectionThree } from "./src/sections/sectionthree/sectionthree.js";
+import { initFaixaMarquee } from "./src/components/faixa-marquee/faixa-marquee.js";
 import { initLetreiro, initTransicao } from "./src/sections/letreiro/letreiro.js";
 import {
     initSectionFour,
@@ -25,6 +26,7 @@ initNavigation();
 initHero();
 initSectionTwo();
 initSectionThree();
+initFaixaMarquee();
 initLetreiro();
 
 initSectionFour();
