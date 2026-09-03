@@ -30,6 +30,15 @@
   pointer-events: none;
 }
 
+.hero__video::-webkit-media-controls,
+.hero__video::-webkit-media-controls-panel,
+.hero__video::-webkit-media-controls-play-button,
+.hero__video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none;
+  opacity: 0;
+}
+
 @media (max-aspect-ratio: 13/20) {
   .hero__video {
     object-fit: contain;

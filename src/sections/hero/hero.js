@@ -57,14 +57,45 @@ const seguirAProporcao = (video) => {
     window.addEventListener("orientationchange", adiar, { passive: true });
 };
 
+const prepararParaTocar = (video) => {
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.setAttribute("muted", "");
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+};
+
 const tocar = (video) => {
+    prepararParaTocar(video);
+
     const promessa = video.play();
 
     if (promessa && typeof promessa.catch === "function") {
         promessa.catch(() => {
-
+            aguardarGesto(video);
         });
     }
+};
+
+let gestoArmado = false;
+
+const aguardarGesto = (video) => {
+    if (gestoArmado) {
+        return;
+    }
+
+    gestoArmado = true;
+
+    const soltar = () => {
+        gestoArmado = false;
+        prepararParaTocar(video);
+        video.play().catch(() => {});
+    };
+
+    ["touchstart", "pointerdown", "click", "keydown"].forEach((evento) => {
+        document.addEventListener(evento, soltar, { once: true, passive: true });
+    });
 };
 
 let deveTocar = true;
@@ -79,6 +110,8 @@ export const initHero = () => {
     const video = hero.querySelector(".hero__video");
 
     if (video) {
+        video.src = montagemDaVez().arquivo;
+        video.load();
         tocar(video);
 
         video.addEventListener("pause", () => {

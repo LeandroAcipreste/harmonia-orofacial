@@ -1,6 +1,6 @@
 const DURACAO_TOTAL = 5000;
 const ESPERA_ANTES_DE_SAIR = 420;
-const LIMITE_SEGURANCA = DURACAO_TOTAL + 5000;
+const LIMITE_SEGURANCA = DURACAO_TOTAL + 7000;
 
 const suavizar = (t) => 1 - Math.pow(1 - t, 3);
 
@@ -79,11 +79,42 @@ export const initPreloader = () => {
             return;
         }
 
-        window.setTimeout(sair, ESPERA_ANTES_DE_SAIR);
+        comHeroPronta(() => window.setTimeout(sair, ESPERA_ANTES_DE_SAIR));
     };
 
     pintar(0);
     quadro = window.requestAnimationFrame(passo);
 
     window.setTimeout(encerrar, LIMITE_SEGURANCA);
+};
+
+const PRONTA_O_BASTANTE = 3;
+const ESPERA_MAXIMA = 4000;
+
+const comHeroPronta = (aoPronta) => {
+    const video = document.querySelector(".hero__video");
+
+    if (!video || video.readyState >= PRONTA_O_BASTANTE) {
+        aoPronta();
+        return;
+    }
+
+    let resolvido = false;
+
+    const liberar = () => {
+        if (resolvido) {
+            return;
+        }
+
+        resolvido = true;
+        window.clearTimeout(desistir);
+        eventos.forEach((e) => video.removeEventListener(e, liberar));
+        aoPronta();
+    };
+
+    const eventos = ["canplay", "canplaythrough", "playing", "error"];
+
+    eventos.forEach((e) => video.addEventListener(e, liberar, { once: true }));
+
+    const desistir = window.setTimeout(liberar, ESPERA_MAXIMA);
 };
