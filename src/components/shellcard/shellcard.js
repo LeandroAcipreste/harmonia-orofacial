@@ -1,15 +1,7 @@
-/* Brilho que segue o cursor, compartilhado por quem usa `.shell-card`. */
-
 import { porQuadro } from "../../utils/porQuadro.js";
 
 const ALCANCE_PADRAO = 220;
 
-/*
- * Registro único com um único listener. Cada seção que chama entrega os
- * seus cartões e todos passam a ser atualizados no mesmo evento: dois
- * listeners de `pointermove` medindo caixas em paralelo seria trabalho
- * repetido a cada movimento do mouse.
- */
 const cartoes = [];
 let ligado = false;
 
@@ -28,8 +20,6 @@ export const ligarBrilhoDoCursor = (elementos, { alcance = ALCANCE_PADRAO } = {}
 
     ligado = true;
 
-    /* Uma vez por quadro: este listener é da janela e mede a caixa de cada
-       cartão a cada passada, mesmo com o usuário lá em cima no hero. */
     window.addEventListener("pointermove", porQuadro(aoMover));
 };
 

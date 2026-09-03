@@ -1,12 +1,9 @@
 .s2 {
   position: relative;
-  padding: 9rem 1.5rem 8rem;
+  padding: 9rem 1.5rem 14rem;
   overflow: hidden;
 }
 
-/* Fundo */
-
-/* Navy aqui dentro para o `screen` ter com o que se misturar */
 .s2__bg {
   position: absolute;
   inset: 0;
@@ -23,7 +20,6 @@
   will-change: transform;
 }
 
-/* Lustre visto por baixo. */
 .s2__layer--radial {
   top: 46%;
   right: -34%;
@@ -39,9 +35,11 @@
   background-image: url("../../../assets/lustre-radial.jpg");
   background-size: cover;
   background-position: center;
+
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
-/* Desfoque pesado: os cristais viram bokeh */
 .s2__spin--halo {
   filter: blur(26px) saturate(1.5) brightness(1.2);
   -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 12%, rgb(0 0 0 / 0.5) 38%, transparent 64%);
@@ -49,7 +47,6 @@
   animation: s2Girar 120s linear infinite;
 }
 
-/* Lâmina de detalhe: devolve a cintilação */
 .s2__spin--detalhe {
   opacity: 0.32;
   filter: blur(1.5px) saturate(1.25);
@@ -64,12 +61,11 @@
   }
 }
 
-/* Trama: só matéria, no canto inferior */
 .s2__layer--trama {
   inset: -10% -10% -10% 30%;
   opacity: 0.13;
   background-image: url("../../../assets/lustre-trama.jpg");
-  /* Ampliada: perde a escala de luminária */
+
   background-size: 210%;
   background-position: 62% 45%;
   filter: blur(3px);
@@ -77,29 +73,17 @@
   mask-image: radial-gradient(ellipse 55% 50% at 76% 80%, #000 0%, transparent 68%);
 }
 
-/* Véu: protege a coluna de texto da luz */
 .s2__wash {
   position: absolute;
   inset: 0;
   background:
     linear-gradient(to right, var(--navy-900) 0%, rgb(5 10 28 / 0.92) 28%, rgb(5 10 28 / 0.35) 58%, transparent 78%),
-    /* faixa escura no rodapé: dá contraste aos pilares e assenta a seção */
+
     linear-gradient(to top, rgb(5 10 28 / 0.88) 0%, rgb(5 10 28 / 0.45) 22%, transparent 42%),
     radial-gradient(ellipse 50% 45% at 80% 45%, rgb(253 186 116 / 0.07), transparent 70%),
     radial-gradient(ellipse 90% 55% at 50% 118%, rgb(5 10 28 / 0.95), transparent 72%);
 }
 
-/* Cortina da passagem entre a primeira e a segunda dobra */
-
-/*
- * Duas folhas na cor do fundo cobrem a seção e se afastam para os lados
- * conforme a página sobe. A linha em que se separam é a mesma vertical
- * do feixe dourado do hero: a cortina parece rasgar a partir dele.
- *
- * Nasce aberta. Quem fecha é o GSAP, no primeiro quadro, e só depois de
- * confirmar que tem com o que animar — sem JavaScript, ou sem GSAP, a
- * seção fica visível em vez de ficar tapada para sempre.
- */
 .cortina {
   position: absolute;
   inset: 0;
@@ -114,8 +98,6 @@
   bottom: 0;
   display: block;
 
-  /* Meio ponto a mais que a metade: em largura ímpar, duas folhas de 50%
-     exatos deixam uma fresta de um pixel no meio. */
   width: 50.5%;
   background-color: var(--navy-900);
 }
@@ -130,8 +112,6 @@
   transform: translateX(100%);
 }
 
-/* Fio dourado na borda que abre: é ele que faz a separação ser vista
-   como uma cortina, e não como a seção simplesmente aparecendo. */
 .cortina__folha::after {
   content: "";
   position: absolute;
@@ -155,11 +135,9 @@
   left: 0;
 }
 
-/* Conteúdo */
-
 .s2__inner {
   position: relative;
-  z-index: 10; /* acima da camada de partículas — ver style.css */
+  z-index: 10;
   max-width: 72rem;
   margin: 0 auto;
 }
@@ -187,8 +165,6 @@
   background-color: rgb(253 186 116 / 0.45);
 }
 
-/* Lista de procedimentos */
-
 .s2__lista {
   display: grid;
   gap: 0.9rem 2.5rem;
@@ -197,12 +173,11 @@
   list-style: none;
 }
 
-/* Entrada por máscara: o texto sobe por trás da borda */
 .s2__item {
   font-size: 1.0625rem;
   line-height: 1.4;
   color: var(--slate-300);
-  overflow: hidden; /* reserva para navegadores sem `clip` */
+  overflow: hidden;
   overflow: clip;
 }
 
@@ -212,18 +187,15 @@
   padding-left: 1.5rem;
 }
 
-/* Estado escondido só vale com `.js-anim` */
 .s2__lista.js-anim .s2__item-txt {
   transform: translateY(110%);
   transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Revelação por item: a cascata vem da rolagem */
 .s2__lista.js-anim .s2__item.is-visivel .s2__item-txt {
   transform: translateY(0);
 }
 
-/* Marcador dourado no lugar do bullet */
 .s2__item-txt::before {
   content: "";
   position: absolute;
@@ -235,7 +207,6 @@
   background-color: rgb(253 186 116 / 0.85);
 }
 
-/* Movimento reduzido: entra por opacidade */
 @media (prefers-reduced-motion: reduce) {
   .s2__lista.js-anim .s2__item-txt {
     transform: none;
@@ -248,17 +219,11 @@
     opacity: 1;
   }
 }
-/* Responsivo */
 
-/*
- * Mobile: a lista fica por cima do lustre. Não há coluna estreita de
- * texto para proteger da luz, então a luz vem para o centro da seção e o
- * véu deixa de ser lateral — passa a ser parelho, escurecendo o bastante
- * para os procedimentos continuarem legíveis sobre o brilho.
- */
 @media (max-width: 767px) {
+
   .s2 {
-    padding: 7rem 1.5rem 6rem;
+    padding: 7rem 1.5rem 12rem;
   }
 
   .s2__layer--radial {
@@ -290,11 +255,11 @@
 }
 
 @media (min-width: 768px) {
+
   .s2 {
-    padding: 11rem 3rem 10rem;
+    padding: 11rem 3rem 18rem;
   }
 
-  /* Duas colunas: doze itens numa só ficariam altos */
   .s2__lista {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -307,7 +272,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .s2__layer--radial {
+  .s2__spin {
     animation: none;
   }
 }

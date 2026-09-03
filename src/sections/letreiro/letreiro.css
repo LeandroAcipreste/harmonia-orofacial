@@ -1,36 +1,9 @@
-/*
- * O letreiro: três faixas com o nome da clínica correndo em sentidos
- * alternados — direita, esquerda, direita — logo antes da dobra da Dra.
- * Célia.
- *
- * Ele existe para dois trabalhos ao mesmo tempo. Anuncia o nome no maior
- * tamanho que a página usa, e faz a troca para a dobra de baixo: é ele
- * quem a cobre, e é recolhendo-se para dentro do desenho do dente que ele
- * a descobre.
- *
- * A chapa é dourada, o mesmo ouro da placa em que ela pousa. Do começo
- * ao fim é o mesmo metal: o que cobre a tela, o que se recolhe e a placa
- * que fica. O que se recolhe até virar dente já era dente.
- */
-
-/*
- * O bloco da transição: o letreiro por cima, a dobra da doutora por
- * baixo, ocupando o mesmo lugar. É este bloco que fica preso na tela
- * enquanto o recorte encolhe.
- */
 .transicao {
   position: relative;
 }
 
 .letreiro {
-  /*
-   * Cobre a primeira tela da dobra de baixo, em vez de empurrá-la para
-   * frente. É o que faz uma descobrir a outra: sem a sobreposição, o
-   * recorte encolheria mostrando o fundo da página, e não a doutora.
-   *
-   * `z-index` e não ordem no HTML — o letreiro vem antes da dobra na
-   * leitura, que é a ordem que faz sentido para quem lê.
-   */
+
   position: absolute;
   inset: 0 0 auto;
   z-index: 2;
@@ -43,10 +16,6 @@
   gap: 1.5vw;
 }
 
-/*
- * Gradiente de fusão no topo do letreiro:
- * Dissolve completamente a linha horizontal seca entre a dobra dos cards de procedimentos (.s3) e a chapa dourada.
- */
 .letreiro::before {
   content: "";
   position: absolute;
@@ -54,20 +23,37 @@
   left: 0;
   right: 0;
   z-index: 10;
-  height: 12rem;
+
+  height: 32rem;
   pointer-events: none;
   background: linear-gradient(
     to bottom,
     var(--navy-900) 0%,
-    rgb(0 39 154 / 0.75) 45%,
+    var(--navy-900) 40%,
+    rgb(0 39 154 / 0.82) 58%,
+    rgb(0 39 154 / 0.45) 78%,
     transparent 100%
   );
 }
 
+@media (max-width: 899px) {
+  .letreiro {
+    padding-top: 26rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .letreiro::before {
+    height: 45vh;
+  }
+
+  .letreiro {
+    padding-top: 45vh;
+  }
+}
+
 .letreiro {
-  /*
-   * A chapa é dourada, e é o mesmo ouro da placa em que ela vai pousar.
-   */
+
   background-color: var(--ouro-chapa);
   background-image: linear-gradient(
     118deg,
@@ -78,47 +64,9 @@
     var(--ouro-chapa-sombra) 100%
   );
 
-  /*
-   * As faixas são mais largas que a tela de propósito e sobram para os
-   * dois lados. Sem cortar aqui, essa sobra vira barra de rolagem
-   * horizontal na página inteira.
-   */
   overflow: hidden;
   overflow: clip;
 
-  /*
-   * O recorte, e o coração do efeito.
-   *
-   * A máscara é o traço do dente. O que estiver por cima de traço
-   * aparece; o resto some. Começando enorme, a tela inteira cabe dentro
-   * da espessura do traço e o letreiro se vê inteiro, sem sinal de que
-   * está recortado. Encolhendo, o traço se fecha em volta da âncora até
-   * sobrar só o dente — e o letreiro terá se recolhido para dentro dele.
-   *
-   * O tamanho inicial sai de conta, em dois passos.
-   *
-   * Primeiro, quando o recorte deixa de cobrir a tela. O ponto mais gordo
-   * do traço tem raio inscrito de 59,7px nos 1536 do desenho, ou seja
-   * 3,89% da largura. A distância que precisa caber nesse raio não é a
-   * metade da diagonal: a âncora não fica no meio da tela, fica a 80,9% /
-   * 16,1% dela, e o que conta é o canto mais longe — o de baixo à
-   * esquerda, a √(0,809² + 0,839²) = 1,166 do lado maior. Daí 0,0389 × S
-   * ≥ 116,6vmax, e o recorte cobre a tela enquanto S ≥ 2997vmax.
-   *
-   * Segundo, quanto acima desse limite ficar. Basta a folga: nos dois
-   * primeiros movimentos o recorte não anima, fica parado neste tamanho
-   * — o que se vê ali é o letreiro correndo e depois esmaecendo, e o
-   * recorte só precisa estar cobrindo. 3400vmax é o limite com 13% de
-   * sobra, medido.
-   *
-   * Ficar mais alto do que isso não compra nada e custa: é deste tamanho
-   * que o encolhimento parte, e quanto maior o desenho no primeiro quadro
-   * dele, mais caro o quadro.
-   *
-   * A máscara é SVG, e isso não é detalhe: em qualquer tamanho ela é um
-   * punhado de curvas, e não uma imagem para reamostrar. Um PNG nesses
-   * 3400vmax é justamente o desenho caro que derrubava o quadro.
-   */
   -webkit-mask-image: url("../../../assets/dente-mascara.svg");
   mask-image: url("../../../assets/dente-mascara.svg");
   -webkit-mask-repeat: no-repeat;
@@ -126,32 +74,15 @@
   -webkit-mask-size: 3400vmax;
   mask-size: 3400vmax;
 
-  /*
-   * A âncora: 80,9% / 16,1% é o ombro direito do dente, o lugar mais
-   * gordo do traço, medido no arquivo. Ancorado em qualquer outro ponto,
-   * uma borda do traço entra no quadro antes da hora e o letreiro aparece
-   * cortado desde o começo.
-   */
   -webkit-mask-position: 80.9% 16.1%;
   mask-position: 80.9% 16.1%;
 }
 
-/*
- * A chapa que apaga as faixas.
- *
- * Ela entra enquanto o recorte ainda é maior que a tela, e é ela que dá o
- * segundo movimento: o letreiro esmaece e sobra a tela cheia de ouro, sem
- * nada escrito. É desse ouro que o dente vai nascer, encolhendo — e não
- * de dentro das letras, que viraria sujeira em vez de marca.
- */
 .letreiro__sobreposicao {
   position: absolute;
   inset: 0;
   z-index: 1;
 
-  /* O mesmo metal da chapa, na mesma varredura: é este véu que produz a
-     tela cheia do segundo movimento, e ele tem que ser indistinguível do
-     que está por baixo. */
   background-color: var(--ouro-chapa);
   background-image: linear-gradient(
     118deg,
@@ -165,20 +96,9 @@
   pointer-events: none;
 }
 
-/*
- * Cada faixa é centrada, e não alinhada à esquerda.
- *
- * Centrada, a sobra fica repartida em partes iguais dos dois lados, e é
- * essa sobra que o deslocamento come. Alinhada em uma borda, toda a sobra
- * ficaria do outro lado e a faixa que anda para lá mostraria a própria
- * ponta no meio do movimento.
- */
 .letreiro__linha {
   display: flex;
 
-  /* Cada faixa numa camada só sua: o deslocamento delas é o mesmo em
-     todo quadro da rolagem, e sem o aviso o navegador redesenha o texto
-     em vez de só reposicionar o que já desenhou. */
   will-change: transform;
   flex-shrink: 0;
   align-items: center;
@@ -195,16 +115,10 @@
   line-height: 1;
   letter-spacing: -0.01em;
   text-transform: uppercase;
-  /* Azul sobre ouro. Antes era ouro sobre azul; com a chapa dourada o
-     texto teria que ser lido contra a própria cor dele. */
+
   color: var(--indigo-marca);
 }
 
-/*
- * Uma cópia sim, uma não, vem só de contorno. É o que dá ritmo à faixa:
- * cheia e vazada alternadas, a repetição deixa de parecer repetição e
- * passa a parecer um letreiro que corre.
- */
 .letreiro__texto--vazado {
   color: rgb(29 11 152 / 0.38);
 }
@@ -216,9 +130,6 @@
   }
 }
 
-/* Losango dourado entre uma cópia e a outra, no lugar do ícone que a
-   referência usa. Feito em CSS por ser decoração pura: não vale um
-   arquivo a mais para carregar. */
 .letreiro__marca {
   flex-shrink: 0;
   width: clamp(0.5rem, 1.4vw, 1.5rem);
@@ -227,32 +138,10 @@
   rotate: 45deg;
 }
 
-/*
- * Estado inicial das faixas, escrito aqui e não só no GSAP.
- *
- * As faixas que andam para a direita precisam começar recuadas, senão o
- * movimento é uma volta ao lugar em vez de uma travessia. Com o
- * deslocamento no CSS, elas já nascem no lugar certo mesmo antes de o
- * script rodar, e sem script nenhum fica parada num enquadramento que
- * continua fazendo sentido.
- */
 .letreiro__linha--dir {
   transform: translateX(-20%);
 }
 
-/*
- * Não há regra de `prefers-reduced-motion` para as faixas.
- *
- * Elas fazem parte da coreografia de rolagem, que roda sempre — e uma
- * regra zerando o recuo inicial só criaria um pisco entre o CSS carregar
- * e o GSAP escrever a primeira posição.
- */
-
-/*
- * Sem script — ou com movimento reduzido — não há recolhimento, e um
- * letreiro parado por cima da dobra da doutora seria a dobra perdida.
- * Aqui ele volta a ser o que era: uma faixa que se lê e passa.
- */
 .transicao.sem-transicao .letreiro {
   position: relative;
   height: auto;

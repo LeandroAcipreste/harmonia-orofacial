@@ -1,31 +1,16 @@
-/* Smooth scrolling e sua sincronia com o ScrollTrigger. */
+const DURACAO_SCROLL = 1.4;
+const MULTIPLICADOR_RODA = 0.8;
+const SUAVIZACAO = (avanco) => 1 - Math.pow(1 - avanco, 4);
 
-const DURACAO_SCROLL = 1.1;
 const ALTURA_NAV = 64;
 const LARGURA_MOVEL = 950;
 
 let instancia = null;
 
-/*
- * No toque não existe scroll suave por JavaScript que ganhe do nativo. O
- * navegador rola fora da thread principal, no compositor; o Lenis traz
- * isso de volta para a thread principal e passa a disputar espaço com
- * cada quadro de animação. O resultado é a rolagem engasgada.
- *
- * Por isso o Lenis fica só no ponteiro. No toque, rolagem nativa, e o
- * ScrollTrigger trabalha direto com ela, que é o caminho para o qual ele
- * foi feito.
- */
 const ehMovel = () =>
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
     window.innerWidth <= LARGURA_MOVEL;
 
-/*
- * Instância única do Lenis. Com o Lenis no comando, o ScrollTrigger
- * precisa ser avisado a cada quadro: sem isso ele continua lendo a
- * posição nativa e os gatilhos disparam fora de hora. O `lagSmoothing(0)`
- * é exigência da integração documentada pelo Lenis.
- */
 export const initScroll = () => {
     if (instancia) {
         return instancia;
@@ -43,7 +28,12 @@ export const initScroll = () => {
         return null;
     }
 
-    instancia = new Lenis({ duration: DURACAO_SCROLL, smoothWheel: true });
+    instancia = new Lenis({
+        duration: DURACAO_SCROLL,
+        easing: SUAVIZACAO,
+        wheelMultiplier: MULTIPLICADOR_RODA,
+        smoothWheel: true,
+    });
 
     if (typeof ScrollTrigger !== "undefined") {
         instancia.on("scroll", ScrollTrigger.update);
@@ -55,15 +45,6 @@ export const initScroll = () => {
     return instancia;
 };
 
-/*
- * Recarregar a página devolve o visitante ao hero.
- *
- * Quem recusa a restauração do navegador é o script no <head>: este
- * módulo tem `defer` e chegaria tarde demais para isso. Aqui só se
- * completa o serviço, rolando para o topo — inclusive no `load`, porque
- * o preloader trava a rolagem durante o carregamento e o Lenis, quando
- * existe, mantém a própria posição, que precisa ser zerada junto.
- */
 const comecarNoTopo = () => {
     window.scrollTo(0, 0);
 
@@ -95,8 +76,6 @@ const ligarAncoras = () => {
     });
 };
 
-/* Com Lenis, quem leva é ele. Sem Lenis, o próprio navegador, que também
-   sabe rolar suave. Os dois descontam a altura da barra fixa. */
 const irPara = (alvo) => {
     if (instancia) {
         instancia.scrollTo(alvo, { offset: -ALTURA_NAV });
@@ -109,10 +88,6 @@ const irPara = (alvo) => {
     });
 };
 
-/*
- * As fontes chegam depois do primeiro paint e mudam a altura do texto;
- * sem recalcular, os gatilhos de scroll ficam presos na medida antiga.
- */
 export const recalcularAoCarregar = () => {
     if (typeof ScrollTrigger === "undefined") {
         return;

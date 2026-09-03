@@ -17,30 +17,12 @@
   gap: 2.5rem;
 }
 
-/* Cabeçalho */
-
-/*
- * Duas colunas: o texto para de um lado, as fotos correm do outro.
- *
- * A coluna do texto é `sticky` e a das fotos é alta — é dessa diferença
- * que sai o efeito. Ninguém precisa animar as fotos: elas sobem porque a
- * página sobe, e o que fica parado ao lado é que faz o movimento delas
- * aparecer. Um `pin` aqui seria uma terceira rolagem presa logo depois da
- * dobra da doutora, que já prende cinco telas e meia.
- */
 .s5__texto {
   margin-bottom: 3rem;
 }
 
 @media (min-width: 900px) {
-  /*
-   * A coluna das fotos tem largura fixa e a do texto fica com o resto.
-   *
-   * Fixa porque o papel dela é passar, não ocupar: fotos grandes demais
-   * viram o assunto da dobra e engolem o texto, que é quem conta o que
-   * ali importa. Em 24rem elas correm ao lado da leitura sem disputar
-   * com ela.
-   */
+
 .s5__inner {
   display: flex;
   flex-direction: column;
@@ -79,13 +61,6 @@
   letter-spacing: -0.02em;
   color: var(--white);
 }
-
-/* Coluna de fotos */
-
-/* Empilhadas numa coluna só: é essa pilha que corre ao lado do texto
-   parado. Sem colunas nem linhas de altura fixa — a proporção vem de
-   cada foto, e é ela que dá o ritmo da subida. */
-/* Faixa horizontal de fotos (em linha) */
 
 .s5__coluna-wrap {
   width: 100%;
@@ -126,9 +101,6 @@
   border-color: var(--gold-300);
 }
 
-/* A foto respira sozinha, para o quadro não ficar parado. Os tempos
-   quebrados e os atrasos negativos deixam cada uma num ponto diferente
-   do ciclo, então nenhuma delas pulsa junto com a vizinha. */
 .s5__img {
   width: 100%;
   height: 100%;
@@ -150,9 +122,6 @@
 .s5__foto:nth-child(4) .s5__img { animation-duration: 23s; animation-delay: -3s; }
 .s5__foto:nth-child(5) .s5__img { animation-duration: 19s; animation-delay: -14s; }
 
-/* Anel dourado que segue o cursor, o mesmo dos cartões de procedimento.
-   Aqui a foto ocupa o cartão inteiro, então a máscara deixa passar só a
-   borda de 1px em vez do cone cheio. */
 .s5__foto::after {
   content: "";
   position: absolute;
@@ -176,8 +145,6 @@
   pointer-events: none;
 }
 
-/* O texto que se revela */
-
 .s5__paragrafo {
   margin-top: 1.5rem;
   max-width: 34rem;
@@ -186,17 +153,6 @@
   color: var(--slate-400);
 }
 
-/*
- * As letras sobem de dentro da própria palavra.
- *
- * A palavra é a máscara: `overflow: hidden` nela, e a letra parte de
- * baixo da linha de base. Recortar por palavra e não por linha é o que
- * faz isto sobreviver ao redimensionamento — linha é medida, e medida
- * muda quando a caixa muda; palavra é estrutura.
- *
- * O par recuo/margem devolve o espaço que o recorte comeria das descidas
- * do "p" e do "g". Sem ele a máscara corta a perna das letras.
- */
 .s5__palavra {
   display: inline-block;
   overflow: hidden;
@@ -210,13 +166,10 @@
   will-change: transform;
 }
 
-/* Estado inicial, e só com a classe: sem script o texto é texto. */
 .s5.js-letras .s5__letra {
   transform: translateY(100%);
   opacity: 0;
 }
-
-/* Responsivo */
 
 @media (min-width: 1024px) {
   .s5 {
@@ -224,16 +177,6 @@
   }
 }
 
-/*
- * Movimento reduzido: as fotos param de respirar.
- *
- * E só isso. Nada aqui desfaz o estado inicial das letras, e a ausência é
- * deliberada: `.js-letras` só é posta quando a revelação monta, e uma
- * regra de mídia dizendo o contrário seria uma segunda opinião sobre a
- * mesma coisa. Escrita antes, era ela que deixava as letras já visíveis
- * no começo do percurso e comia a revelação inteira — o mesmo erro que a
- * dobra da doutora já tinha cometido.
- */
 @media (prefers-reduced-motion: reduce) {
   .s5__img {
     animation: none;

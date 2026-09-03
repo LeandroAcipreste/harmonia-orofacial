@@ -1,17 +1,3 @@
-/*
- * Fundo do hero: a foto de glitter vira uma superfície de verdade.
- *
- * A imagem entra três vezes, cada uma com um papel:
- *   - relevo, no vértice, deslocando a malha pela luminosidade;
- *   - luz macro, no fragmento, que é o claro-escuro original da foto;
- *   - grão fino, a mesma textura em outra escala, isolando as palhetas.
- *
- * Por cima disso passam dois focos de luz, um dourado e um ciano, que
- * acendem só as palhetas que alcançam. É daí que vem o brilho: nenhuma
- * imagem parada faz isso, porque o que cintila é a relação entre a
- * palheta e a luz que passa.
- */
-
 import {
     AdditiveBlending,
     BufferAttribute,
@@ -31,67 +17,30 @@ import {
     WebGLRenderer,
 } from "../vendor/three.module.min.js";
 
-/* Caminho resolvido a partir deste módulo, não do documento: assim o
-   hero funciona em qualquer página, não só na raiz. */
 const TEXTURA = new URL("../../assets/hero-glitter.webp", import.meta.url).href;
 
 const CAMPO_DE_VISAO = 42;
 const DISTANCIA = 5;
 
-/* A malha é maior que o enquadramento porque está inclinada: a borda de
-   cima recua e deixaria o fundo aparecer sem esta folga. */
 const MARGEM = 1.9;
 const INCLINACAO = -0.24;
 
-/* Densidade da malha. O que a malha precisa descrever são duas ondas
-   longas, e para isso 200 por lado eram quarenta mil vértices gastos à
-   toa: o desenho é o mesmo com muito menos. */
 const SEGMENTOS = 72;
 const SEGMENTOS_MOVEL = 40;
 
 const PIXEL_RATIO_MAXIMO = 2;
 const LARGURA_MOVEL = 768;
 
-/* Quanto a câmera passeia com o ponteiro, em unidades de cena. */
 const PASSEIO_X = 0.42;
 const PASSEIO_Y = 0.3;
 const SUAVIDADE = 0.045;
 
-/*
- * Aparelho sem cursor. A pergunta não é o tamanho da tela e sim se existe
- * ponteiro fino: assim entra o tablet grande na horizontal, que passa de
- * 1024px, e fica de fora o notebook de tela pequena, que tem mouse.
- */
 const CONSULTA_SEM_CURSOR = "(hover: none), (pointer: coarse)";
 
-/*
- * O caminho do ponteiro virtual é um oito — uma lemniscata de Gerono,
- * `sen(θ)` num eixo e `sen(2θ)` no outro. A frequência dobrada de um lado
- * é o que fecha a curva em dois laços em vez de um círculo.
- *
- * O cruzamento do oito cai no centro da tela, que é onde está o medalhão,
- * mas é justamente ali que a curva corre mais depressa: a poeira
- * atravessa sem ter tempo de se juntar atrás do logo. Num círculo o
- * enxame andava sempre à mesma velocidade e a distância do centro nunca
- * mudava; aqui ele acelera, alonga e volta a se recolher.
- *
- * Mais lento que a volta anterior porque o oito passa duas vezes por
- * ciclo: na mesma velocidade, agitava em vez de dançar.
- */
 const OITO_VELOCIDADE = 0.3;
 const OITO_LACO_LONGO = 0.62;
 const OITO_LACO_CURTO = 0.42;
 
-/*
- * `aco` não está na paleta do site: é o corpo da superfície, o azul que a
- * chapa de glitter devolve na área iluminada. O navy sozinho, convertido
- * para linear, é escuro demais e engoliria o claro-escuro da foto.
- */
-/*
- * A chapa é azul e só azul: os dois focos que passeiam sobre ela são o
- * ciano e um azul claro. O dourado da marca não entra no fundo — ele fica
- * no medalhão e na poeira, onde é acento, e não superfície.
- */
 const CORES = {
     fundo: "#0d0a47",
     aco: "#33507f",
@@ -101,70 +50,47 @@ const CORES = {
     poeira: "#8cb4ff",
 };
 
-/*
- * Poeira em suspensão.
- *
- * Não há atrator: cada partícula anda conforme a corrente do lugar onde
- * está, sem destino. A corrente é montada de propósito com a componente
- * horizontal dependendo só de `y` e a vertical só de `x` — assim as duas
- * derivadas que formariam divergência são nulas por construção, e um
- * campo sem divergência não tem como concentrar partícula em lugar
- * nenhum. A densidade que começa uniforme continua uniforme para sempre.
- *
- * Por isso também não existe absorção nem renascimento: quem sai por um
- * lado volta pelo outro. Nada nasce, nada morre, a tela nunca esvazia.
- */
 const PARTICULAS = {
     quantidade: 1400,
     quantidadeMovel: 500,
     profundidade: 1.4,
 
-    /* A malha é um pouco maior que o quadro para a volta pela borda
-       acontecer fora de vista. */
     folga: 1.16,
 
-    /* Atrator, só onde há cursor. Valores do canvas original. */
     atracao: 0.6,
     giro: 0.35,
     amortecimento: 0.99,
     raioDeAbsorcao: 0.06,
 
-    /* Correnteza: escala espacial dos redemoinhos, quanto o campo se
-       remexe no tempo e a velocidade que ele imprime. */
     correnteEscala: 3.2,
     correnteTempo: 0.5,
     correnteForca: 0.3,
 
-    /*
-     * Entrada na corrente. Alto de propósito: partícula que persegue o
-     * campo com atraso é partícula inercial, e partícula inercial em fluxo
-     * incompressível se concentra — é jogada para fora do miolo dos
-     * redemoinhos e se junta nas bordas. Medido: com inércia 0,06 a
-     * distribuição saía de 15% de desvio para 65%; com 0,6 fica em 17%.
-     */
     inercia: 0.6,
 
-    /*
-     * Sopro do cursor. Fraco e curto por medida, não por timidez: empurrar
-     * poeira para longe de um ponto abre um buraco, e nenhum perfil radial
-     * evita isso. Com raio 0,42 e força 1,5 o cursor parado por um minuto e
-     * meio levava o desvio a 128%. Nestes valores fica em 17%.
-     */
     soproRaio: 0.25,
     soproForca: 0.3,
 
-    /*
-     * Agitação. É o que cicatriza: difusão apaga diferença de densidade,
-     * e sem ela o buraco aberto pelo sopro seria carregado pela corrente
-     * em vez de se fechar. Pequena o bastante para ler como poeira
-     * tremendo no ar, não como ruído.
-     */
     agitacao: 1.5,
 
     passo: 0.016,
 };
 
-const VERTICE_POEIRA = /* glsl */ `
+const REDEMOINHO = {
+
+    x: 0,
+    y: 0,
+
+    forca: 0.7,
+
+    raio: 0.9,
+
+    perseguicao: 0.02,
+};
+
+const FISICA_MOVEL = "atrator";
+
+const VERTICE_POEIRA =  `
 attribute float tamanho;
 
 uniform float uPixelRatio;
@@ -178,7 +104,7 @@ void main() {
 }
 `;
 
-const FRAGMENTO_POEIRA = /* glsl */ `
+const FRAGMENTO_POEIRA =  `
 uniform vec3 uCorPoeira;
 uniform vec3 uCorQuente;
 
@@ -199,7 +125,7 @@ void main() {
 }
 `;
 
-const VERTICE = /* glsl */ `
+const VERTICE =  `
 uniform float uTempo;
 uniform float uOnda;
 
@@ -227,7 +153,7 @@ void main() {
 }
 `;
 
-const FRAGMENTO = /* glsl */ `
+const FRAGMENTO =  `
 uniform sampler2D uMapa;
 uniform float uTempo;
 uniform vec2 uPonteiro;
@@ -319,14 +245,6 @@ void main() {
 }
 `;
 
-/*
- * A poeira vive em coordenadas de -1 a 1 e é a escala do objeto que a
- * espalha pela tela. Assim a física continua em números independentes do
- * tamanho da janela, e o ponteiro — que já chega normalizado — serve de
- * atrator sem nenhuma conversão.
- */
-/* Quem sai por um lado volta pelo outro. É isto que mantém a tela sempre
-   cheia sem precisar criar nem destruir partícula. */
 const envolver = (valor) => {
     if (valor > 1) {
         return valor - 2;
@@ -339,18 +257,6 @@ const envolver = (valor) => {
     return valor;
 };
 
-/*
- * Duas físicas, uma por tipo de aparelho.
- *
- * Onde há cursor, a poeira o persegue: atrator com componente lateral,
- * absorção e renascimento. É o comportamento do canvas original e o que
- * dá sentido a mexer o mouse.
- *
- * Onde não há cursor não existe nada a perseguir, e um atrator preso a um
- * ponto que anda sozinho vira poeira orbitando esse ponto. Ali entra a
- * correnteza: cada partícula anda conforme o campo do lugar onde está,
- * espalhada pela tela inteira, e o ponteiro virtual só sopra ao passar.
- */
 const criarPoeira = (quantidade, pixelRatio, uniformesDaCena, semCursor) => {
     const posicoes = new Float32Array(quantidade * 3);
     const velocidades = new Float32Array(quantidade * 2);
@@ -390,24 +296,16 @@ const criarPoeira = (quantidade, pixelRatio, uniformesDaCena, semCursor) => {
 
     pontos.position.z = PARTICULAS.profundidade;
 
-    /* A esfera envolvente é calculada uma vez, com as posições iniciais, e
-       as partículas se movem depois: descartar o objeto por ela é aposta
-       perdida. O campo cobre o quadro inteiro, nunca há o que descartar. */
     pontos.frustumCulled = false;
 
-    /* Desenha depois da chapa, sem depender da ordenação por distância:
-       as duas camadas são transparentes e não escrevem profundidade, então
-       a ordem entre elas seria decidida pela posição de cada objeto. */
     pontos.renderOrder = 1;
 
-    /*
-     * Sem corrente — movimento reduzido —, `alvo` fica só com o sopro do
-     * cursor: a velocidade decai para zero e a poeira assenta parada, sem
-     * deixar de reagir a quem passa o mouse por ela.
-     */
-    const porCorrenteza = (cursor, t, comCorrente) => {
+    const porCorrenteza = (cursor, t, comCorrente, proporcao, eixo) => {
         const escala = PARTICULAS.correnteEscala;
         const giro = t * PARTICULAS.correnteTempo;
+
+        const proporcaoDaTela = proporcao || 1;
+        const raioAoQuadrado = REDEMOINHO.raio * REDEMOINHO.raio;
 
         for (let i = 0; i < quantidade; i += 1) {
             const eixo = i * 3;
@@ -420,11 +318,7 @@ const criarPoeira = (quantidade, pixelRatio, uniformesDaCena, semCursor) => {
             let alvoY = 0;
 
             if (comCorrente) {
-                /* A horizontal só olha para `y`, a vertical só para `x`.
-                   É essa separação que zera a divergência e impede o campo
-                   de juntar poeira. Duas ondas por eixo, de períodos que
-                   não fecham entre si, para os redemoinhos não caírem
-                   sempre no mesmo lugar. */
+
                 alvoX =
                     (Math.sin(y * escala + giro) +
                         0.5 * Math.sin(y * escala * 2.3 - giro * 1.4)) *
@@ -435,12 +329,19 @@ const criarPoeira = (quantidade, pixelRatio, uniformesDaCena, semCursor) => {
                         0.5 * Math.cos(x * escala * 2.7 + giro * 1.2)) *
                     PARTICULAS.correnteForca;
 
+                const eixoX = (x - eixo.x) * proporcaoDaTela;
+                const eixoY = y - eixo.y;
+                const angular =
+                    REDEMOINHO.forca /
+                    (1 + (eixoX * eixoX + eixoY * eixoY) / raioAoQuadrado);
+
+                alvoX += (-eixoY * angular) / proporcaoDaTela;
+                alvoY += eixoX * angular;
+
                 alvoX += (Math.random() - 0.5) * PARTICULAS.agitacao;
                 alvoY += (Math.random() - 0.5) * PARTICULAS.agitacao;
             }
 
-            /* Sopro: empurra para fora. Empurrar espalha — era por atrair
-               que a poeira antiga se juntava toda num ponto só. */
             const dx = x - cursor.x;
             const dy = y - cursor.y;
             const distancia = Math.sqrt(dx * dx + dy * dy) + 1e-4;
@@ -452,8 +353,6 @@ const criarPoeira = (quantidade, pixelRatio, uniformesDaCena, semCursor) => {
                 alvoY += (dy / distancia) * sopro;
             }
 
-            /* Entra na corrente com inércia, em vez de assumir a
-               velocidade dela de um quadro para o outro. */
             velocidades[par] += (alvoX - velocidades[par]) * PARTICULAS.inercia;
             velocidades[par + 1] += (alvoY - velocidades[par + 1]) * PARTICULAS.inercia;
 
@@ -464,31 +363,27 @@ const criarPoeira = (quantidade, pixelRatio, uniformesDaCena, semCursor) => {
         geometria.attributes.position.needsUpdate = true;
     };
 
-    /*
-     * Física do desktop, intacta desde o canvas original: a partícula é
-     * puxada pelo cursor com uma componente lateral, e é essa força
-     * tangencial que transforma a queda em redemoinho. Chegando perto
-     * demais ela é absorvida e renasce longe, senão todas acabariam
-     * empilhadas no mesmo ponto.
-     */
-    const porAtrator = (atrator) => {
+    const porAtrator = (atrator, proporcao) => {
+        const proporcaoDaTela = proporcao || 1;
+
         for (let i = 0; i < quantidade; i += 1) {
             const eixo = i * 3;
             const par = i * 2;
 
-            const dx = atrator.x - posicoes[eixo];
+            const dx = (atrator.x - posicoes[eixo]) * proporcaoDaTela;
             const dy = atrator.y - posicoes[eixo + 1];
 
-            /* `Math.hypot` custa mais de três vezes uma raiz direta, e isto
-               roda mil e quatrocentas vezes por quadro. */
             const distancia = Math.sqrt(dx * dx + dy * dy) + 1e-4;
             const forca = PARTICULAS.atracao / (distancia + 0.08);
 
             const radialX = (dx / distancia) * forca;
             const radialY = (dy / distancia) * forca;
 
-            velocidades[par] += (radialX - radialY * PARTICULAS.giro) * PARTICULAS.passo;
-            velocidades[par + 1] += (radialY + radialX * PARTICULAS.giro) * PARTICULAS.passo;
+            velocidades[par] +=
+                ((radialX - radialY * PARTICULAS.giro) / proporcaoDaTela) *
+                PARTICULAS.passo;
+            velocidades[par + 1] +=
+                (radialY + radialX * PARTICULAS.giro) * PARTICULAS.passo;
 
             velocidades[par] *= PARTICULAS.amortecimento;
             velocidades[par + 1] *= PARTICULAS.amortecimento;
@@ -504,20 +399,31 @@ const criarPoeira = (quantidade, pixelRatio, uniformesDaCena, semCursor) => {
         geometria.attributes.position.needsUpdate = true;
     };
 
-    return { pontos, atualizar: semCursor ? porCorrenteza : porAtrator };
+    const atualizar = (cursor, t, comCorrente, proporcao, eixo) => {
+        if (!semCursor) {
+            porAtrator(cursor);
+            return;
+        }
+
+        if (FISICA_MOVEL === "atrator") {
+
+            porAtrator(eixo, proporcao);
+            return;
+        }
+
+        porCorrenteza(cursor, t, comCorrente, proporcao, eixo);
+    };
+
+    return { pontos, atualizar };
 };
 
-/* A textura é a cena inteira: sem ela não há o que desenhar, então o
-   primeiro quadro espera o carregamento em vez de piscar vazio. */
 const carregarTextura = (anisotropia) =>
     new Promise((resolver, rejeitar) => {
         new TextureLoader().load(
             TEXTURA,
             (textura) => {
                 textura.colorSpace = SRGBColorSpace;
-                /* Espelhado, e não repetido: no espelhamento o pixel de um
-                   lado da emenda é o mesmo do outro, então a passagem de
-                   um ladrilho para o vizinho é contínua por construção. */
+
                 textura.wrapS = MirroredRepeatWrapping;
                 textura.wrapT = MirroredRepeatWrapping;
                 textura.anisotropy = anisotropia;
@@ -528,20 +434,6 @@ const carregarTextura = (anisotropia) =>
         );
     });
 
-/*
- * Devolve `true` quando assumiu o canvas. Devolvendo `false`, ou falhando,
- * quem chamou mostra o fundo estático: sem WebGL a página não pode ficar
- * sem hero.
- */
-/*
- * `superficie: false` deixa só a poeira.
- *
- * A chapa de glitter é a parte cara desta cena: uma malha de 72 por 72
- * com a foto entrando três vezes no shader, cobrindo o quadro inteiro com
- * mistura ligada. A poeira, ao lado disso, é um punhado de sprites de
- * poucos pixels. Sem a chapa a textura nem é baixada, e some junto o
- * arquivo de imagem que só ela usava.
- */
 export const iniciarHeroGlitter = async (canvas, { reduzido = false, superficie = true } = {}) => {
     let renderizador;
 
@@ -581,7 +473,6 @@ export const iniciarHeroGlitter = async (canvas, { reduzido = false, superficie 
         uCorFria: { value: new Color(CORES.fria) },
         uCorLuz: { value: new Color(CORES.luz) },
 
-        /* Só a poeira usa este: a chapa não tem dourado nenhum. */
         uCorQuente: { value: new Color(CORES.quente) },
     };
 
@@ -616,8 +507,9 @@ export const iniciarHeroGlitter = async (canvas, { reduzido = false, superficie 
 
     const alvo = new Vector2(0, 0);
 
-    /* Reaproveitados a cada quadro: alocar vetores dentro do laço de
-       render é lixo para o coletor sessenta vezes por segundo. */
+    const eixoAlvo = new Vector2(REDEMOINHO.x, REDEMOINHO.y);
+    const eixoAtual = new Vector2(REDEMOINHO.x, REDEMOINHO.y);
+
     const atrator = new Vector3();
     const direcao = new Vector3();
 
@@ -629,8 +521,6 @@ export const iniciarHeroGlitter = async (canvas, { reduzido = false, superficie 
         camera.aspect = largura / altura;
         camera.updateProjectionMatrix();
 
-        /* Altura visível na distância do plano: é o que faz a malha cobrir
-           o enquadramento em qualquer proporção de tela. */
         const abertura = 2 * Math.tan((CAMPO_DE_VISAO * Math.PI) / 360);
         const visivel = abertura * DISTANCIA;
 
@@ -638,33 +528,19 @@ export const iniciarHeroGlitter = async (canvas, { reduzido = false, superficie 
             malha.scale.set(visivel * camera.aspect * MARGEM, visivel * MARGEM, 1);
         }
 
-        /* A poeira está mais perto da câmera, então o mesmo ângulo cobre
-           menos mundo: a escala dela sai da distância até o plano dela. A
-           folga põe a borda onde a partícula dá a volta fora do quadro. */
         const visivelPoeira =
             abertura * (DISTANCIA - PARTICULAS.profundidade) * PARTICULAS.folga;
 
         poeira.pontos.scale.set((visivelPoeira * camera.aspect) / 2, visivelPoeira / 2, 1);
 
-        /* A conversão do cursor usa esta matriz e ela é lida antes do
-           render, então não pode ficar um quadro atrasada. */
         poeira.pontos.updateMatrixWorld();
     };
 
     ajustar();
     window.addEventListener("resize", ajustar);
 
-    /* Enquanto ninguém mexeu o mouse não existe cursor a perseguir, e o
-       centro da tela é o pior lugar possível para o redemoinho: é onde
-       está o medalhão. Até o primeiro movimento a poeira roda sozinha. */
     let cursorEmUso = false;
 
-    /*
-     * Sem cursor, o ponteiro nem é escutado. O dedo dispara os mesmos
-     * eventos que o mouse, mas no celular ele passa a maior parte do tempo
-     * rolando a página: seguir o dedo daria movimento errático e, ao
-     * soltar, deixaria o efeito congelado no último ponto tocado.
-     */
     if (!semCursor) {
         window.addEventListener("pointermove", (evento) => {
             cursorEmUso = true;
@@ -676,27 +552,9 @@ export const iniciarHeroGlitter = async (canvas, { reduzido = false, superficie 
         });
     }
 
-    /*
-     * Onde o cursor cai no plano da poeira.
-     *
-     * A conta é feita, e não aproximada pelo ponteiro normalizado, porque
-     * a câmera passeia e respira: a mesma posição de tela cai em pontos
-     * diferentes do plano conforme ela se move. Sem projetar, o redemoinho
-     * se forma ao lado do cursor em vez de embaixo dele.
-     *
-     * O alvo aqui é o cursor cru, não o suavizado que move a câmera e as
-     * luzes: a poeira persegue o mouse, e quem persegue não chega atrasado.
-     */
     const mirarCursor = (t) => {
         camera.updateMatrixWorld();
 
-        /*
-         * A poeira segue `alvo` sempre que ele significa alguma coisa: o
-         * mouse no desktop, o ponteiro virtual no celular e no tablet.
-         * Só resta o passeio próprio no desktop antes do primeiro
-         * movimento do mouse — uma volta larga em dois períodos que não
-         * fecham entre si, sem parar no meio, onde o logo esconderia tudo.
-         */
         const seguindoAlvo = cursorEmUso || semCursor;
 
         const x = seguindoAlvo ? alvo.x : Math.cos(t * 0.34) * 0.54;
@@ -717,39 +575,19 @@ export const iniciarHeroGlitter = async (canvas, { reduzido = false, superficie 
     const desenhar = (agora) => {
         const t = reduzido ? 0 : (agora - inicio) / 1000;
 
-        /*
-         * Sem cursor, um ponteiro virtual dá a volta em torno do centro e
-         * daqui para baixo tudo funciona como se houvesse um mouse fazendo
-         * esse giro: a câmera, os focos de luz e a poeira. É o gesto que o
-         * dedo não tem como fazer, e sem ele o efeito nunca apareceria
-         * para quem está no celular ou no tablet.
-         *
-         * O medalhão não entra nisso: ele não é movido pelo ponteiro aqui,
-         * continua no centro enquanto o fundo se move em volta.
-         */
         if (semCursor) {
             const angulo = t * OITO_VELOCIDADE;
 
-            /* Um laço percorre o eixo comprido; o outro, o dobro da
-               frequência, faz a travessia estreita que fecha o oito. */
             const laco = Math.sin(angulo) * OITO_LACO_LONGO;
             const travessia = Math.sin(angulo * 2) * OITO_LACO_CURTO;
 
-            /* O oito acompanha o lado comprido da tela: fica em pé no
-               celular e deitado no tablet na horizontal. Fixo num eixo só,
-               ele ficaria espremido em metade dos aparelhos. */
             const deitado = camera.aspect >= 1;
 
             alvo.set(deitado ? laco : travessia, deitado ? travessia : laco);
         }
 
-        /* Para a câmera e as luzes o ponteiro chega por perseguição, não
-           direto: o movimento fica pesado como o de um corpo, e não
-           elástico. A poeira é o oposto disso, e usa o alvo cru. */
         uniformes.uPonteiro.value.lerp(alvo, SUAVIDADE);
 
-        /* A câmera é posicionada e mirada antes de qualquer outra coisa:
-           é dela que sai a conversão do cursor, logo abaixo. */
         camera.position.x = uniformes.uPonteiro.value.x * PASSEIO_X;
         camera.position.y = uniformes.uPonteiro.value.y * PASSEIO_Y;
         camera.position.z = DISTANCIA + Math.sin(t * 0.13) * 0.28;
@@ -758,43 +596,26 @@ export const iniciarHeroGlitter = async (canvas, { reduzido = false, superficie 
         if (!reduzido) {
             uniformes.uTempo.value = t;
 
-            /* Rolagem lenta da chapa. Junto com a respiração da câmera
-               acima, são os movimentos que se percebem sem olhar. */
             if (malha) {
                 malha.rotation.z = Math.sin(t * 0.06) * 0.035;
             }
         }
 
-        /*
-         * A poeira é atualizada sempre. Com movimento reduzido ela perde a
-         * corrente e assenta parada, mas continua se afastando de quem
-         * passa o mouse por ela: responder ao gesto de quem está com a mão
-         * no mouse é a mesma exceção que o hero já abre em
-         * `ligarAtracaoDoCursor`.
-         */
-        /* No desktop a poeira só é atualizada com movimento liberado ou
-           com o mouse em uso — quem persegue responde ao gesto, e é a
-           exceção que o hero já abre em `ligarAtracaoDoCursor`. Sem
-           cursor a correnteza cuida do resto: com movimento reduzido ela
-           não corre e a poeira assenta parada. */
         if (semCursor || !reduzido || cursorEmUso) {
-            poeira.atualizar(mirarCursor(t), t, !reduzido);
+            eixoAtual.lerp(eixoAlvo, REDEMOINHO.perseguicao);
+
+            poeira.atualizar(
+                mirarCursor(t),
+                t,
+                !reduzido,
+                camera.aspect,
+                eixoAtual
+            );
         }
 
         renderizador.render(cena, camera);
     };
 
-    /*
-     * Só desenha enquanto está na tela.
-     *
-     * Esta página tem duas cenas WebGL, esta e a espiral do hero. Rodando
-     * as duas ao mesmo tempo elas disputam a GPU e o quadro, e a que está
-     * fora da janela não é vista por ninguém.
-     *
-     * O portão fica aqui, dentro da chamada, e não no agendamento: o laço
-     * é o ticker do GSAP, compartilhado com o resto da página, e tirar e
-     * repor a função nele custaria mais do que sair cedo.
-     */
     let naTela = true;
 
     if (typeof IntersectionObserver === "function") {
@@ -811,14 +632,13 @@ export const iniciarHeroGlitter = async (canvas, { reduzido = false, superficie 
         }
     });
 
-    return true;
+    return {
+        mirarEixo: (x, y) => {
+            eixoAlvo.set(x, y);
+        },
+    };
 };
 
-/*
- * Não abre um requestAnimationFrame próprio: com GSAP presente entra no
- * ticker, que já é o relógio do Lenis. Dois laços independentes para a
- * mesma página disputariam o mesmo quadro sem necessidade.
- */
 const agendarQuadro = (callback) => {
     if (typeof gsap !== "undefined") {
         gsap.ticker.add(() => callback(performance.now()));

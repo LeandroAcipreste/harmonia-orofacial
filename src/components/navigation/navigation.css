@@ -20,7 +20,6 @@
   padding: 0 1.5rem;
 }
 
-/* Um único grupo à direita — o logo fica à esquerda naturalmente */
 .nav__grupo {
   display: flex;
   align-items: center;
@@ -45,7 +44,6 @@
   color: var(--white);
 }
 
-/* Risquinho criado pelo navigation.js */
 .nav-link__risco {
   position: absolute;
   bottom: -0.25rem;
@@ -62,10 +60,6 @@
   transform: scaleX(1);
 }
 
-/*
- * Entrar: a única ação da barra, todo o resto são seções da página. Por
- * isso ganha contorno e o dourado da marca, em vez de se vestir de link.
- */
 .nav__acesso {
   display: inline-flex;
   flex: none;
@@ -114,8 +108,6 @@
   border-radius: 9999px;
 }
 
-/* Botão do menu: só existe no celular */
-
 .nav__botao {
   display: none;
   align-items: center;
@@ -131,7 +123,6 @@
   cursor: pointer;
 }
 
-/* Os três traços do hambúrguer: um elemento e dois pseudos */
 .nav__botao-traco,
 .nav__botao-traco::before,
 .nav__botao-traco::after {
@@ -163,7 +154,6 @@
   transform: translateY(0.3125rem);
 }
 
-/* Aberto, os traços viram um X e a seta aponta para cima */
 .nav.is-aberto .nav__botao-traco {
   transform: rotate(45deg);
 }
@@ -187,14 +177,6 @@
   transform: rotate(180deg);
 }
 
-/* Responsivo */
-
-/*
- * No celular a barra cresce para baixo: os dois grupos de links quebram
- * para linhas próprias e ficam recortados enquanto o menu está fechado.
- * Quem anima é o `max-height`, e não `display`, para a abertura poder
- * ser suave.
- */
 @media (max-width: 899px) {
   .nav__inner {
     flex-wrap: wrap;
@@ -253,13 +235,10 @@
     letter-spacing: 0.25em;
   }
 
-  /* O risquinho de hover não cabe em lista vertical */
   .nav-link__risco {
     display: none;
   }
 
-  /* Dentro do menu recolhido, entrar vem primeiro: quem abre o menu
-     atrás do login não quer rolar a lista de seções. */
   .nav__acesso {
     order: -1;
     justify-content: center;

@@ -1,13 +1,8 @@
-/* Rodapé no layout do cartão de visita, na paleta do site */
-
 .rodape {
   position: relative;
   z-index: 10;
   padding: 5rem 1.5rem 3rem;
-  /* A imagem entra como fundo com uma máscara escura por cima para
-     preservar a leitura do conteúdo. O `fixed` dá um leve parallax:
-     conforme a página sobe, a imagem se move mais devagar, criando
-     profundidade sem nenhum JavaScript. */
+
   background-image:
     linear-gradient(
       to bottom,
@@ -29,7 +24,6 @@
   padding: 1rem 0 2rem;
 }
 
-/* Fio dourado vertical, como o da lateral do cartão */
 .rodape__fio {
   position: absolute;
   top: 0;
@@ -45,7 +39,6 @@
   );
 }
 
-/* Dente dourado ao fundo, na direita */
 .rodape__dente {
   position: absolute;
   right: 0;
@@ -78,8 +71,6 @@
   color: var(--white);
 }
 
-/* Contatos */
-
 .rodape__contatos {
   display: grid;
   gap: 1.125rem;
@@ -94,7 +85,6 @@
   gap: 0.875rem;
 }
 
-/* Ícone em disco dourado, como os do cartão */
 .rodape__icone {
   display: flex;
   flex: none;
@@ -127,8 +117,6 @@
 .rodape__link:hover {
   color: var(--gold-300);
 }
-
-/* Base */
 
 .rodape__base {
   display: flex;
@@ -183,8 +171,6 @@
   transform: translateY(-0.15rem);
 }
 
-/* Entrada */
-
 .rodape.js-anim .rodape-anim {
   opacity: 0;
   transform: translateY(28px);
@@ -200,8 +186,6 @@
 
 .rodape.js-anim .rodape__contato:nth-of-type(2) { transition-delay: 80ms; }
 .rodape.js-anim .rodape__contato:nth-of-type(3) { transition-delay: 160ms; }
-
-/* Responsivo */
 
 @media (min-width: 768px) {
   .rodape {
@@ -232,7 +216,6 @@
   }
 }
 
-/* Movimento reduzido: entra por opacidade */
 @media (prefers-reduced-motion: reduce) {
   .rodape.js-anim .rodape-anim {
     transform: none;

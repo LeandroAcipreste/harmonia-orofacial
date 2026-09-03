@@ -1,32 +1,26 @@
-/*
- * O hero é a cena e mais nada.
- *
- * Não existe medalhão de HTML, órbita, feixe vertical nem indicador de
- * rolagem por cima: a marca que se vê é a que o vídeo mostra no miolo do
- * vórtice, e qualquer peça sobreposta deixava de ser a cena que foi
- * feita.
- *
- * O fundo fica com o mesmo quadro que o vídeo abre. Assim, entre a
- * primeira pintura e o vídeo começar a tocar, não há troca nenhuma para
- * se ver — nem uma faixa escura, nem um pisco.
- */
 .hero {
   position: relative;
   min-height: 100vh;
   overflow: hidden;
   background-color: var(--navy-900);
   background-image: url("../../../assets/hero-espiral.webp");
+
+  background-size: cover;
   background-position: center;
+}
 
+@media (max-aspect-ratio: 23/20) {
+  .hero {
+    background-image: url("../../../assets/hero-espiral-tablet.webp");
+  }
+}
 
-/*
- * O vídeo cobre a dobra inteira.
- *
- * `object-fit: cover` porque o arquivo é 16:9 e a dobra não é: numa
- * janela alta ele sobra pelos lados, numa larga sobra por cima e por
- * baixo, e o corte cai sempre no que é fundo. O miolo, que é onde está a
- * marca, fica centrado nos dois casos.
- */
+@media (max-aspect-ratio: 13/20) {
+  .hero {
+    background-image: url("../../../assets/hero-espiral-mobile.webp");
+  }
+}
+
 .hero__video {
   position: absolute;
   inset: 0;
@@ -36,16 +30,52 @@
   pointer-events: none;
 }
 
+@media (max-aspect-ratio: 13/20) {
+  .hero__video {
+    object-fit: contain;
+  }
 
+  .hero {
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
 
-/*
- * Passado o fim do esmaecimento, o vídeo sai do layout.
- *
- * `display: none` e não `visibility: hidden` de propósito: só o primeiro
- * faz o navegador parar de decodificar quadros. Escondido por
- * `visibility`, o vídeo continua rodando para ninguém, gastando
- * decodificação enquanto a pessoa lê o resto da página.
- */
+  .hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 2;
+    height: 12vh;
+    background-image: linear-gradient(
+      to bottom,
+      var(--navy-900) 0%,
+      rgb(0 39 154 / 0.6) 45%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    height: 20vh;
+    background-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgb(0 39 154 / 0.5) 42%,
+      rgb(0 39 154 / 0.88) 76%,
+      var(--navy-900) 100%
+    );
+    pointer-events: none;
+  }
+}
+
 .hero.is-fora .hero__video {
   display: none;
 }

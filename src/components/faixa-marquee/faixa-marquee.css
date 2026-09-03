@@ -1,14 +1,13 @@
-/* Faixa de marcas deslizando para a esquerda */
-
 .faixa-marquee {
   position: relative;
   z-index: 10;
   overflow: hidden;
   padding: 4rem 0;
   background-color: var(--navy-900);
+
+  contain: layout paint style;
 }
 
-/* Máscaras de esfumaçamento horizontal (esquerda/direita) */
 .faixa-marquee::before,
 .faixa-marquee::after {
   content: "";
@@ -30,7 +29,6 @@
   background: linear-gradient(to left, var(--navy-900) 0%, rgba(0, 39, 154, 0.7) 40%, transparent 100%);
 }
 
-/* Esfumaçamento vertical interno (topo e base dentro da faixa) */
 .faixa-marquee__fade-topo,
 .faixa-marquee__fade-base {
   position: absolute;
@@ -63,37 +61,39 @@
   );
 }
 
-/* O trilho: uma fila horizontal de logos animada via GSAP ScrollTrigger */
 .faixa-marquee__trilho {
+  --marquee-duracao: 35s;
+
   display: flex;
   align-items: center;
-  gap: 4rem;
   width: max-content;
+  animation: marqueeDeslizar var(--marquee-duracao) linear infinite;
+
   will-change: transform;
+  backface-visibility: hidden;
 }
 
-/* Fallback CSS puro caso JS esteja desativado */
-html.no-js .faixa-marquee__trilho {
-  animation: marqueeSlide 30s linear infinite;
+@keyframes marqueeDeslizar {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
 }
 
-@keyframes marqueeSlide {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+.faixa-marquee.esta-parada .faixa-marquee__trilho {
+  animation-play-state: paused;
 }
 
-/* Cada logo na fila com brilho e névoa */
+@media (prefers-reduced-motion: reduce) {
+  .faixa-marquee__trilho {
+    --marquee-duracao: 105s;
+  }
+}
+
 .faixa-marquee__item {
   flex: none;
   height: 3.75rem;
   width: auto;
+  margin-right: 4rem;
   object-fit: contain;
   opacity: 0.9;
-  transition: opacity 0.3s, filter 0.3s;
-  filter: drop-shadow(0 0 16px rgb(253 186 116 / 0.35)) drop-shadow(0 0 32px rgb(0 64 255 / 0.45));
-}
-
-.faixa-marquee__item:hover {
-  opacity: 1;
-  filter: drop-shadow(0 0 24px rgb(253 186 116 / 0.6)) drop-shadow(0 0 45px rgb(0 64 255 / 0.6));
+  filter: drop-shadow(0 0 12px rgb(253 186 116 / 0.4));
 }

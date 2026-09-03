@@ -1,11 +1,3 @@
-/*
- * A perspectiva mora no pai porque é dela que o desdobramento da tela
- * tira a profundidade: sem ela, `rotateX` vira um achatamento vertical
- * chapado em vez de uma peça girando para a frente.
- *
- * 1400px é uma câmera distante — perspectiva curta exagera a fuga e
- * entorta os cards das pontas.
- */
 .s3 {
   position: relative;
   padding: 6rem 1.5rem;
@@ -13,11 +5,6 @@
   background-color: var(--navy-900);
 }
 
-/*
- * Transição de gradiente no topo e na base da 3ª dobra:
- * - Em cima (após o marquee): parte de var(--navy-900) sem nenhuma linha de corte.
- * - Embaixo: transiciona suavemente até a divisa.
- */
 .s3::before {
   content: "";
   position: absolute;
@@ -41,29 +28,19 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 14rem;
+  height: 22rem;
   z-index: 2;
   pointer-events: none;
   background: linear-gradient(
     to bottom,
     transparent 0%,
-    rgb(0 39 154 / 0.5) 40%,
+    rgb(0 39 154 / 0.28) 24%,
+    rgb(0 39 154 / 0.6) 48%,
+    rgb(0 39 154 / 0.88) 74%,
     var(--navy-900) 100%
   );
 }
 
-/* Fundo da dobra */
-
-/*
- * O card subindo só se percebe contra alguma coisa parada. Sobre navy
- * liso e vazio, uma peça que sobe enquanto aparece lê como simples
- * esmaecimento — não há referência para o olho medir o movimento. Este
- * fundo é essa referência.
- *
- * Recortado por `clip-path` e não por `overflow`: `overflow` cria um
- * contêiner de rolagem, e o `sticky` logo abaixo passaria a se prender a
- * ele, que nunca rola.
- */
 .s3__pelicula {
   position: absolute;
   inset: 0;
@@ -72,19 +49,12 @@
   pointer-events: none;
 }
 
-/*
- * Grudado no topo: a imagem fica parada preenchendo a tela enquanto a
- * seção passa por trás. Esticá-la pela seção inteira não serviria — no
- * celular a dobra passa de dois mil e quinhentos pixels, e as ondas
- * ficariam deformadas até não se reconhecerem.
- */
 .s3__pelicula-palco {
   position: sticky;
   top: 0;
   height: 100vh;
 }
 
-/* A superfície de glitter (ver src/three/heroGlitter.js) */
 .s3__pelicula-gl {
   position: absolute;
   inset: 0;
@@ -94,11 +64,6 @@
   height: 100%;
 }
 
-/*
- * Este elemento virou só o suporte do véu. A foto que ele trazia é agora
- * o plano B: volta quando não há WebGL, no mesmo lugar e com o mesmo véu
- * por cima, para a dobra nunca ficar sobre navy vazio.
- */
 .s3__pelicula-imagem {
   position: absolute;
   inset: 0;
@@ -116,11 +81,6 @@
   background-image: url("../../../assets/fundo-resultados.webp");
 }
 
-/*
- * Véu por cima da imagem. Ela é clara e saturada, e os cards são escuros:
- * sem isto o fundo disputa a atenção com eles em vez de sustentá-los. Mais
- * fechado nas pontas, aberto no meio, onde o card em movimento está.
- */
 .s3__pelicula-imagem::after {
   content: "";
   position: absolute;
@@ -134,15 +94,6 @@
   );
 }
 
-/*
- * A tela: o painel que sobe deitado e desdobra até ficar de frente. Nasce
- * de frente e opaco — quem deita é o JS, no primeiro quadro. Sem
- * JavaScript, ou sem GSAP, os cards ficam visíveis em vez de presos de
- * perfil, invisíveis para sempre.
- *
- * Fica por cima da película: elemento posicionado pinta acima de conteúdo
- * que não está posicionado.
- */
 .s3__palco {
   position: relative;
   z-index: 3;
@@ -152,41 +103,18 @@
   transform-origin: center center;
 }
 
-/*
- * Cada card na própria linha. No celular é ela que segura a caixa de
- * layout enquanto o card se deita: transformação não mexe em layout,
- * então a linha mantém a altura e a coluna não colapsa — e é por isso que
- * o gatilho da rolagem pode se ancorar nela com segurança.
- */
 .s3__linha {
   display: grid;
 
-  /*
-   * Perspectiva do card. Precisa morar aqui porque `perspective` só
-   * alcança os filhos diretos, e o card é neto do `.s3`.
-   *
-   * O valor não é o mesmo do painel, e não pode ser: `perspective` é uma
-   * distância absoluta, então o que define a força da dobra é a razão
-   * entre a altura da peça e essa distância. O painel tem cerca de 508px
-   * de altura para 1400px de perspectiva, razão 0,36. O card tem 248px —
-   * com os mesmos 1400px a razão cairia para 0,18, metade da fuga, e o
-   * giro viraria um achatamento chapado. 680px devolve a mesma razão.
-   */
   perspective: 680px;
 }
 
-/* Celular: um cartão embaixo do outro. As colunas entram a partir do tablete. */
 .s3__grade {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 1.25rem;
 }
 
-/* Palco da sequência */
-
-/* Presa, a seção ocupa exatamente a tela e centraliza a grade.
-   `min-height` no lugar de `height`: em tela baixa a grade cresce em vez
-   de ser cortada por fora do quadro preso */
 .s3.js-sequencia {
   display: flex;
   align-items: center;
@@ -195,9 +123,6 @@
   padding-bottom: 2rem;
 }
 
-/* Cartão */
-
-/* Moldura: gradiente de 1px em volta */
 .s3__card {
   position: relative;
   display: block;
@@ -211,19 +136,10 @@
     filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/*
- * A entrada em desfoque que existia aqui saiu. Ela animava `opacity` e
- * `transform` do card por transição de CSS, e o desdobramento faz o mesmo
- * pelo GSAP, com estilo em linha — que ganha da folha. Eram dois sistemas
- * disputando as mesmas duas propriedades no mesmo elemento, com o segundo
- * sempre vencendo. O desdobramento é a entrada agora.
- */
-
 .s3__card:hover {
   transform: translateY(-0.5rem);
 }
 
-/* Trilho que marca o avanço da sequência do próprio card */
 .s3__trilho {
   position: absolute;
   right: 1.5rem;
@@ -236,8 +152,6 @@
   transform: scaleX(0);
   transform-origin: left;
 }
-
-/* Corpo do cartão */
 
 .s3__corpo {
   position: relative;
@@ -265,15 +179,6 @@
   color: var(--gold-300);
 }
 
-/*
- * Etapas: procedimento, antes e depois ocupam a mesma área do cartão.
- *
- * É esta altura que dá o tamanho do card, porque o resto do corpo é só
- * texto e recuo. A dobra fica presa numa tela inteira e os cards ocupavam
- * pouco mais de um quinto dela — sobrava vazio em cima e embaixo, e as
- * fotos de antes e depois, que são o assunto, saíam pequenas demais para
- * se comparar.
- */
 .s3__etapas {
   position: relative;
   width: 100%;
@@ -296,7 +201,6 @@
   gap: 1.5rem;
 }
 
-/* Sem JS as fotos não entram: o cartão continua mostrando o procedimento */
 .s3__etapa--foto {
   opacity: 0;
   background-color: var(--navy-900);
@@ -358,8 +262,6 @@
   color: rgb(253 186 116 / 0.7);
 }
 
-/* Responsivo */
-
 @media (max-width: 480px) {
   .s3__corpo {
     gap: 1rem;
@@ -368,31 +270,20 @@
 }
 
 @media (max-width: 767px) {
-  /* Em coluna o cartão ocupa a largura toda, e a área da foto acompanha:
-     na altura de dois cartões lado a lado ela viraria uma tira. */
+
+  .s3 {
+    padding-top: 40vh;
+  }
+
   .s3__etapas {
     height: 14rem;
   }
 
-  /*
-   * O vão entre as linhas não é respiro visual: é o trecho de rolagem que
-   * pertence a cada card. Um card só começa a abrir depois de o anterior
-   * ter mostrado o depois enquanto valer
-   *
-   *     row-gap = (início − fim do gatilho) × altura da tela
-   *
-   * Com o gatilho indo de 72% a 40% em sectionthree.js, a diferença é
-   * 32% — daí 32vh. Com o vão de 1,25rem que havia aqui, o card seguinte
-   * começava mais de trezentos pixels antes de o anterior terminar, e
-   * dois ou três animavam ao mesmo tempo.
-   */
   .s3__grade {
     row-gap: 32vh;
   }
 }
 
-/* Tela baixa em 2 colunas: as duas fileiras precisam caber na dobra presa.
-   Só existe dobra presa a partir de 768px — ver sectionthree.js. */
 @media (max-height: 700px) and (min-width: 768px) and (max-width: 1023px) {
   .s3.js-sequencia {
     padding-top: 4.5rem;
@@ -419,12 +310,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  /*
-   * A partir daqui o palco vira a tela que desdobra, e ganha corpo de
-   * painel. No celular ele não tem moldura nenhuma: quem desdobra lá é
-   * cada card, um a um, e um recipiente em volta juntaria os quatro numa
-   * caixa só — o contrário de linhas separadas.
-   */
   .s3__palco {
     padding: 1.25rem;
     border: 1px solid rgb(226 232 240 / 0.07);
@@ -438,14 +323,6 @@
     padding: 6rem 1.5rem 7rem;
   }
 
-  /*
-   * A área da imagem cresce de novo no desktop largo.
-   *
-   * É ela que dá a altura do card, e o card estava pequeno para a tela
-   * que tem: numa janela de 1920 o palco travado em 84rem ocupava 70% da
-   * largura, e as fotos de antes e depois, que são o assunto, saíam
-   * pequenas demais para comparar.
-   */
   .s3__etapas {
     height: 24rem;
   }
@@ -455,7 +332,6 @@
   }
 }
 
-/* Movimento reduzido: entra por opacidade */
 @media (prefers-reduced-motion: reduce) {
   .s3__card {
     transform: none;

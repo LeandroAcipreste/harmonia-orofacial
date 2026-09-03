@@ -1,38 +1,49 @@
-/*
- * Faixa Marquee: As logos deslizam para a esquerda com a rolagem do scroll.
- * 
- * Implementado via GSAP ScrollTrigger com `scrub: 1`, garantindo física de 
- * movimento fluida, desaceleração suave (inertia) e 100% de aceleração por GPU 
- * sem nenhum tranco ou travamento.
- */
+const CLASSE_PARADA = "esta-parada";
+const MARGEM = "200px 0px 200px 0px";
+
+const COPIAS_POR_METADE = 6;
+
+const preencherTrilho = (trilho) => {
+    const modelo = trilho.querySelector(".faixa-marquee__item");
+
+    if (!modelo) {
+        return;
+    }
+
+    const fila = document.createDocumentFragment();
+
+    for (let i = 1; i < COPIAS_POR_METADE * 2; i += 1) {
+        fila.appendChild(modelo.cloneNode(true));
+    }
+
+    trilho.appendChild(fila);
+};
 
 export const initFaixaMarquee = () => {
     const faixa = document.querySelector(".faixa-marquee");
-    const trilho = document.querySelector(".faixa-marquee__trilho");
 
-    if (!faixa || !trilho) return;
-    if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") return;
+    if (!faixa) {
+        return;
+    }
 
-    gsap.registerPlugin(ScrollTrigger);
+    const trilho = faixa.querySelector(".faixa-marquee__trilho");
 
-    /*
-     * Animação ScrollTrigger amarrada ao scroll:
-     * move de xPercent: 0 até -50% (exatamente a metade duplicada para o loop perfeito)
-     * enquanto a seção atravessa a janela de visualização.
-     */
-    gsap.fromTo(
-        trilho,
-        { xPercent: 0 },
-        {
-            xPercent: -50,
-            ease: "none",
-            scrollTrigger: {
-                trigger: faixa,
-                start: "top bottom",
-                end: "bottom top",
-                scrub: 1,
-                invalidateOnRefresh: true,
-            },
-        }
+    if (trilho) {
+        preencherTrilho(trilho);
+    }
+
+    if (typeof IntersectionObserver === "undefined") {
+        return;
+    }
+
+    const observador = new IntersectionObserver(
+        (entradas) => {
+            entradas.forEach((entrada) => {
+                faixa.classList.toggle(CLASSE_PARADA, !entrada.isIntersecting);
+            });
+        },
+        { rootMargin: MARGEM }
     );
+
+    observador.observe(faixa);
 };

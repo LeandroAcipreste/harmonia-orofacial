@@ -1,5 +1,3 @@
-/* Rodapé: entrada dos blocos ao chegar no fim da página. */
-
 import { revelarAoEntrar } from "../../utils/reveal.js";
 
 const MARGEM_RODAPE = "0px 0px -10% 0px";

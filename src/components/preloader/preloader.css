@@ -1,14 +1,8 @@
-/* Pré-loader: o dente dourado enchendo de baixo para cima */
-
 html.esta-carregando,
 html.esta-carregando body {
   overflow: hidden;
 }
 
-/*
- * Visita que não abre com o preloader (voltou de outra página do site).
- * Quem decide é o script no <head>; aqui a camada não chega a pintar.
- */
 html.sem-preloader .preloader {
   display: none;
 }
@@ -21,12 +15,14 @@ html.sem-preloader .preloader {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  transition: opacity 0.7s ease, visibility 0.7s ease;
 }
 
-/*
- * O fundo é quem leva o recorte na saída, e não a camada inteira: assim o
- * risco dourado pode correr na borda do corte sem ser recortado junto.
- */
+.preloader.esta-saindo {
+  opacity: 0;
+  visibility: hidden;
+}
+
 .preloader__fundo {
   position: absolute;
   inset: 0;
@@ -38,10 +34,6 @@ html.sem-preloader .preloader {
   clip-path: inset(0 0 0 0);
 }
 
-/*
- * Sem JS a camada some sozinha: uma tela cheia e fixa nunca pode ficar
- * presa na frente do site. O módulo desliga esta rede ao assumir.
- */
 .preloader:not(.js-ativo) {
   animation: preloaderSocorro 0.6s ease 4s forwards;
 }
@@ -61,8 +53,6 @@ html.sem-preloader .preloader {
   align-items: center;
 }
 
-/* ====== Dente dourado (imagem com preenchimento de baixo para cima) ====== */
-
 .preloader__dente-wrap {
   position: relative;
   width: clamp(11rem, 32vw, 16rem);
@@ -70,7 +60,6 @@ html.sem-preloader .preloader {
   filter: drop-shadow(0 0 32px rgb(253 186 116 / 0.30));
 }
 
-/* Silhueta do dente: a imagem em opacidade muito baixa como guia visual */
 .preloader__dente-ghost {
   position: absolute;
   inset: 0;
@@ -81,21 +70,17 @@ html.sem-preloader .preloader {
   pointer-events: none;
 }
 
-/* A imagem principal do dente dourado revelada de baixo para cima.
-   clip-path inset controla a revelação: inset(100% 0 0 0) = totalmente
-   escondida, inset(0 0 0 0) = totalmente visível. */
 .preloader__dente-fill {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
-  /* Começa totalmente escondido (recorte do topo ao fundo) */
+
   clip-path: inset(100% 0 0 0);
   will-change: clip-path;
 }
 
-/* Brilho pulsante sutil sobre o dente */
 .preloader__dente-glow {
   position: absolute;
   inset: -20%;
@@ -114,8 +99,6 @@ html.sem-preloader .preloader {
   0%, 100% { opacity: 0; }
   50% { opacity: 1; }
 }
-
-/* ====== Marca e contador ====== */
 
 .preloader__marca {
   margin-top: 2.25rem;
@@ -143,7 +126,6 @@ html.sem-preloader .preloader {
   color: var(--slate-500);
 }
 
-/* Barra de progresso fina e elegante abaixo do contador */
 .preloader__barra {
   margin-top: 0.75rem;
   width: 6rem;
@@ -155,14 +137,14 @@ html.sem-preloader .preloader {
 
 .preloader__barra-fill {
   display: block;
-  width: 0%;
+  width: 100%;
   height: 100%;
   background: linear-gradient(to right, var(--gold-300), var(--gold-400));
   border-radius: 2px;
-  will-change: width;
+  transform: scaleX(0);
+  transform-origin: left center;
+  will-change: transform;
 }
-
-/* ====== Risco dourado na saída ====== */
 
 .preloader__risco {
   position: absolute;
@@ -175,7 +157,6 @@ html.sem-preloader .preloader {
   opacity: 0;
 }
 
-/* Movimento reduzido: sem animações de brilho */
 @media (prefers-reduced-motion: reduce) {
   .preloader__dente-glow {
     animation: none;

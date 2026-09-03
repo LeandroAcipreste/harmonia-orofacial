@@ -3,22 +3,6 @@
   padding: 6rem 1.5rem 7rem;
 }
 
-/*
- * No retrato, a faixa acima do cabeçalho onde a marca do dente encaixa.
- *
- * A conta tem três parcelas e nenhuma é folgada: 64px do menu, que é
- * fixo e cobre o topo; 105px da placa dourada, que é o que de fato ocupa
- * a faixa — ela é maior que o dente, que mede 73px; e 16px de ar, oito de
- * cada lado. Dá 185px, ou 48vw na largura de referência.
- *
- * Duas contas erradas moram nesta linha, e as duas se viam na tela: uma
- * esqueceu que o menu é fixo e enfiou o dente por baixo dele; a outra
- * mediu o dente em vez da placa, e a placa, sendo maior, voltou a
- * encostar no menu.
- *
- * No desktop não é preciso: a apresentação divide a tela em duas colunas
- * e a marca encaixa no vão que sobra na da esquerda.
- */
 @media (max-width: 899px) {
   .s4 {
     padding-top: 48vw;
@@ -31,8 +15,6 @@
   max-width: 72rem;
   margin: 0 auto;
 }
-
-/* Coluna da apresentação */
 
 .s4__eyebrow {
   display: flex;
@@ -76,9 +58,6 @@
   color: var(--slate-400);
 }
 
-/* Áreas de atuação */
-
-/* Um bloco por área de atuação */
 .s4__areas {
   display: grid;
   gap: 0;
@@ -107,19 +86,6 @@
   color: var(--slate-500);
 }
 
-/* Leitura presa à rolagem */
-
-/*
- * As duas réguas douradas: uma sob o nome, uma por área.
- *
- * Elas desenham da esquerda para a direita e chegam antes do texto que
- * anunciam — o traço é lançado, a palavra o alcança. O degradê para
- * transparente é o que impede a régua de terminar num corte seco: ela se
- * dissolve em vez de bater numa ponta.
- *
- * `scaleX` e não `width`: largura é layout, e layout a cada quadro de
- * rolagem é o desenho caro que esta dobra não pode pagar.
- */
 .s4__regua {
   display: block;
   width: min(100%, 24rem);
@@ -139,19 +105,10 @@
   transform-origin: left center;
 }
 
-/*
- * Estado inicial, e ele só existe com `.js-leitura`.
- *
- * Sem a classe — sem GSAP, com movimento reduzido, ou se o recolhimento
- * não montar — a dobra é texto normal, claro e parado. É a diferença
- * entre uma animação que não roda e uma dobra em branco.
- */
 .s4.js-leitura .s4__eyebrow {
   opacity: 0;
 }
 
-/* Todo o texto de corpo some até ser acendido: os próprios elementos pai
-   também ficam da cor do fundo, sem depender só dos spans filhos. */
 .s4.js-leitura .s4__bio,
 .s4.js-leitura .s4__cro,
 .s4.js-leitura .s4__area-texto {
@@ -164,11 +121,6 @@
   color: var(--navy-900);
 }
 
-/*
- * Já o nome e os títulos entram por recorte, não por cor: eles não
- * acendem, eles se escrevem. `inline-block` porque `clip-path` numa caixa
- * em linha que quebra em duas linhas recorta as duas de uma vez.
- */
 .s4.js-leitura .s4__nome .s4__palavra,
 .s4.js-leitura .s4__area-nome .s4__palavra {
   display: inline-block;
@@ -179,8 +131,6 @@
 .s4.js-leitura .s4__area-regua {
   transform: scaleX(0);
 }
-
-/* Responsivo */
 
 @media (min-width: 900px) {
   .s4__inner {
@@ -193,15 +143,3 @@
     font-size: 2.5rem;
   }
 }
-
-/*
- * Não há bloco de `prefers-reduced-motion` aqui, e a ausência é
- * deliberada.
- *
- * O estado escondido acima só existe sob `.js-leitura`, e essa classe só
- * é posta quando a leitura monta — o que já não acontece com movimento
- * reduzido, porque o recolhimento inteiro desiste antes. Uma regra de
- * mídia desfazendo o estado seria uma terceira opinião sobre a mesma
- * coisa, e foi exatamente ela que, escrita antes, apagava o azul inicial
- * das palavras e estragava a onda.
- */

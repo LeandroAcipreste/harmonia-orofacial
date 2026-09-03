@@ -1,16 +1,6 @@
-/* Revelação por entrada no viewport. */
-
 const MARGEM_PADRAO = "0px 0px -15% 0px";
 const CLASSE_VISIVEL = "is-visivel";
 
-/*
- * Entrada simples no viewport é trabalho de IntersectionObserver, não de
- * ScrollTrigger: não há scrub, nem timeline, nem posição intermediária a
- * calcular. Também deixa a revelação independente do GSAP.
- *
- * `rootMargin` negativo embaixo encolhe a área de disparo: -15% equivale
- * a exigir que o elemento cruze 85% da altura da tela.
- */
 export const revelarAoEntrar = (elementos, { margem = MARGEM_PADRAO, repetir = true } = {}) => {
     const alvos = Array.from(elementos);
 
@@ -36,7 +26,6 @@ export const revelarAoEntrar = (elementos, { margem = MARGEM_PADRAO, repetir = t
                     return;
                 }
 
-                // Esconde só ao sair por baixo, ou seja, ao voltar para cima.
                 if (repetir && entrada.boundingClientRect.top > 0) {
                     entrada.target.classList.remove(CLASSE_VISIVEL);
                 }

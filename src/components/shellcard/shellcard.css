@@ -1,6 +1,3 @@
-/* Brilho cônico que segue o cursor.
-   O ângulo e a intensidade vêm do JS, por custom property. */
-
 .shell-card {
   --cursor-angle: 0deg;
   --glow-opacity: 0;

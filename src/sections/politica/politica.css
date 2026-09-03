@@ -1,7 +1,4 @@
-/* Design de Luxo Editorial - Política de Privacidade Harmonia Orofacial */
-
 :root {
-  --politica-bg: #00185e;
   --politica-card-bg: rgba(0, 24, 94, 0.55);
   --politica-ouro-luz: #fefcc4;
   --politica-ouro-corpo: #dfb76c;
@@ -11,20 +8,13 @@
 }
 
 body.pagina-politica {
-  background-color: var(--politica-bg);
-  background-image: 
-    radial-gradient(circle at 50% 0%, rgba(0, 39, 154, 0.8) 0%, transparent 70%),
-    radial-gradient(circle at 50% 100%, rgba(0, 15, 60, 0.9) 0%, transparent 70%);
   color: var(--politica-texto);
   font-family: system-ui, -apple-system, sans-serif;
   margin: 0;
   padding: 0;
   position: relative;
-  min-height: 100vh;
-  overflow-x: hidden;
 }
 
-/* Marca d'água de fundo luxuosa */
 .politica-watermark {
   position: fixed;
   top: 52%;
@@ -39,7 +29,6 @@ body.pagina-politica {
   filter: drop-shadow(0 0 50px rgba(253, 186, 116, 0.3));
 }
 
-/* Header de Luxo Minimalista */
 .politica-header {
   position: relative;
   z-index: 10;
@@ -87,7 +76,6 @@ body.pagina-politica {
   box-shadow: 0 8px 25px rgba(223, 183, 108, 0.2);
 }
 
-/* Container Principal */
 .politica-container {
   position: relative;
   z-index: 5;
@@ -129,7 +117,6 @@ body.pagina-politica {
   font-weight: 300;
 }
 
-/* Artigos Editoriais */
 .politica-conteudo {
   display: flex;
   flex-direction: column;
@@ -207,7 +194,6 @@ body.pagina-politica {
   color: var(--politica-ouro-luz);
 }
 
-/* Rodapé Elegante */
 .politica-footer {
   position: relative;
   z-index: 10;

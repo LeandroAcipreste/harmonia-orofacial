@@ -15,58 +15,8 @@
 
   <link rel="stylesheet" href="style.css" />
 
-  <script>
-    /*
-     * O preloader é a abertura do site: aparece na primeira visita e
-     * quando a página é recarregada. Voltando de outra página daqui
-     * mesmo, ou pelo botão voltar do navegador, ele não se repete.
-     *
-     * Esta decisão está embutida no <head> porque precisa acontecer antes
-     * da primeira pintura. Em arquivo separado a camada piscaria na tela
-     * antes de ser retirada. Quem obedece à classe é o CSS e o módulo em
-     * src/components/preloader.
-     */
-    (function () {
-        /*
-         * Recarregar sempre devolve o visitante ao hero.
-         *
-         * O navegador guarda a posição de rolagem e a restaura sozinho, e
-         * faz isso cedo — antes de qualquer módulo com `defer` rodar. Por
-         * isso a recusa mora aqui, no primeiro script da página, e não em
-         * src/core/scroll.js: lá ela chegava depois da restauração já ter
-         * acontecido, e a pessoa reabria o site no meio de uma dobra, com
-         * as animações de entrada já passadas. O módulo continua rolando
-         * para o topo, mas quem impede a restauração é esta linha.
-         */
-        if ("scrollRestoration" in history) {
-            history.scrollRestoration = "manual";
-        }
-
-        var entradas = performance.getEntriesByType
-            ? performance.getEntriesByType("navigation")
-            : [];
-        var tipo = entradas.length ? entradas[0].type : "";
-
-        if (tipo === "reload") {
-            return;
-        }
-
-        var interno = false;
-
-        if (document.referrer) {
-            try {
-                interno = new URL(document.referrer).origin === location.origin;
-            } catch (erro) {
-                interno = false;
-            }
-        }
-
-        if (tipo === "back_forward" || interno) {
-            document.documentElement.classList.add("sem-preloader");
-        }
-    })();
-  </script>
-
+  <link rel="preload" as="image" href="assets/lustre-radial.jpg" />
+  <link rel="preload" as="image" href="assets/lustre-trama.jpg" />
 </head>
 
 <body>
@@ -90,23 +40,6 @@
   </div>
 
   <span class="preloader__risco" aria-hidden="true"></span>
-</div>
-
-<div class="fundo" aria-hidden="true">
-  <div class="fundo__brilhos" id="bg-layer-1">
-    <span class="brilho brilho--azul"></span>
-    <span class="brilho brilho--indigo"></span>
-    <span class="brilho brilho--ciano"></span>
-  </div>
-  <div class="fundo__estrelas" id="bg-layer-2">
-    <span class="estrela estrela--1"></span>
-    <span class="estrela estrela--2"></span>
-    <span class="estrela estrela--3"></span>
-    <span class="estrela estrela--4"></span>
-    <span class="estrela estrela--5"></span>
-    <span class="estrela estrela--6"></span>
-  </div>
-  <div class="fundo__grade" id="bg-layer-3"></div>
 </div>
 
 <header class="nav" id="nav">
@@ -140,21 +73,9 @@
 <main class="pagina">
 
   <section class="hero" id="hero">
-    <!--
-      A espiral, em vídeo.
-
-      O `poster` é o primeiro quadro do próprio laço: enquanto o vídeo
-      carrega, o que se vê é exatamente o que ele vai mostrar no primeiro
-      quadro, então a troca não pisca.
-
-      Sem `loop`: quem dá a volta é o script, porque o arquivo não é
-      cíclico (ver src/sections/hero/hero.js).
-    -->
     <video
       class="hero__video"
       id="hero-video"
-      src="assets/hero-espiral.mp4"
-      poster="assets/hero-espiral.webp"
       autoplay
       loop
       muted
@@ -162,10 +83,13 @@
       preload="auto"
       aria-hidden="true"
       tabindex="-1"
-    ></video>
+    >
+      <source src="assets/hero-espiral-mobile.mp4" type="video/mp4" media="(max-aspect-ratio: 13/20)" />
+      <source src="assets/hero-espiral-tablet.mp4" type="video/mp4" media="(max-aspect-ratio: 23/20)" />
+      <source src="assets/hero-espiral.mp4" type="video/mp4" />
+    </video>
 
-    <!-- O título fica só para leitor de tela e busca: a marca que se vê é
-         a que o próprio vídeo mostra, no miolo do vórtice. -->
+  
     <h1 class="sr-only">Harmonia Orofacial · Clínica Odontológica</h1>
   </section>
 
@@ -207,7 +131,7 @@
     </div>
   </section>
 
-  <!-- Faixa marquee: a marca desliza para a esquerda conforme o scroll -->
+ 
   <div class="faixa-marquee" aria-hidden="true">
     <span class="faixa-marquee__fade-topo"></span>
     <div class="faixa-marquee__trilho" id="faixa-marquee-trilho">
@@ -230,10 +154,7 @@
 
   <section class="s3" id="sectionthree">
 
-    <!-- Fundo da dobra. Fica grudado na tela: é a referência parada contra
-         a qual se percebe o card subindo. A superfície de glitter que era
-         do hero mora aqui agora; o véu por cima é o que a mantém como
-         fundo, e não como assunto. -->
+   
     <div class="s3__pelicula" aria-hidden="true">
       <div class="s3__pelicula-palco">
         <canvas class="s3__pelicula-gl" id="s3-gl" width="1920" height="1080"></canvas>
@@ -361,26 +282,10 @@
     </div>
   </section>
 
-  <!--
-    A transição: o letreiro por cima, a dobra da doutora por baixo.
-
-    Os dois moram no mesmo bloco porque um descobre o outro. O letreiro
-    cobre a primeira tela da dobra e é recortado pelo desenho do dente;
-    esse recorte começa tão grande que não se nota, e encolhe com a
-    rolagem até o letreiro inteiro ter se recolhido para dentro do traço
-    do dente — e o que estava atrás aparece.
-  -->
+  
   <div class="transicao">
 
-    <!--
-      O letreiro anuncia o nome antes da dobra da doutora. São três faixas
-      correndo com a rolagem (src/sections/letreiro), direita / esquerda /
-      direita: a do meio contra as duas de fora é o que faz o cruzamento
-      aparecer, e é o cruzamento que dá o movimento.
-
-      O nome vai uma vez só para quem lê por leitor de tela — o resto é
-      repetição de desenho, e vem marcado como tal.
-    -->
+    
     <section class="letreiro" id="letreiro" aria-label="Clínica Harmonia Orofacial">
     <div class="letreiro__linha letreiro__linha--dir" aria-hidden="true">
       <h2 class="letreiro__texto">Clínica Harmonia Orofacial</h2>
@@ -421,9 +326,7 @@
       <span class="letreiro__marca"></span>
     </div>
 
-      <!-- Chapa lisa da cor do letreiro, que entra por cima das faixas no
-           fim do recolhimento. É ela que fecha o dente num desenho só, em
-           vez de deixá-lo cheio de pedaços de letra. -->
+
       <div class="letreiro__sobreposicao" aria-hidden="true"></div>
     </section>
 
