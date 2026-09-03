@@ -40,13 +40,12 @@
 }
 
 .rodape__dente {
-  position: absolute;
-  right: 0;
-  bottom: 3rem;
-  width: 12rem;
-  height: 10.4rem;
+  display: block;
+  width: 7rem;
+  height: auto;
+  margin: 2.5rem auto 0;
   object-fit: contain;
-  opacity: 0.16;
+  opacity: 0.22;
   pointer-events: none;
 }
 
@@ -205,10 +204,7 @@
   }
 
   .rodape__dente {
-    right: 2rem;
-    width: 13rem;
-    height: 13rem;
-    opacity: 0.16;
+    width: 9rem;
   }
 
   .rodape__base {
@@ -233,8 +229,8 @@
   flex-direction: column;
   align-items: center;
   gap: 1.25rem;
-  margin: 3.5rem 0 2.5rem;
-  padding: 2.25rem 1.5rem;
+  margin: 3rem 0 0;
+  padding: 1.75rem 1.5rem;
   text-align: center;
   border: 1px solid rgb(253 186 116 / 0.22);
   border-radius: 1rem;
@@ -251,11 +247,11 @@
 .rodape__cta {
   display: inline-flex;
   align-items: center;
-  gap: 0.625rem;
-  padding: 0.9375rem 2rem;
-  font-size: 0.8125rem;
+  gap: 0.5rem;
+  padding: 0.6875rem 1.375rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   text-decoration: none;
   color: var(--navy-900);
   background-image: linear-gradient(to right, var(--gold-300), var(--gold-400));
@@ -278,6 +274,6 @@
     flex-direction: row;
     justify-content: space-between;
     text-align: left;
-    padding: 2rem 2.5rem;
+    padding: 1.5rem 2rem;
   }
 }
