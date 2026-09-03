@@ -97,12 +97,30 @@ a {
 }
 
 .fundo-interno {
+  position: relative;
   background-color: var(--interno-bg);
   background-image:
     radial-gradient(circle at 50% 0%, rgba(0, 39, 154, 0.8) 0%, transparent 70%),
     radial-gradient(circle at 50% 100%, rgba(0, 15, 60, 0.9) 0%, transparent 70%);
   min-height: 100vh;
   overflow-x: hidden;
+}
+
+.fundo-interno::before {
+  content: "";
+  position: fixed;
+  top: 52%;
+  left: 50%;
+  z-index: 0;
+  width: min(80vw, 700px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  background-image: url("../../assets/logo-transparente-png.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  opacity: 0.04;
+  pointer-events: none;
 }
 
 .pagina {

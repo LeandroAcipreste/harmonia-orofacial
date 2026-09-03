@@ -17,20 +17,6 @@ body.pagina-politica {
   position: relative;
 }
 
-.politica-watermark {
-  position: fixed;
-  top: 52%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: min(80vw, 700px);
-  height: auto;
-  opacity: 0.04;
-  z-index: 0;
-  pointer-events: none;
-  user-select: none;
-  filter: drop-shadow(0 0 50px rgba(253, 186, 116, 0.3));
-}
-
 .politica-header {
   position: relative;
   z-index: 10;
