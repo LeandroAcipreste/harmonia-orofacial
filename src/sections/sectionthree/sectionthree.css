@@ -186,13 +186,6 @@
   height: 11rem;
 }
 
-@media (min-width: 900px) {
-  .s3__etapas {
-    width: auto;
-    aspect-ratio: 1 / 1;
-    margin-inline: auto;
-  }
-}
 
 .s3__etapa {
   position: absolute;
@@ -304,8 +297,8 @@
     padding: 1.25rem;
   }
 
-  .s3__etapas {
-    height: 7rem;
+  .s3__grade {
+    max-width: calc(100vh - 9rem);
   }
 
   .s3__icone {
@@ -317,10 +310,18 @@
 @media (min-width: 900px) {
   .s3__grade {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: calc(100vh - 14rem);
+    margin-inline: auto;
+  }
+
+  .s3__card {
+    aspect-ratio: 1 / 1;
   }
 
   .s3__etapas {
-    height: clamp(5rem, 14vh, 15rem);
+    flex: 1;
+    height: auto;
+    min-height: 0;
   }
 
   .s3__palco {
