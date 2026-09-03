@@ -167,5 +167,28 @@ export const montarLeituraDaDobra = (linha, posicao) => {
             { y: () => -sobra(), ease: "none", duration: ARRASTO_ATE - ARRASTO_DE },
             posicao + ARRASTO_DE
         );
+
+        encolherOVao(secao, sobra);
     }
+};
+
+const CONSULTA_VAO = "(max-width: 899px)";
+
+const encolherOVao = (secao, sobra) => {
+    if (!window.matchMedia(CONSULTA_VAO).matches) {
+        return;
+    }
+
+    const ajustar = () => {
+        gsap.set(secao, { marginBottom: 0 });
+
+        const vao = sobra();
+
+        if (vao > 0) {
+            gsap.set(secao, { marginBottom: -vao });
+        }
+    };
+
+    ajustar();
+    ScrollTrigger.addEventListener("refresh", ajustar);
 };

@@ -24,6 +24,8 @@
   right: 0;
   z-index: 10;
 
+  opacity: var(--veu, 1);
+
   height: 32rem;
   pointer-events: none;
   background: linear-gradient(

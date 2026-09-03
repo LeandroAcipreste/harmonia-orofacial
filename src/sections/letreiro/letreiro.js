@@ -116,6 +116,13 @@ export const initTransicao = ({ aoRecolher } = {}) => {
             1
         );
 
+        linha.fromTo(
+            letreiro,
+            { "--veu": 1 },
+            { "--veu": 0, ease: "none", duration: 0.6 },
+            1
+        );
+
         linha.to(
             letreiro,
             {
@@ -145,7 +152,7 @@ export const initTransicao = ({ aoRecolher } = {}) => {
 
         return () => {
             gsap.set(letreiro, {
-                clearProps: "maskSize,maskPosition,webkitMaskSize,webkitMaskPosition,opacity",
+                clearProps: "maskSize,maskPosition,webkitMaskSize,webkitMaskPosition,opacity,--veu",
             });
             gsap.set(".letreiro__sobreposicao", { clearProps: "opacity" });
         };
