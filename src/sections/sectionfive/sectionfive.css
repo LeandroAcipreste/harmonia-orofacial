@@ -44,7 +44,7 @@
   font-weight: 500;
   letter-spacing: 0.35em;
   text-transform: uppercase;
-  color: rgb(253 186 116 / 0.8);
+  color: var(--gold-300);
 }
 
 .s5__eyebrow::before {
@@ -150,7 +150,7 @@
   max-width: 34rem;
   font-size: 1.0625rem;
   line-height: 1.7;
-  color: var(--slate-400);
+  color: var(--slate-200);
 }
 
 .s5__palavra {
