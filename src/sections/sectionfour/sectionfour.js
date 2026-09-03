@@ -156,8 +156,15 @@ export const montarLeituraDaDobra = (linha, posicao) => {
 
     const bloco = secao.closest(".transicao");
     const inner = secao.querySelector(".s4__inner");
-    const sobra = () =>
-        Math.max(0, secao.getBoundingClientRect().height - window.innerHeight + FOLGA_DO_ARRASTO);
+    const sobra = () => {
+        if (!inner) {
+            return 0;
+        }
+
+        const fundoDoConteudo = inner.offsetTop + inner.offsetHeight;
+
+        return Math.max(0, fundoDoConteudo - window.innerHeight + FOLGA_DO_ARRASTO);
+    };
 
     const sobem = [inner, bloco && bloco.querySelector(".letreiro")].filter(Boolean);
 
@@ -168,7 +175,7 @@ export const montarLeituraDaDobra = (linha, posicao) => {
             posicao + ARRASTO_DE
         );
 
-        encolherOVao(secao, sobra);
+        encolherOVao(secao);
     }
 };
 
@@ -176,18 +183,19 @@ const CONSULTA_VAO = "(max-width: 899px)";
 
 let ajusteArmado = false;
 
-const encolherOVao = (secao, sobra) => {
+const encolherOVao = (secao) => {
     const ajustar = () => {
-        gsap.set(secao, { marginBottom: 0 });
+        gsap.set(secao, { height: "", overflow: "" });
 
         if (!window.matchMedia(CONSULTA_VAO).matches) {
             return;
         }
 
-        const vao = sobra();
+        const natural = secao.getBoundingClientRect().height;
+        const teto = window.innerHeight;
 
-        if (vao > 0) {
-            gsap.set(secao, { marginBottom: -vao });
+        if (natural > teto) {
+            gsap.set(secao, { height: teto, overflow: "clip" });
         }
     };
 
