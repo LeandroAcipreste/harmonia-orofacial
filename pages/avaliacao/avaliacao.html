@@ -64,6 +64,11 @@
         </label>
 
         <label class="ficha__campo">
+          <span class="ficha__rotulo">E-mail</span>
+          <input class="ficha__entrada" type="email" name="email" autocomplete="email" inputmode="email" required />
+        </label>
+
+        <label class="ficha__campo">
           <span class="ficha__rotulo">Sexo</span>
           <select class="ficha__entrada" name="sexo">
             <option value="">Selecione</option>
@@ -83,6 +88,31 @@
         <label class="ficha__campo">
           <span class="ficha__rotulo">Cidade</span>
           <input class="ficha__entrada" type="text" name="cidade" autocomplete="address-level2" />
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset class="ficha__grupo">
+      <legend class="ficha__legenda">Preferência de horário</legend>
+
+      <p class="ficha__aviso">
+        Diga quando fica melhor para você. A clínica confirma o horário
+        exato no contato.
+      </p>
+
+      <div class="ficha__linha">
+        <label class="ficha__campo">
+          <span class="ficha__rotulo">Data preferida</span>
+          <input class="ficha__entrada" type="date" name="dataPreferida" />
+        </label>
+
+        <label class="ficha__campo">
+          <span class="ficha__rotulo">Turno</span>
+          <select class="ficha__entrada" name="janelaPreferida">
+            <option value="">Tanto faz</option>
+            <option value="manha">Manhã (08h às 12h)</option>
+            <option value="tarde">Tarde (14h às 18h)</option>
+          </select>
         </label>
       </div>
     </fieldset>
@@ -200,9 +230,16 @@
       <label class="ficha__aceite">
         <input type="checkbox" name="dados" required />
         <span>
-          Concordo em enviar estes dados pelo WhatsApp para agendamento,
-          conforme a
+          Concordo em enviar estes dados para agendamento, conforme a
           <a href="../politica/politica.html" target="_blank" rel="noopener">política de privacidade</a>.
+        </span>
+      </label>
+
+      <label class="ficha__aceite">
+        <input type="checkbox" name="marketing" />
+        <span>
+          Quero receber novidades e promoções da clínica por e-mail.
+          <em>(opcional, e você pode sair quando quiser)</em>
         </span>
       </label>
     </fieldset>

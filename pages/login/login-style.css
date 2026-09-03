@@ -491,3 +491,34 @@ input:focus-visible {
     animation-duration: 2s;
   }
 }
+
+.acesso__form--codigo[hidden] {
+  display: none;
+}
+
+.acesso__explica {
+  margin: 0 0 1.5rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--slate-300);
+}
+
+.acesso__explica strong {
+  color: var(--white);
+  font-weight: 500;
+}
+
+.campo__input--codigo {
+  font-size: 1.5rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5em;
+  text-align: center;
+}
+
+button.acesso__esqueci {
+  padding: 0;
+  font: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}

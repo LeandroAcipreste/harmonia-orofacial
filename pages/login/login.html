@@ -104,6 +104,47 @@
       </button>
     </form>
 
+    <form class="acesso__form acesso__form--codigo" id="codigo-form" hidden novalidate>
+      <p class="acesso__alerta" id="codigo-alerta" role="alert" hidden></p>
+
+      <p class="acesso__explica">
+        Enviamos um código de seis dígitos para
+        <strong id="codigo-destino">seu e-mail</strong>. Digite abaixo para entrar.
+      </p>
+
+      <div class="campo acesso-el">
+        <label class="campo__label" for="login-codigo">Código de verificação</label>
+        <input
+          class="campo__input campo__input--codigo"
+          id="login-codigo"
+          name="codigo"
+          type="text"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          pattern="[0-9]{6}"
+          maxlength="6"
+          placeholder="000000"
+          aria-describedby="erro-codigo"
+          required
+        />
+        <p class="campo__erro" id="erro-codigo"></p>
+      </div>
+
+      <button class="acesso__enviar acesso-el" type="submit">
+        <span class="acesso__enviar-texto">Verificar e entrar</span>
+        <span class="acesso__enviar-giro" aria-hidden="true"></span>
+      </button>
+
+      <div class="acesso__opcoes acesso-el">
+        <button class="acesso__esqueci" type="button" id="codigo-reenviar">
+          Reenviar código
+        </button>
+        <button class="acesso__esqueci" type="button" id="codigo-voltar">
+          Usar outra conta
+        </button>
+      </div>
+    </form>
+
   </div>
 </main>
 

@@ -1,65 +1,11 @@
-const WHATSAPP = "5579998764880";
+import { enviarAgendamento } from "../../src/services/agendamento.js";
 
-const PERGUNTAS = [
-    ["saude", "Problema de saúde"],
-    ["medicamento", "Usa medicamento"],
-    ["alergia", "Alergia a medicamento/substância"],
-    ["fumante", "Fumante"],
-    ["cicatrizacao", "Boa cicatrização"],
-    ["tratamento", "Em tratamento médico"],
-    ["anestesia", "Já tomou anestesia dentária"],
-    ["malEstar", "Sentiu-se mal após anestesia"],
-    ["hemorragia", "Problema com hemorragia"],
-];
-
-const IDENTIFICACAO = [
-    ["nome", "Nome"],
-    ["nascimento", "Nascimento"],
-    ["idade", "Idade"],
-    ["telefone", "Telefone"],
-    ["sexo", "Sexo"],
-    ["endereco", "Endereço"],
-    ["cidade", "Cidade"],
-];
-
-const montarMensagem = (dados) => {
-    const linhas = ["*Agendamento de avaliação — Harmonia Orofacial*", ""];
-
-    IDENTIFICACAO.forEach(([campo, rotulo]) => {
-        const valor = (dados.get(campo) || "").trim();
-
-        if (valor) {
-            linhas.push(rotulo + ": " + valor);
-        }
-    });
-
-    const respondidas = PERGUNTAS.filter(([campo]) => dados.get(campo));
-
-    if (respondidas.length) {
-        linhas.push("", "*Saúde*");
-        respondidas.forEach(([campo, rotulo]) => {
-            linhas.push(rotulo + ": " + dados.get(campo));
-        });
-    }
-
-    const observacoes = (dados.get("observacoes") || "").trim();
-
-    if (observacoes) {
-        linhas.push("", "*Observações*", observacoes);
-    }
-
-    linhas.push("", "Confirmo a veracidade das informações.");
-
-    if (dados.get("imagem")) {
-        linhas.push("Autorizo o registro fotográfico do antes e depois.");
-    }
-
-    return linhas.join("\n");
-};
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 const initAvaliacao = () => {
     const form = document.querySelector("#ficha-form");
     const erro = document.querySelector("#ficha-erro");
+    const botao = form && form.querySelector(".ficha__enviar");
 
     if (!form) {
         return;
@@ -74,28 +20,52 @@ const initAvaliacao = () => {
         erro.hidden = !recado;
     };
 
-    form.addEventListener("submit", (evento) => {
-        evento.preventDefault();
-
-        const dados = new FormData(form);
+    const validar = (dados) => {
         const nome = (dados.get("nome") || "").trim();
         const telefone = (dados.get("telefone") || "").trim();
+        const email = (dados.get("email") || "").trim();
 
         if (!nome || !telefone) {
-            avisar("Preencha ao menos o nome e o telefone.");
-            return;
+            return "Preencha ao menos o nome e o telefone.";
+        }
+
+        if (!EMAIL.test(email)) {
+            return "Confira o e-mail: ele recebe a confirmação do horário.";
         }
 
         if (!dados.get("veracidade") || !dados.get("dados")) {
-            avisar("Marque as duas confirmações obrigatórias para enviar.");
+            return "Marque as duas confirmações obrigatórias para enviar.";
+        }
+
+        return "";
+    };
+
+    form.addEventListener("submit", async (evento) => {
+        evento.preventDefault();
+
+        const dados = new FormData(form);
+        const problema = validar(dados);
+
+        if (problema) {
+            avisar(problema);
             return;
         }
 
         avisar("");
 
-        const texto = encodeURIComponent(montarMensagem(dados));
+        if (botao) {
+            botao.disabled = true;
+        }
 
-        window.open("https://wa.me/" + WHATSAPP + "?text=" + texto, "_blank", "noopener");
+        try {
+            await enviarAgendamento(dados);
+        } catch (falha) {
+            avisar(falha.message || "Não foi possível enviar agora. Tente novamente.");
+        } finally {
+            if (botao) {
+                botao.disabled = false;
+            }
+        }
     });
 };
 

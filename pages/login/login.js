@@ -1,14 +1,5 @@
-/*
- * Entrar.
- *
- * Ainda não existe back-end. Quando existir, só duas coisas mudam aqui:
- * `ENDPOINT`, para onde as credenciais são enviadas, e `DESTINO`, a página
- * aberta depois que a sessão é criada. Sem JavaScript o formulário faz um
- * POST comum para o mesmo endereço do atributo `action`.
- */
-
-const ENDPOINT = "/api/sessao";
-const DESTINO = "/";
+import { entrar, reenviarCodigo, verificar } from "../../src/services/sessao.js";
+import { destinoDeVolta } from "../../src/services/guarda.js";
 
 const MIN_SENHA = 8;
 
@@ -93,16 +84,30 @@ const initLogin = () => {
         esconderAlerta(alerta);
         trancar(botao, true);
 
-        const recado = await autenticar(new FormData(form));
+        const dados = new FormData(form);
+
+        const saida = await entrar({
+            email: dados.get("email"),
+            senha: dados.get("senha"),
+            lembrar: dados.get("lembrar"),
+        });
 
         trancar(botao, false);
 
-        if (!recado) {
+        if (!saida.ok) {
+            mostrarAlerta(alerta, saida.erro);
             return;
         }
 
-        mostrarAlerta(alerta, recado);
+        if (saida.etapa === "verificacao") {
+            abrirVerificacao(form, dados.get("email"));
+            return;
+        }
+
+        location.assign(destinoDeVolta(saida.destino));
     });
+
+    ligarVerificacao(form);
 
     mostrarProgresso(pagina, campos);
     animarEntrada();
@@ -173,29 +178,6 @@ const trancar = (botao, ocupado) => {
     botao.disabled = ocupado;
 };
 
-/*
- * Devolve a mensagem a exibir, ou string vazia quando a sessão foi criada
- * e a navegação já está a caminho de `DESTINO`.
- */
-const autenticar = async (dados) => {
-    try {
-        const resposta = await fetch(ENDPOINT, {
-            method: "POST",
-            headers: { Accept: "application/json" },
-            body: dados,
-        });
-
-        if (resposta.ok) {
-            window.location.assign(DESTINO);
-            return "";
-        }
-
-        return resposta.status === 401 ? MENSAGENS.credenciais : MENSAGENS.servidor;
-    } catch {
-        return MENSAGENS.conexao;
-    }
-};
-
 const mostrarAlerta = (alerta, texto) => {
     alerta.textContent = texto;
     alerta.hidden = false;
@@ -224,3 +206,95 @@ const animarEntrada = () => {
 };
 
 initLogin();
+
+const abrirVerificacao = (formLogin, email) => {
+    const formCodigo = document.querySelector("#codigo-form");
+    const destino = document.querySelector("#codigo-destino");
+
+    if (!formCodigo) {
+        return;
+    }
+
+    if (destino && email) {
+        destino.textContent = email;
+    }
+
+    formLogin.hidden = true;
+    formCodigo.hidden = false;
+
+    const campo = formCodigo.querySelector("#login-codigo");
+
+    if (campo) {
+        campo.value = "";
+        campo.focus();
+    }
+};
+
+const ligarVerificacao = (formLogin) => {
+    const formCodigo = document.querySelector("#codigo-form");
+
+    if (!formCodigo) {
+        return;
+    }
+
+    const alerta = formCodigo.querySelector("#codigo-alerta");
+    const botao = formCodigo.querySelector(".acesso__enviar");
+    const campo = formCodigo.querySelector("#login-codigo");
+    const erro = formCodigo.querySelector("#erro-codigo");
+
+    campo.addEventListener("input", () => {
+        campo.value = campo.value.replace(/\D/g, "").slice(0, 6);
+        erro.textContent = "";
+    });
+
+    formCodigo.addEventListener("submit", async (evento) => {
+        evento.preventDefault();
+
+        if (campo.value.length !== 6) {
+            erro.textContent = "O código tem seis dígitos.";
+            campo.focus();
+            return;
+        }
+
+        esconderAlerta(alerta);
+        trancar(botao, true);
+
+        const saida = await verificar({ codigo: campo.value });
+
+        trancar(botao, false);
+
+        if (!saida.ok) {
+            mostrarAlerta(alerta, saida.erro);
+            campo.focus();
+            return;
+        }
+
+        location.assign(destinoDeVolta(saida.destino));
+    });
+
+    const reenviar = formCodigo.querySelector("#codigo-reenviar");
+
+    if (reenviar) {
+        reenviar.addEventListener("click", async () => {
+            trancar(reenviar, true);
+
+            const saida = await reenviarCodigo();
+
+            trancar(reenviar, false);
+            mostrarAlerta(
+                alerta,
+                saida.ok ? "Enviamos um código novo." : "Não foi possível reenviar agora."
+            );
+        });
+    }
+
+    const voltar = formCodigo.querySelector("#codigo-voltar");
+
+    if (voltar) {
+        voltar.addEventListener("click", () => {
+            formCodigo.hidden = true;
+            formLogin.hidden = false;
+            esconderAlerta(alerta);
+        });
+    }
+};
