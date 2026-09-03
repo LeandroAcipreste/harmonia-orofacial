@@ -46,14 +46,6 @@
 }
 
 @media (max-aspect-ratio: 13/20) {
-  .hero__video {
-    object-fit: contain;
-  }
-
-  .hero {
-    background-size: contain;
-    background-repeat: no-repeat;
-  }
 
   .hero::before {
     content: "";

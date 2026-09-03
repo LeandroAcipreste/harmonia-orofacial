@@ -1,7 +1,19 @@
 const MONTAGENS = [
-    { consulta: "(max-aspect-ratio: 13/20)", arquivo: "assets/hero-espiral-mobile.mp4" },
-    { consulta: "(max-aspect-ratio: 23/20)", arquivo: "assets/hero-espiral-tablet.mp4" },
-    { consulta: null, arquivo: "assets/hero-espiral.mp4" },
+    {
+        consulta: "(max-aspect-ratio: 13/20)",
+        arquivo: "assets/hero-espiral-mobile.mp4",
+        cartaz: "assets/hero-espiral-mobile.webp",
+    },
+    {
+        consulta: "(max-aspect-ratio: 23/20)",
+        arquivo: "assets/hero-espiral-tablet.mp4",
+        cartaz: "assets/hero-espiral-tablet.webp",
+    },
+    {
+        consulta: null,
+        arquivo: "assets/hero-espiral.mp4",
+        cartaz: "assets/hero-espiral.webp",
+    },
 ];
 
 let trocandoFonte = false;
@@ -44,9 +56,10 @@ const seguirAProporcao = (video) => {
     let agendado = null;
 
     const reavaliar = () => {
-        const { arquivo } = montagemDaVez();
+        const { arquivo, cartaz } = montagemDaVez();
 
         if (!video.currentSrc.endsWith(arquivo)) {
+            video.poster = cartaz;
             trocarMontagem(video, arquivo);
         }
     };
@@ -86,7 +99,7 @@ const tentarDeNovoQuandoDerConta = (video) => {
     retentativaArmada = true;
 
     video.addEventListener(
-        "canplaythrough",
+        "canplay",
         () => {
             retentativaArmada = false;
             tocar(video);
@@ -122,10 +135,13 @@ export const initHero = () => {
     const video = hero.querySelector(".hero__video");
 
     if (video) {
+        const montagem = montagemDaVez();
+
         prepararParaTocar(video);
 
         trocandoFonte = true;
-        video.src = montagemDaVez().arquivo;
+        video.poster = montagem.cartaz;
+        video.src = montagem.arquivo;
 
         video.addEventListener(
             "loadeddata",
