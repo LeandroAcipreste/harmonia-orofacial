@@ -18,7 +18,6 @@ const trocarMontagem = (video, arquivo) => {
     video.addEventListener(
         "loadeddata",
         () => {
-
             if (Number.isFinite(video.duration) && video.duration > 0) {
                 video.currentTime = ponto % video.duration;
             }
@@ -66,58 +65,45 @@ const prepararParaTocar = (video) => {
     video.setAttribute("webkit-playsinline", "");
 };
 
+const CLASSE_PRONTO = "esta-pronto";
+const EVENTO_PRELOADER = "harmonia:preloader-fim";
+
+const acendeu = (video) => {
+    window.requestAnimationFrame(() => video.classList.add(CLASSE_PRONTO));
+};
+
+let retentativaArmada = false;
+
+const tentarDeNovoQuandoDerConta = (video) => {
+    if (retentativaArmada) {
+        return;
+    }
+
+    retentativaArmada = true;
+
+    video.addEventListener(
+        "canplaythrough",
+        () => {
+            retentativaArmada = false;
+            tocar(video);
+        },
+        { once: true }
+    );
+};
+
 const tocar = (video) => {
     prepararParaTocar(video);
 
     const promessa = video.play();
 
-    if (promessa && typeof promessa.catch === "function") {
-        promessa.catch(() => {
-            trocarPorImagem(video);
-        });
-    }
-};
-
-const ESPERA_PARA_DESISTIR = 2500;
-
-const ANIMADAS = {
-    "assets/hero-espiral-mobile.mp4": "assets/hero-espiral-mobile.anim.webp",
-    "assets/hero-espiral-tablet.mp4": "assets/hero-espiral-mobile.anim.webp",
-    "assets/hero-espiral.mp4": "assets/hero-espiral.anim.webp",
-};
-
-let trocado = false;
-
-const trocarPorImagem = (video) => {
-    if (trocado) {
+    if (!promessa || typeof promessa.then !== "function") {
+        acendeu(video);
         return;
     }
 
-    trocado = true;
-
-    const arquivo = ANIMADAS[montagemDaVez().arquivo];
-    const hero = video.closest(".hero");
-
-    if (!arquivo || !hero) {
-        return;
-    }
-
-    const imagem = new Image();
-
-    imagem.className = video.className;
-    imagem.src = arquivo;
-    imagem.alt = "";
-    imagem.setAttribute("aria-hidden", "true");
-    imagem.decoding = "async";
-
-    imagem.addEventListener(
-        "load",
-        () => {
-            video.replaceWith(imagem);
-            document.dispatchEvent(new CustomEvent("harmonia:hero-parado"));
-        },
-        { once: true }
-    );
+    promessa
+        .then(() => acendeu(video))
+        .catch(() => tentarDeNovoQuandoDerConta(video));
 };
 
 let deveTocar = true;
@@ -132,15 +118,14 @@ export const initHero = () => {
     const video = hero.querySelector(".hero__video");
 
     if (video) {
+        prepararParaTocar(video);
         video.src = montagemDaVez().arquivo;
         video.load();
         tocar(video);
 
-        window.setTimeout(() => {
-            if (video.paused || video.currentTime === 0) {
-                trocarPorImagem(video);
-            }
-        }, ESPERA_PARA_DESISTIR);
+        document.addEventListener(EVENTO_PRELOADER, () => tocar(video), {
+            once: true,
+        });
 
         video.addEventListener("pause", () => {
             if (deveTocar && !hero.classList.contains("is-fora")) {

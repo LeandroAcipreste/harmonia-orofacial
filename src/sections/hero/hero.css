@@ -28,6 +28,12 @@
   height: 100%;
   object-fit: cover;
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.hero__video.esta-pronto {
+  opacity: 1;
 }
 
 .hero__video::-webkit-media-controls,

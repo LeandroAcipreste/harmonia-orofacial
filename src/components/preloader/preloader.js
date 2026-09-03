@@ -2,6 +2,8 @@ const DURACAO_TOTAL = 5000;
 const ESPERA_ANTES_DE_SAIR = 420;
 const LIMITE_SEGURANCA = DURACAO_TOTAL + 7000;
 
+const EVENTO_FIM = "harmonia:preloader-fim";
+
 const suavizar = (t) => 1 - Math.pow(1 - t, 3);
 
 export const initPreloader = () => {
@@ -37,6 +39,7 @@ export const initPreloader = () => {
 
     if (document.documentElement.classList.contains("sem-preloader")) {
         encerrar();
+        document.dispatchEvent(new CustomEvent(EVENTO_FIM));
         return;
     }
 
@@ -61,6 +64,7 @@ export const initPreloader = () => {
     };
 
     const sair = () => {
+        document.dispatchEvent(new CustomEvent(EVENTO_FIM));
         preloader.addEventListener("transitionend", encerrar, { once: true });
         preloader.classList.add("esta-saindo");
     };
