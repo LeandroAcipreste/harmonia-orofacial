@@ -73,29 +73,51 @@ const tocar = (video) => {
 
     if (promessa && typeof promessa.catch === "function") {
         promessa.catch(() => {
-            aguardarGesto(video);
+            trocarPorImagem(video);
         });
     }
 };
 
-let gestoArmado = false;
+const ESPERA_PARA_DESISTIR = 2500;
 
-const aguardarGesto = (video) => {
-    if (gestoArmado) {
+const ANIMADAS = {
+    "assets/hero-espiral-mobile.mp4": "assets/hero-espiral-mobile.anim.webp",
+    "assets/hero-espiral-tablet.mp4": "assets/hero-espiral-mobile.anim.webp",
+    "assets/hero-espiral.mp4": "assets/hero-espiral.anim.webp",
+};
+
+let trocado = false;
+
+const trocarPorImagem = (video) => {
+    if (trocado) {
         return;
     }
 
-    gestoArmado = true;
+    trocado = true;
 
-    const soltar = () => {
-        gestoArmado = false;
-        prepararParaTocar(video);
-        video.play().catch(() => {});
-    };
+    const arquivo = ANIMADAS[montagemDaVez().arquivo];
+    const hero = video.closest(".hero");
 
-    ["touchstart", "pointerdown", "click", "keydown"].forEach((evento) => {
-        document.addEventListener(evento, soltar, { once: true, passive: true });
-    });
+    if (!arquivo || !hero) {
+        return;
+    }
+
+    const imagem = new Image();
+
+    imagem.className = video.className;
+    imagem.src = arquivo;
+    imagem.alt = "";
+    imagem.setAttribute("aria-hidden", "true");
+    imagem.decoding = "async";
+
+    imagem.addEventListener(
+        "load",
+        () => {
+            video.replaceWith(imagem);
+            document.dispatchEvent(new CustomEvent("harmonia:hero-parado"));
+        },
+        { once: true }
+    );
 };
 
 let deveTocar = true;
@@ -113,6 +135,12 @@ export const initHero = () => {
         video.src = montagemDaVez().arquivo;
         video.load();
         tocar(video);
+
+        window.setTimeout(() => {
+            if (video.paused || video.currentTime === 0) {
+                trocarPorImagem(video);
+            }
+        }, ESPERA_PARA_DESISTIR);
 
         video.addEventListener("pause", () => {
             if (deveTocar && !hero.classList.contains("is-fora")) {
