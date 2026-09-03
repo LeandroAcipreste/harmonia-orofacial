@@ -174,13 +174,15 @@ export const montarLeituraDaDobra = (linha, posicao) => {
 
 const CONSULTA_VAO = "(max-width: 899px)";
 
-const encolherOVao = (secao, sobra) => {
-    if (!window.matchMedia(CONSULTA_VAO).matches) {
-        return;
-    }
+let ajusteArmado = false;
 
+const encolherOVao = (secao, sobra) => {
     const ajustar = () => {
         gsap.set(secao, { marginBottom: 0 });
+
+        if (!window.matchMedia(CONSULTA_VAO).matches) {
+            return;
+        }
 
         const vao = sobra();
 
@@ -190,5 +192,11 @@ const encolherOVao = (secao, sobra) => {
     };
 
     ajustar();
-    ScrollTrigger.addEventListener("refresh", ajustar);
+
+    if (ajusteArmado) {
+        return;
+    }
+
+    ajusteArmado = true;
+    ScrollTrigger.addEventListener("refreshInit", ajustar);
 };
