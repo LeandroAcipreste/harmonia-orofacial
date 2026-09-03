@@ -4,6 +4,8 @@ const MONTAGENS = [
     { consulta: null, arquivo: "assets/hero-espiral.mp4" },
 ];
 
+let trocandoFonte = false;
+
 const montagemDaVez = () =>
     MONTAGENS.find(
         ({ consulta }) => consulta === null || window.matchMedia(consulta).matches,
@@ -12,6 +14,7 @@ const montagemDaVez = () =>
 const trocarMontagem = (video, arquivo) => {
     const ponto = video.currentTime;
 
+    trocandoFonte = true;
     video.style.visibility = "hidden";
     video.src = arquivo;
 
@@ -23,6 +26,7 @@ const trocarMontagem = (video, arquivo) => {
             }
 
             video.style.visibility = "";
+            trocandoFonte = false;
 
             if (!video.closest(".hero").classList.contains("is-fora")) {
                 tocar(video);
@@ -119,15 +123,30 @@ export const initHero = () => {
 
     if (video) {
         prepararParaTocar(video);
+
+        trocandoFonte = true;
         video.src = montagemDaVez().arquivo;
+
+        video.addEventListener(
+            "loadeddata",
+            () => {
+                trocandoFonte = false;
+                tocar(video);
+            },
+            { once: true }
+        );
+
         video.load();
-        tocar(video);
 
         document.addEventListener(EVENTO_PRELOADER, () => tocar(video), {
             once: true,
         });
 
         video.addEventListener("pause", () => {
+            if (trocandoFonte) {
+                return;
+            }
+
             if (deveTocar && !hero.classList.contains("is-fora")) {
                 tocar(video);
             }
