@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Agendar avaliação · Harmonia Orofacial</title>
+  <meta name="description" content="Preencha a ficha e agende sua avaliação na Harmonia Orofacial." />
+
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="../../assets/favicon-512.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/favicon-180.png" />
+
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="avaliacao.css" />
+</head>
+
+<body class="fundo-interno">
+
+<main class="pagina ficha">
+
+  <a class="ficha__voltar" href="../../index.html">
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
+    VOLTAR AO SITE
+  </a>
+
+  <header class="ficha__cabecalho">
+    <img class="ficha__marca" src="../../assets/marca-harmonia.webp" alt="Harmonia Orofacial, clínica odontológica" width="598" height="156" />
+    <h1 class="ficha__titulo">Agendar avaliação</h1>
+    <p class="ficha__intro">
+      Preencha a ficha abaixo. Ao enviar, ela chega pelo WhatsApp da clínica
+      e nossa equipe entra em contato para marcar o melhor horário.
+    </p>
+  </header>
+
+  <form class="ficha__form" id="ficha-form" novalidate>
+
+    <fieldset class="ficha__grupo">
+      <legend class="ficha__legenda">Identificação</legend>
+
+      <div class="ficha__linha">
+        <label class="ficha__campo ficha__campo--largo">
+          <span class="ficha__rotulo">Nome completo</span>
+          <input class="ficha__entrada" type="text" name="nome" autocomplete="name" required />
+        </label>
+
+        <label class="ficha__campo">
+          <span class="ficha__rotulo">Data de nascimento</span>
+          <input class="ficha__entrada" type="date" name="nascimento" autocomplete="bday" />
+        </label>
+      </div>
+
+      <div class="ficha__linha">
+        <label class="ficha__campo">
+          <span class="ficha__rotulo">Idade</span>
+          <input class="ficha__entrada" type="number" name="idade" min="0" max="120" inputmode="numeric" />
+        </label>
+
+        <label class="ficha__campo">
+          <span class="ficha__rotulo">Telefone</span>
+          <input class="ficha__entrada" type="tel" name="telefone" autocomplete="tel" inputmode="tel" required />
+        </label>
+
+        <label class="ficha__campo">
+          <span class="ficha__rotulo">Sexo</span>
+          <select class="ficha__entrada" name="sexo">
+            <option value="">Selecione</option>
+            <option>Feminino</option>
+            <option>Masculino</option>
+            <option>Prefiro não informar</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="ficha__linha">
+        <label class="ficha__campo ficha__campo--largo">
+          <span class="ficha__rotulo">Endereço</span>
+          <input class="ficha__entrada" type="text" name="endereco" autocomplete="street-address" />
+        </label>
+
+        <label class="ficha__campo">
+          <span class="ficha__rotulo">Cidade</span>
+          <input class="ficha__entrada" type="text" name="cidade" autocomplete="address-level2" />
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset class="ficha__grupo">
+      <legend class="ficha__legenda">Saúde</legend>
+
+      <p class="ficha__aviso">
+        Estas respostas são informações de saúde. Você decide se quer
+        enviá-las agora ou preenchê-las na clínica, no dia da avaliação.
+      </p>
+
+      <ul class="ficha__perguntas">
+        <li class="ficha__pergunta" data-pergunta="Tem algum problema de saúde?">
+          <span class="ficha__enunciado">Tem algum problema de saúde?</span>
+          <span class="ficha__opcoes">
+            <label class="ficha__opcao"><input type="radio" name="saude" value="Sim" /><span>Sim</span></label>
+            <label class="ficha__opcao"><input type="radio" name="saude" value="Não" /><span>Não</span></label>
+          </span>
+        </li>
+
+        <li class="ficha__pergunta" data-pergunta="Faz uso de algum medicamento?">
+          <span class="ficha__enunciado">Faz uso de algum medicamento?</span>
+          <span class="ficha__opcoes">
+            <label class="ficha__opcao"><input type="radio" name="medicamento" value="Sim" /><span>Sim</span></label>
+            <label class="ficha__opcao"><input type="radio" name="medicamento" value="Não" /><span>Não</span></label>
+          </span>
+        </li>
+
+        <li class="ficha__pergunta" data-pergunta="Tem alergia a algum medicamento ou substância?">
+          <span class="ficha__enunciado">Tem alergia a algum medicamento ou substância?</span>
+          <span class="ficha__opcoes">
+            <label class="ficha__opcao"><input type="radio" name="alergia" value="Sim" /><span>Sim</span></label>
+            <label class="ficha__opcao"><input type="radio" name="alergia" value="Não" /><span>Não</span></label>
+          </span>
+        </li>
+
+        <li class="ficha__pergunta" data-pergunta="É fumante?">
+          <span class="ficha__enunciado">É fumante?</span>
+          <span class="ficha__opcoes">
+            <label class="ficha__opcao"><input type="radio" name="fumante" value="Sim" /><span>Sim</span></label>
+            <label class="ficha__opcao"><input type="radio" name="fumante" value="Não" /><span>Não</span></label>
+          </span>
+        </li>
+
+        <li class="ficha__pergunta" data-pergunta="Tem boa cicatrização?">
+          <span class="ficha__enunciado">Tem boa cicatrização?</span>
+          <span class="ficha__opcoes">
+            <label class="ficha__opcao"><input type="radio" name="cicatrizacao" value="Sim" /><span>Sim</span></label>
+            <label class="ficha__opcao"><input type="radio" name="cicatrizacao" value="Não" /><span>Não</span></label>
+          </span>
+        </li>
+
+        <li class="ficha__pergunta" data-pergunta="Está em tratamento médico?">
+          <span class="ficha__enunciado">Está em tratamento médico?</span>
+          <span class="ficha__opcoes">
+            <label class="ficha__opcao"><input type="radio" name="tratamento" value="Sim" /><span>Sim</span></label>
+            <label class="ficha__opcao"><input type="radio" name="tratamento" value="Não" /><span>Não</span></label>
+          </span>
+        </li>
+
+        <li class="ficha__pergunta" data-pergunta="Já tomou anestesia para tratamento dentário?">
+          <span class="ficha__enunciado">Já tomou anestesia para tratamento dentário?</span>
+          <span class="ficha__opcoes">
+            <label class="ficha__opcao"><input type="radio" name="anestesia" value="Sim" /><span>Sim</span></label>
+            <label class="ficha__opcao"><input type="radio" name="anestesia" value="Não" /><span>Não</span></label>
+          </span>
+        </li>
+
+        <li class="ficha__pergunta" data-pergunta="Sentiu-se mal após a anestesia?">
+          <span class="ficha__enunciado">Sentiu-se mal após a anestesia?</span>
+          <span class="ficha__opcoes">
+            <label class="ficha__opcao"><input type="radio" name="malEstar" value="Sim" /><span>Sim</span></label>
+            <label class="ficha__opcao"><input type="radio" name="malEstar" value="Não" /><span>Não</span></label>
+          </span>
+        </li>
+
+        <li class="ficha__pergunta" data-pergunta="Já teve problema com hemorragia?">
+          <span class="ficha__enunciado">Já teve problema com hemorragia?</span>
+          <span class="ficha__opcoes">
+            <label class="ficha__opcao"><input type="radio" name="hemorragia" value="Sim" /><span>Sim</span></label>
+            <label class="ficha__opcao"><input type="radio" name="hemorragia" value="Não" /><span>Não</span></label>
+          </span>
+        </li>
+      </ul>
+
+      <label class="ficha__campo ficha__campo--largo">
+        <span class="ficha__rotulo">Observações</span>
+        <textarea class="ficha__entrada ficha__entrada--area" name="observacoes" rows="4" placeholder="Se respondeu Sim a alguma pergunta, conte aqui o que for importante."></textarea>
+      </label>
+    </fieldset>
+
+    <fieldset class="ficha__grupo">
+      <legend class="ficha__legenda">Consentimento</legend>
+
+      <p class="ficha__termo">
+        As informações prestadas acima são verdadeiras e de minha inteira
+        responsabilidade, não podendo a profissional ser responsabilizada
+        por quaisquer ocorrências alérgicas.
+      </p>
+
+      <label class="ficha__aceite">
+        <input type="checkbox" name="veracidade" required />
+        <span>Confirmo que as informações acima são verdadeiras.</span>
+      </label>
+
+      <label class="ficha__aceite">
+        <input type="checkbox" name="imagem" />
+        <span>
+          Autorizo o registro fotográfico do “antes” e “depois” para
+          documentação e divulgação profissional. <em>(opcional)</em>
+        </span>
+      </label>
+
+      <label class="ficha__aceite">
+        <input type="checkbox" name="dados" required />
+        <span>
+          Concordo em enviar estes dados pelo WhatsApp para agendamento,
+          conforme a
+          <a href="../../politica-de-privacidade.html" target="_blank" rel="noopener">política de privacidade</a>.
+        </span>
+      </label>
+    </fieldset>
+
+    <p class="ficha__erro" id="ficha-erro" role="alert" hidden></p>
+
+    <button class="ficha__enviar" type="submit">
+      Enviar e agendar avaliação
+    </button>
+
+    <p class="ficha__rodape">
+      Prefere falar direto?
+      <a href="https://wa.me/5579998764880" target="_blank" rel="noopener noreferrer">(79) 99876-4880</a>
+    </p>
+  </form>
+
+</main>
+
+<script type="module" src="avaliacao.js"></script>
+
+</body>
+</html>

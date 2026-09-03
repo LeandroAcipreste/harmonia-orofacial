@@ -1,12 +1,14 @@
+@import "./src/core/base.css";
+
 @import "./src/components/preloader/preloader.css";
 @import "./src/components/navigation/navigation.css";
 @import "./src/components/shellcard/shellcard.css";
+@import "./src/components/faixa-marquee/faixa-marquee.css";
 @import "./src/components/footer/footer.css";
+
 @import "./src/sections/hero/hero.css";
 @import "./src/sections/sectiontwo/sectiontwo.css";
 @import "./src/sections/sectionthree/sectionthree.css";
 @import "./src/sections/letreiro/letreiro.css";
-@import "./src/components/faixa-marquee/faixa-marquee.css";
 @import "./src/sections/sectionfour/sectionfour.css";
 @import "./src/sections/sectionfive/sectionfive.css";
-@import "./src/core/base.css";

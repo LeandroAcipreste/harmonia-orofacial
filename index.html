@@ -42,6 +42,7 @@
   <span class="preloader__risco" aria-hidden="true"></span>
 </div>
 
+
 <header class="nav" id="nav">
   <nav class="nav__inner">
 
@@ -76,17 +77,18 @@
     <video
       class="hero__video"
       id="hero-video"
+      autoplay
       loop
       muted
       playsinline
-      webkit-playsinline
-      disablepictureinpicture
-      disableremoteplayback
-      autoplay
       preload="auto"
       aria-hidden="true"
       tabindex="-1"
-    ></video>
+    >
+      <source src="assets/hero-espiral-mobile.mp4" type="video/mp4" media="(max-aspect-ratio: 13/20)" />
+      <source src="assets/hero-espiral-tablet.mp4" type="video/mp4" media="(max-aspect-ratio: 23/20)" />
+      <source src="assets/hero-espiral.mp4" type="video/mp4" />
+    </video>
 
   
     <h1 class="sr-only">Harmonia Orofacial · Clínica Odontológica</h1>
@@ -122,8 +124,7 @@
       </div>
     </div>
 
-    <!-- Cortina da passagem entre a primeira e a segunda dobra. Nasce
-         aberta: sem JavaScript ela nunca chega a esconder a seção. -->
+
     <div class="cortina" aria-hidden="true">
       <span class="cortina__folha cortina__folha--esq"></span>
       <span class="cortina__folha cortina__folha--dir"></span>
@@ -501,6 +502,14 @@
           </a>
         </li>
       </ul>
+    </div>
+
+    <div class="rodape__chamada rodape-anim">
+      <p class="rodape__chamada-texto">Primeira vez aqui? Comece por uma avaliação.</p>
+      <a class="rodape__cta" href="pages/avaliacao/avaliacao.html">
+        AGENDAR AVALIAÇÃO
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+      </a>
     </div>
 
     <div class="rodape__base rodape-anim">
