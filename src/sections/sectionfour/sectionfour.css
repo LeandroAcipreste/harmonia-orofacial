@@ -47,7 +47,7 @@
   margin-top: 0.75rem;
   font-size: 0.75rem;
   letter-spacing: 0.3em;
-  color: var(--slate-500);
+  color: var(--slate-200);
 }
 
 .s4__bio {
@@ -55,7 +55,7 @@
   max-width: 34rem;
   font-size: 1.0625rem;
   line-height: 1.7;
-  color: var(--slate-400);
+  color: var(--slate-200);
 }
 
 .s4__areas {
@@ -83,7 +83,7 @@
 .s4__area-texto {
   font-size: 0.9375rem;
   line-height: 1.65;
-  color: var(--slate-500);
+  color: var(--slate-200);
 }
 
 .s4__regua {

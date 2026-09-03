@@ -8,8 +8,8 @@ const daPaleta = (nome, reserva) => {
 
 const APAGADO = daPaleta("--navy-900", "#00279a");
 const OURO = daPaleta("--gold-300", "#fdba74");
-const CALMO = daPaleta("--slate-400", "#94a3b8");
-const DISCRETO = daPaleta("--slate-500", "#64748b");
+const CALMO = daPaleta("--slate-200", "#e2e8f0");
+const DISCRETO = daPaleta("--slate-200", "#e2e8f0");
 
 const NOME = 0;
 const REGUA = 0.1;
