@@ -12,8 +12,8 @@ const ABERTURA = 2.2;
 const ACENDER = 0.15;
 const ASSENTA = 0.5;
 
-const CONSULTA_PRESA = "(min-width: 768px)";
-const CONSULTA_SOLTA = "(max-width: 767px)";
+const CONSULTA_PRESA = "(min-width: 900px)";
+const CONSULTA_SOLTA = "(max-width: 899px)";
 
 const RESPIRO_ENTRADA = 0.9;
 const RESPIRO_SAIDA = 0.7;

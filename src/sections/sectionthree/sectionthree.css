@@ -1,5 +1,6 @@
 .s3 {
   position: relative;
+  isolation: isolate;
   padding: 6rem 1.5rem;
   perspective: 1400px;
   background-color: var(--navy-900);
@@ -269,7 +270,7 @@
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 899px) {
 
   .s3 {
     padding-top: 40vh;
@@ -284,7 +285,7 @@
   }
 }
 
-@media (max-height: 700px) and (min-width: 768px) and (max-width: 1023px) {
+@media (max-height: 700px) and (min-width: 900px) and (max-width: 1023px) {
   .s3.js-sequencia {
     padding-top: 4.5rem;
     padding-bottom: 1.5rem;
@@ -305,7 +306,7 @@
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 900px) {
   .s3__grade {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
