@@ -121,7 +121,7 @@
   align-items: center;
   min-height: 100vh;
   padding-top: 5rem;
-  padding-bottom: 2rem;
+  padding-bottom: 6rem;
 }
 
 .s3__card {
@@ -184,6 +184,14 @@
   position: relative;
   width: 100%;
   height: 11rem;
+}
+
+@media (min-width: 900px) {
+  .s3__etapas {
+    width: auto;
+    aspect-ratio: 1 / 1;
+    margin-inline: auto;
+  }
 }
 
 .s3__etapa {
@@ -285,7 +293,7 @@
   }
 }
 
-@media (max-height: 700px) and (min-width: 900px) and (max-width: 1023px) {
+@media (max-height: 720px) and (min-width: 900px) {
   .s3.js-sequencia {
     padding-top: 4.5rem;
     padding-bottom: 1.5rem;
@@ -312,7 +320,7 @@
   }
 
   .s3__etapas {
-    height: clamp(7rem, 20vh, 18rem);
+    height: clamp(5rem, 14vh, 15rem);
   }
 
   .s3__palco {
