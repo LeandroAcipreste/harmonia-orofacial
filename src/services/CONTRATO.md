@@ -269,3 +269,15 @@ avaliar a interface, não para uso real.
 **Ao subir o backend: `export const DEMONSTRACAO = false;`** — e
 `demonstracao.js` pode ser apagado. Deixar isso ligado em produção abre o
 painel para qualquer pessoa que souber a URL.
+
+### O odontograma é uma imagem com alvos medidos
+
+`assets/dentes.png` é o desenho das duas arcadas. Os alvos de clique não
+são adivinhados: `src/services/odontograma.js` guarda, para cada dente, a
+posição em **porcentagem da imagem**, extraída do canal alfa do próprio
+PNG. Cada alvo cresce até o meio do vão com o vizinho, então não existe
+zona morta entre dentes.
+
+Se a imagem for trocada, **as porcentagens precisam ser medidas de novo** —
+elas descrevem aquele arquivo, não um desenho qualquer. Trocar o PNG sem
+refazer o mapa desalinha as 32 marcações em silêncio.

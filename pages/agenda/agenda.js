@@ -7,7 +7,7 @@ import {
     fichaDe,
     salvarParecer,
 } from "../../src/services/atendimento.js";
-import { ARCADAS, emOrdem, nomeDoDente } from "../../src/services/odontograma.js";
+import { MAPA, emOrdem, nomeDoDente } from "../../src/services/odontograma.js";
 import { AGENDA, ESTAGIOS } from "../../src/core/config.js";
 
 const MOEDA = new Intl.NumberFormat("pt-BR", {
@@ -135,64 +135,44 @@ const montarFicha = (destino, registro) => {
 };
 
 const montarOdontograma = (destino, marcados, aoMudar) => {
-    destino.textContent = "";
+    destino.querySelectorAll(".odonto__dente").forEach((antigo) => antigo.remove());
 
     const modelo = document.querySelector("#modelo-dente");
 
-    ARCADAS.forEach((arcada) => {
-        const linha = criar("div", "odonto__arcada");
+    MAPA.arcadas.forEach((arcada) => {
+        arcada.dentes.forEach(({ numero, esquerda, largura }) => {
+            const dente = modelo.content.firstElementChild.cloneNode(true);
 
-        linha.appendChild(criar("p", "odonto__arcada-nome", arcada.nome));
+            dente.dataset.dente = String(numero);
+            dente.setAttribute("aria-label", nomeDoDente(numero));
 
-        const trilho = criar("div", "odonto__linha");
+            dente.style.left = esquerda + "%";
+            dente.style.width = largura + "%";
+            dente.style.top = arcada.topo + "%";
+            dente.style.height = arcada.altura + "%";
 
-        [
-            ["direita", arcada.direita],
-            ["esquerda", arcada.esquerda],
-        ].forEach(([lado, dentes], indice) => {
-            if (indice === 1) {
-                trilho.appendChild(criar("span", "odonto__meio"));
+            if (marcados.has(numero)) {
+                dente.classList.add("esta-marcado");
+                dente.setAttribute("aria-pressed", "true");
             }
 
-            const grupo = criar("div", "odonto__quadrante");
+            dente.addEventListener("click", () => {
+                const ligado = !marcados.has(numero);
 
-            grupo.dataset.lado = lado;
-
-            dentes.forEach((numero) => {
-                const dente = modelo.content.firstElementChild.cloneNode(true);
-
-                dente.dataset.dente = String(numero);
-                dente.querySelector(".odonto__numero").textContent = String(numero);
-                dente.setAttribute("aria-label", nomeDoDente(numero));
-
-                if (marcados.has(numero)) {
-                    dente.classList.add("esta-marcado");
-                    dente.setAttribute("aria-pressed", "true");
+                if (ligado) {
+                    marcados.add(numero);
+                } else {
+                    marcados.delete(numero);
                 }
 
-                dente.addEventListener("click", () => {
-                    const ligado = !marcados.has(numero);
+                dente.classList.toggle("esta-marcado", ligado);
+                dente.setAttribute("aria-pressed", String(ligado));
 
-                    if (ligado) {
-                        marcados.add(numero);
-                    } else {
-                        marcados.delete(numero);
-                    }
-
-                    dente.classList.toggle("esta-marcado", ligado);
-                    dente.setAttribute("aria-pressed", String(ligado));
-
-                    aoMudar();
-                });
-
-                grupo.appendChild(dente);
+                aoMudar();
             });
 
-            trilho.appendChild(grupo);
+            destino.appendChild(dente);
         });
-
-        linha.appendChild(trilho);
-        destino.appendChild(linha);
     });
 };
 
@@ -206,7 +186,7 @@ const initAgenda = (sessao) => {
 
     const painel = document.querySelector("#atendimento");
     const fichaDestino = document.querySelector("#atendimento-ficha");
-    const arcadas = document.querySelector("#odonto-arcadas");
+    const mapaDeDentes = document.querySelector("#odonto-mapa");
     const marcadosTexto = document.querySelector("#odonto-marcados");
     const areaParecer = document.querySelector("#parecer-texto");
     const itens = document.querySelector("#orcamento-itens");
@@ -322,7 +302,7 @@ const initAgenda = (sessao) => {
         const parecer = completo.parecer || {};
 
         marcados = new Set(parecer.dentes || []);
-        montarOdontograma(arcadas, marcados, contarMarcados);
+        montarOdontograma(mapaDeDentes, marcados, contarMarcados);
         contarMarcados();
 
         areaParecer.value = parecer.texto || "";
