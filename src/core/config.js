@@ -24,3 +24,5 @@ export const ESTAGIOS = {
 export const ESTAGIO_INICIAL = ESTAGIOS.contato;
 
 export const VERSAO_DA_FICHA = 2;
+
+export const DEMONSTRACAO = true;

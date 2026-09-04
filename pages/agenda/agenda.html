@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Agenda do dia · Harmonia Orofacial</title>
+
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="../../assets/favicon-512.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/favicon-180.png" />
+
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="agenda.css" />
+</head>
+
+<body class="fundo-interno">
+
+<svg class="agenda__simbolos" aria-hidden="true" focusable="false">
+  <symbol id="dente" viewBox="0 0 24 24">
+    <path d="M12 2c4.5 0 7 2.8 7 6.5 0 2.4-.6 4-1.2 6.2-.5 1.9-.8 4-1 5.6-.2 1.4-.7 2.2-1.5 2.2-.9 0-1.3-.9-1.5-2.4l-.6-4c-.1-.9-.5-1.4-1.2-1.4s-1.1.5-1.2 1.4l-.6 4c-.2 1.5-.6 2.4-1.5 2.4-.8 0-1.3-.8-1.5-2.2-.2-1.6-.5-3.7-1-5.6C5.6 12.5 5 10.9 5 8.5 5 4.8 7.5 2 12 2z" />
+  </symbol>
+  <symbol id="check" viewBox="0 0 24 24">
+    <path d="m5 12.5 4.5 4.5L19 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+  </symbol>
+</svg>
+
+<main class="pagina agenda">
+
+  <header class="agenda__topo">
+    <div class="agenda__marca">
+      <img class="agenda__marca-img" src="../../assets/favicon-180.png" alt="" width="180" height="180" />
+      <div>
+        <p class="agenda__marca-nome">HARMONIA OROFACIAL</p>
+        <p class="agenda__marca-tipo" id="agenda-quem">CLÍNICA ODONTOLÓGICA</p>
+      </div>
+    </div>
+
+    <button class="agenda__sair" type="button" id="agenda-sair">Sair</button>
+  </header>
+
+  <h1 class="agenda__titulo">Agenda do dia</h1>
+
+  <div class="agenda__navegacao">
+    <button class="agenda__seta" type="button" id="agenda-anterior" aria-label="Dia anterior">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+    </button>
+
+    <label class="agenda__data">
+      <span class="agenda__data-rotulo" id="agenda-extenso">—</span>
+      <input class="agenda__data-campo" type="date" id="agenda-dia" aria-label="Escolher o dia" />
+    </label>
+
+    <button class="agenda__seta" type="button" id="agenda-proximo" aria-label="Próximo dia">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+    </button>
+
+    <button class="agenda__hoje" type="button" id="agenda-hoje">Hoje</button>
+  </div>
+
+  <p class="agenda__resumo" id="agenda-resumo" role="status"></p>
+
+  <ol class="agenda__lista" id="agenda-lista"></ol>
+
+  <p class="agenda__vazio" id="agenda-vazio" hidden>Nenhuma avaliação marcada para este dia.</p>
+  <p class="agenda__erro" id="agenda-erro" role="alert" hidden></p>
+
+  <section class="atendimento" id="atendimento" hidden aria-labelledby="atendimento-nome">
+
+    <header class="atendimento__topo">
+      <div>
+        <p class="atendimento__hora" id="atendimento-hora"></p>
+        <h2 class="atendimento__nome serif" id="atendimento-nome"></h2>
+        <p class="atendimento__contato" id="atendimento-contato"></p>
+      </div>
+
+      <button class="atendimento__fechar" type="button" id="atendimento-fechar" aria-label="Fechar ficha">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+      </button>
+    </header>
+
+    <div id="atendimento-ficha"></div>
+
+    <section class="odonto" aria-labelledby="odonto-titulo">
+      <h3 class="odonto__titulo" id="odonto-titulo">Odontograma</h3>
+      <p class="odonto__ajuda">Toque nos dentes envolvidos no caso para marcá-los.</p>
+
+      <div class="odonto__rolagem">
+        <div class="odonto__arcadas" id="odonto-arcadas"></div>
+      </div>
+
+      <p class="odonto__marcados" id="odonto-marcados" role="status">Nenhum dente marcado.</p>
+    </section>
+
+    <section class="parecer" aria-labelledby="parecer-titulo">
+      <h3 class="parecer__titulo" id="parecer-titulo">Sobre o caso</h3>
+      <label class="parecer__rotulo" for="parecer-texto">Avaliação da Dra. Célia</label>
+      <textarea class="parecer__area" id="parecer-texto" rows="7" placeholder="Diagnóstico, plano de tratamento, observações clínicas."></textarea>
+    </section>
+
+    <section class="orcamento" aria-labelledby="orcamento-titulo">
+      <h3 class="orcamento__titulo" id="orcamento-titulo">Orçamento</h3>
+
+      <ol class="orcamento__itens" id="orcamento-itens"></ol>
+
+      <button class="orcamento__somar" type="button" id="orcamento-somar">+ Adicionar procedimento</button>
+
+      <p class="orcamento__total">
+        <span>Total</span>
+        <strong id="orcamento-total">R$ 0,00</strong>
+      </p>
+    </section>
+
+    <footer class="atendimento__acoes">
+      <p class="atendimento__aviso" id="atendimento-aviso" role="status"></p>
+
+      <div class="atendimento__botoes">
+        <button class="atendimento__converter" type="button" id="atendimento-converter">
+          Compareceu — virar cliente
+        </button>
+        <button class="atendimento__salvar" type="button" id="atendimento-salvar">
+          Salvar parecer
+        </button>
+      </div>
+    </footer>
+
+  </section>
+
+</main>
+
+<template id="modelo-agendamento">
+  <li>
+    <button class="agenda__botao" type="button">
+      <span class="agenda__hora"></span>
+      <span class="agenda__quem">
+        <span class="agenda__paciente"></span>
+        <span class="agenda__telefone"></span>
+      </span>
+      <span class="agenda__estagio"></span>
+    </button>
+  </li>
+</template>
+
+<template id="modelo-dente">
+  <button class="odonto__dente" type="button" aria-pressed="false">
+    <svg class="odonto__desenho" aria-hidden="true"><use href="#dente" /></svg>
+    <svg class="odonto__check" aria-hidden="true"><use href="#check" /></svg>
+    <span class="odonto__numero"></span>
+  </button>
+</template>
+
+<template id="modelo-item">
+  <li class="orcamento__item">
+    <input class="orcamento__procedimento" type="text" placeholder="Procedimento" aria-label="Procedimento" />
+    <input class="orcamento__valor" type="text" inputmode="decimal" placeholder="0,00" aria-label="Valor em reais" />
+    <button class="orcamento__tirar" type="button" aria-label="Remover procedimento">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+    </button>
+  </li>
+</template>
+
+<script type="module" src="agenda.js"></script>
+
+</body>
+</html>

@@ -1,6 +1,8 @@
 import { entrar, reenviarCodigo, verificar } from "../../src/services/sessao.js";
 import { destinoDeVolta } from "../../src/services/guarda.js";
 
+const PAINEL = "/pages/agenda/agenda.html";
+
 const MIN_SENHA = 8;
 
 /* Aceita "nome@dominio.br". Validação de e-mail no cliente serve para
@@ -104,7 +106,7 @@ const initLogin = () => {
             return;
         }
 
-        location.assign(destinoDeVolta(saida.destino));
+        location.assign(destinoDeVolta(saida.destino || PAINEL));
     });
 
     ligarVerificacao(form);
@@ -269,7 +271,7 @@ const ligarVerificacao = (formLogin) => {
             return;
         }
 
-        location.assign(destinoDeVolta(saida.destino));
+        location.assign(destinoDeVolta(saida.destino || PAINEL));
     });
 
     const reenviar = formCodigo.querySelector("#codigo-reenviar");

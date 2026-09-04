@@ -1,9 +1,11 @@
 import { sessaoAtual } from "./sessao.js";
+import { DEMONSTRACAO } from "../core/config.js";
+import { sessaoDeDemonstracao } from "./demonstracao.js";
 
 const LOGIN = "/pages/login/login.html";
 
 export const exigirSessao = async ({ aoEntrar, login = LOGIN } = {}) => {
-    const sessao = await sessaoAtual();
+    const sessao = DEMONSTRACAO ? sessaoDeDemonstracao() : await sessaoAtual();
 
     if (!sessao) {
         const volta = encodeURIComponent(location.pathname + location.search);

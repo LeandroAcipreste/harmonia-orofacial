@@ -7,7 +7,7 @@ import {
     WHATSAPP,
 } from "../core/config.js";
 
-const IDENTIFICACAO = [
+export const IDENTIFICACAO = [
     "nome",
     "email",
     "telefone",
@@ -18,7 +18,7 @@ const IDENTIFICACAO = [
     "cidade",
 ];
 
-const SAUDE = [
+export const SAUDE = [
     "saude",
     "medicamento",
     "alergia",
@@ -30,7 +30,7 @@ const SAUDE = [
     "hemorragia",
 ];
 
-const ROTULOS = {
+export const ROTULOS = {
     nome: "Nome",
     email: "E-mail",
     telefone: "Telefone",
