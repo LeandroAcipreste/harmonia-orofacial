@@ -852,8 +852,11 @@
     -webkit-print-color-adjust: exact;
   }
 
-  /* Papel timbrado: o dente dourado atrás de tudo, fixo para se repetir
-     em cada página se a receita passar de uma. */
+  /* Papel timbrado: o mesmo dente dourado que as telas do sistema usam de
+     fundo, fixo para se repetir em cada página se a receita passar de uma.
+     A largura guarda a proporção de lá (~70% da área útil), mas a opacidade
+     não: 0.04 é dourado sobre azul-marinho, e em papel branco desaparece.
+     Impressora a jato ainda puxa tinta clara para menos. */
   .impressao__agua {
     position: fixed;
     top: 50%;
@@ -861,7 +864,7 @@
     width: 128mm;
     height: auto;
     transform: translate(-50%, -50%);
-    opacity: 0.06;
+    opacity: 0.08;
     z-index: 0;
   }
 
@@ -883,9 +886,9 @@
 
   .impressao__logo {
     display: block;
-    width: 26mm;
+    width: 24mm;
     height: auto;
-    margin: 0 auto 4pt;
+    margin: 0 auto 6pt;
   }
 
   .impressao__clinica {

@@ -30,7 +30,12 @@ export const EXTENSO = new Intl.DateTimeFormat("pt-BR", {
     month: "long",
 });
 
-const MARCA = "/assets/logo-transparente-png.png";
+/* O selo redondo assina o topo; o dente e a marca d'agua, o mesmo que as
+   telas do sistema usam de papel timbrado. A do selo e a versao 512 e nao
+   a 180: em 24mm de papel, 180px dariam 176 DPI e serrilhariam. */
+const SELO = "/assets/favicon-512.png";
+
+const AGUA = "/assets/logo-transparente-png.png";
 
 const POR_EXTENSO_SEM_DIA = new Intl.DateTimeFormat("pt-BR", {
     day: "numeric",
@@ -384,11 +389,11 @@ const acharFolha = () => {
     return folha;
 };
 
-const marca = (classe) => {
+const marca = (classe, endereco) => {
     const logo = document.createElement("img");
 
     logo.className = classe;
-    logo.src = MARCA;
+    logo.src = endereco;
     logo.alt = "";
     logo.setAttribute("aria-hidden", "true");
 
@@ -401,11 +406,11 @@ const montarReceitaImpressa = (folha, { paciente, remedios, quando }) => {
     /* A marca d'agua e uma <img>, nao um background: o navegador so imprime
        fundo se a pessoa marcar "graficos de fundo" na caixa de impressao,
        mas imagem sai sempre. Fixa, ela se repete em toda pagina. */
-    folha.appendChild(marca("impressao__agua"));
+    folha.appendChild(marca("impressao__agua", AGUA));
 
     const cabeca = criar("header", "impressao__topo");
 
-    cabeca.appendChild(marca("impressao__logo"));
+    cabeca.appendChild(marca("impressao__logo", SELO));
     cabeca.appendChild(criar("p", "impressao__clinica", CLINICA.nome));
     cabeca.appendChild(criar("p", "impressao__tipo", CLINICA.tipo));
 
