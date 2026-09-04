@@ -1,20 +1,34 @@
+import { nivelDaConexao } from "../../core/conexao.js";
+
 const MONTAGENS = [
     {
         consulta: "(max-aspect-ratio: 13/20)",
-        arquivo: "assets/hero-espiral-mobile.mp4",
+        pesado: "assets/hero-espiral-mobile.mp4",
+        leve: "assets/hero-espiral-mobile-leve.mp4",
         cartaz: "assets/hero-espiral-mobile.webp",
     },
     {
         consulta: "(max-aspect-ratio: 23/20)",
-        arquivo: "assets/hero-espiral-tablet.mp4",
+        pesado: "assets/hero-espiral-tablet.mp4",
+        leve: "assets/hero-espiral-tablet-leve.mp4",
         cartaz: "assets/hero-espiral-tablet.webp",
     },
     {
         consulta: null,
-        arquivo: "assets/hero-espiral.mp4",
+        pesado: "assets/hero-espiral.mp4",
+        leve: "assets/hero-espiral-leve.mp4",
         cartaz: "assets/hero-espiral.webp",
     },
 ];
+
+const arquivoDaVez = () => {
+    const montagem = montagemDaVez();
+
+    return {
+        arquivo: montagem[nivelDaConexao()] || montagem.pesado,
+        cartaz: montagem.cartaz,
+    };
+};
 
 let trocandoFonte = false;
 
@@ -56,7 +70,7 @@ const seguirAProporcao = (video) => {
     let agendado = null;
 
     const reavaliar = () => {
-        const { arquivo, cartaz } = montagemDaVez();
+        const { arquivo, cartaz } = arquivoDaVez();
 
         if (!video.currentSrc.endsWith(arquivo)) {
             video.poster = cartaz;
@@ -135,7 +149,7 @@ export const initHero = () => {
     const video = hero.querySelector(".hero__video");
 
     if (video) {
-        const montagem = montagemDaVez();
+        const montagem = arquivoDaVez();
 
         prepararParaTocar(video);
 
