@@ -1,0 +1,205 @@
+/* Chrome comum das telas do sistema: cabecalho, navegacao, listas e selos.
+   Nao entra na home, que e cartao de visita e nao compartilha esta lingua. */
+
+@import "./base.css";
+
+.erp {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 3rem 1.25rem 5rem;
+}
+
+/* Cabeçalho */
+
+.erp__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.erp__marca {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.erp__marca-img {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+.erp__marca-nome {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--white);
+}
+
+.erp__marca-tipo {
+  margin: 0.2rem 0 0;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  color: var(--gold-300);
+}
+
+.erp__sair {
+  padding: 0.5rem 1.125rem;
+  font-family: inherit;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--slate-200);
+  background: none;
+  border: 1px solid rgb(226 232 240 / 0.28);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: color 0.25s, border-color 0.25s;
+}
+
+.erp__sair:hover {
+  color: var(--white);
+  border-color: rgb(253 186 116 / 0.6);
+}
+
+.erp__titulo {
+  margin: 0 0 1.5rem;
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  font-weight: 600;
+  color: var(--white);
+}
+
+/* Navegação entre as telas */
+
+.navegar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgb(226 232 240 / 0.12);
+}
+
+.navegar__link {
+  padding: 0.5625rem 1.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--slate-200);
+  border: 1px solid rgb(226 232 240 / 0.2);
+  border-radius: 9999px;
+  transition: color 0.25s, border-color 0.25s, background-color 0.25s;
+}
+
+.navegar__link:hover {
+  color: var(--white);
+  border-color: rgb(253 186 116 / 0.5);
+}
+
+.navegar__link.esta-aqui {
+  color: #2b1a03;
+  background-color: var(--gold-300);
+  border-color: transparent;
+}
+
+/* Listas de pessoas */
+
+.lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.lista__botao {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem 1.25rem;
+  font-family: inherit;
+  text-align: left;
+  background-color: rgb(255 255 255 / 0.04);
+  border: 1px solid rgb(226 232 240 / 0.12);
+  border-radius: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.25s, border-color 0.25s;
+}
+
+.lista__botao:hover,
+.lista__botao.esta-aberto {
+  background-color: rgb(255 255 255 / 0.07);
+  border-color: rgb(253 186 116 / 0.45);
+}
+
+.lista__quem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.lista__nome {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--white);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lista__detalhe {
+  font-size: 0.8125rem;
+  color: var(--slate-300);
+  font-variant-numeric: tabular-nums;
+}
+
+.selo {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: 9999px;
+}
+
+.selo[data-estagio="contato"] {
+  color: var(--slate-200);
+  background-color: rgb(226 232 240 / 0.12);
+}
+
+.selo[data-estagio="cliente"] {
+  color: #2b1a03;
+  background-color: var(--gold-300);
+}
+
+/* Estados vazios e falhas */
+
+.vazio,
+.erro {
+  margin: 1.5rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--slate-200);
+}
+
+.erro {
+  padding: 0.875rem 1.125rem;
+  color: #ffd9d9;
+  background-color: rgb(220 38 38 / 0.16);
+  border-radius: 0.75rem;
+}
+
+@media (min-width: 720px) {
+  .erp {
+    padding: 4rem 2rem 6rem;
+  }
+}

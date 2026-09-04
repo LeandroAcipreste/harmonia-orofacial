@@ -3,16 +3,19 @@ import {
     agendaDeDemonstracao,
     converterDeDemonstracao,
     fichaDeDemonstracao,
+    pacientesDeDemonstracao,
     salvarDeDemonstracao,
 } from "./demonstracao.js";
 
 const ROTAS = {
     agenda: "/api/agenda",
     ficha: "/api/agendamentos/",
+    pacientes: "/api/pacientes",
 };
 
 const MENSAGENS = {
     agenda: "Não foi possível carregar a agenda deste dia.",
+    pacientes: "Não foi possível carregar a lista de pacientes.",
     ficha: "Não foi possível abrir esta ficha.",
     salvar: "O parecer não foi salvo. Tente de novo.",
     converter: "Não foi possível converter em cliente.",
@@ -63,6 +66,26 @@ export const agendaDoDia = (data) =>
               {},
               MENSAGENS.agenda,
           );
+
+export const pacientes = ({ busca, estagio } = {}) => {
+    if (DEMONSTRACAO) {
+        return pacientesDeDemonstracao({ busca, estagio });
+    }
+
+    const consulta = new URLSearchParams();
+
+    if (busca) {
+        consulta.set("busca", busca);
+    }
+
+    if (estagio) {
+        consulta.set("estagio", estagio);
+    }
+
+    const cauda = consulta.toString();
+
+    return pedir(ROTAS.pacientes + (cauda ? "?" + cauda : ""), {}, MENSAGENS.pacientes);
+};
 
 export const fichaDe = (id) =>
     DEMONSTRACAO

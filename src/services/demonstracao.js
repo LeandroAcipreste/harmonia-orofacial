@@ -176,6 +176,44 @@ export const agendaDeDemonstracao = (data) => {
     });
 };
 
+const ACENTOS = /[\u0300-\u036f]/g;
+
+const NAO_DIGITO = /\D/g;
+
+const semAcento = (texto) =>
+    String(texto).normalize("NFD").replace(ACENTOS, "").toLowerCase();
+
+export const pacientesDeDemonstracao = ({ busca, estagio } = {}) => {
+    const termo = semAcento(busca || "").trim();
+    const digitos = termo.replace(NAO_DIGITO, "");
+
+    const achados = FICHAS.filter((ficha) => {
+        if (estagio && ficha.estagio !== estagio) {
+            return false;
+        }
+
+        if (!termo) {
+            return true;
+        }
+
+        const nome = semAcento(ficha.paciente.nome);
+        const telefone = (ficha.paciente.telefone || "").replace(NAO_DIGITO, "");
+        const email = semAcento(ficha.paciente.email || "");
+
+        return (
+            nome.includes(termo) ||
+            email.includes(termo) ||
+            (digitos.length > 2 && telefone.includes(digitos))
+        );
+    });
+
+    return espera({
+        pacientes: achados
+            .map((ficha) => guardado(ficha.id))
+            .sort((um, outro) => um.paciente.nome.localeCompare(outro.paciente.nome, "pt-BR")),
+    });
+};
+
 export const fichaDeDemonstracao = (id) => espera(guardado(id));
 
 export const salvarDeDemonstracao = (id, parecer) => {

@@ -201,6 +201,13 @@ estas rotas, todas com `credentials: "include"`:
 | `GET /api/agendamentos/:id` | — | o registro completo |
 | `PUT /api/agendamentos/:id/parecer` | `{ dentes, texto, orcamento }` | 200 |
 | `PUT /api/agendamentos/:id/estagio` | `{ estagio: "cliente" }` | 200 |
+| `GET /api/pacientes?busca=&estagio=` | — | `{ pacientes: [...] }` |
+
+`busca` é texto livre: o servidor procura em nome, e-mail e telefone. A
+comparação precisa ignorar acento e maiúscula, e o telefone precisa ser
+comparado **só pelos dígitos** — quem digita `79998764880` tem que achar
+quem está gravado como `(79) 99876-4880`. `estagio` vazio devolve todo
+mundo; preenchido, filtra por `contato` ou `cliente`.
 
 `data` é sempre a data **local da clínica**, não UTC. Quem monta o dia é o
 servidor, no fuso de `AGENDA.fuso`.
@@ -292,3 +299,34 @@ zona morta entre dentes.
 Se a imagem for trocada, **as porcentagens precisam ser medidas de novo** —
 elas descrevem aquele arquivo, não um desenho qualquer. Trocar o PNG sem
 refazer o mapa desalinha as 32 marcações em silêncio.
+
+
+---
+
+## 7. Uma tela é a agenda, a outra é a lista — o painel é o mesmo
+
+`src/components/painel/painel.js` é dono da ficha, do odontograma, do
+parecer e do orçamento. As duas telas montam ele e passam só o registro:
+
+```js
+const painel = criarPainel({
+  hospedeiro: document.querySelector("#painel"),
+  aoFechar: limparDestaque,
+  aoConverter: () => carregar(),
+});
+
+painel.abrir(registro);
+```
+
+O componente escreve a própria marcação, então quem usa não repete HTML —
+e não há duas cópias para divergir quando o formulário mudar. Dado de
+paciente entra sempre por `textContent`, nunca por `innerHTML`.
+
+A Dra. Célia edita o caso **pelas duas telas**. A agenda serve o dia; a
+lista de pacientes serve para voltar a um caso antigo e corrigir ou
+completar o que ficou faltando. É o mesmo `PUT .../parecer` nos dois
+caminhos.
+
+`src/core/erp.css` guarda o que as telas do sistema têm em comum:
+cabeçalho, navegação, listas e selos. **A home não importa esse arquivo** —
+ela é cartão de visita e não compartilha esta língua visual.

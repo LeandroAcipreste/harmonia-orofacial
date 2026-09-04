@@ -1,20 +1,36 @@
 import { exigirSessao } from "../../src/services/guarda.js";
 import { sair } from "../../src/services/sessao.js";
-import { agendaDoDia } from "../../src/services/atendimento.js";
-import { criarPainel, EXTENSO, emIso, deIso } from "../../src/components/painel/painel.js";
+import { pacientes } from "../../src/services/atendimento.js";
+import { criarPainel } from "../../src/components/painel/painel.js";
 import { ESTAGIOS } from "../../src/core/config.js";
 
-const initAgenda = (sessao) => {
-    const lista = document.querySelector("#agenda-lista");
-    const vazio = document.querySelector("#agenda-vazio");
-    const erro = document.querySelector("#agenda-erro");
-    const resumo = document.querySelector("#agenda-resumo");
-    const campoDia = document.querySelector("#agenda-dia");
-    const extenso = document.querySelector("#agenda-extenso");
-    const modelo = document.querySelector("#modelo-agendamento");
+const ESPERA_DA_BUSCA = 250;
+
+const contar = (quantos, estagio) => {
+    if (!quantos) {
+        return "";
+    }
+
+    const nomes = {
+        cliente: quantos === 1 ? " cliente" : " clientes",
+        contato: quantos === 1 ? " contato" : " contatos",
+    };
+
+    return quantos + (nomes[estagio] || (quantos === 1 ? " pessoa" : " pessoas"));
+};
+
+const initPacientes = (sessao) => {
+    const lista = document.querySelector("#pacientes-lista");
+    const vazio = document.querySelector("#pacientes-vazio");
+    const erro = document.querySelector("#pacientes-erro");
+    const resumo = document.querySelector("#pacientes-resumo");
+    const campo = document.querySelector("#pacientes-busca");
+    const abas = [...document.querySelectorAll(".pacientes__aba")];
+    const modelo = document.querySelector("#modelo-paciente");
     const quem = document.querySelector("#erp-quem");
 
-    let dia = new Date();
+    let estagio = "";
+    let agendado = null;
 
     if (quem && sessao && sessao.nome) {
         quem.textContent = sessao.nome;
@@ -37,17 +53,20 @@ const initAgenda = (sessao) => {
         erro.hidden = !recado;
     };
 
-    const desenharLista = (agendamentos) => {
+    const desenharLista = (pessoas) => {
         lista.textContent = "";
 
-        agendamentos.forEach((registro) => {
+        pessoas.forEach((registro) => {
             const item = modelo.content.firstElementChild.cloneNode(true);
             const botao = item.querySelector(".lista__botao");
 
-            item.querySelector(".agenda__hora").textContent = registro.hora || "—";
             item.querySelector(".lista__nome").textContent = registro.paciente.nome;
-            item.querySelector(".lista__detalhe").textContent =
-                registro.paciente.telefone || "";
+            item.querySelector(".lista__detalhe").textContent = [
+                registro.paciente.telefone,
+                registro.paciente.cidade,
+            ]
+                .filter(Boolean)
+                .join(" · ");
 
             const selo = item.querySelector(".selo");
 
@@ -66,28 +85,19 @@ const initAgenda = (sessao) => {
     };
 
     const carregar = async () => {
-        const iso = emIso(dia);
-
-        campoDia.value = iso;
-        extenso.textContent = EXTENSO.format(dia);
-
         avisar("");
         painel.fechar();
         resumo.textContent = "Carregando…";
         vazio.hidden = true;
 
         try {
-            const resposta = await agendaDoDia(iso);
-            const agendamentos = resposta.agendamentos || [];
+            const resposta = await pacientes({ busca: campo.value.trim(), estagio });
+            const pessoas = resposta.pacientes || [];
 
-            desenharLista(agendamentos);
+            desenharLista(pessoas);
 
-            resumo.textContent = agendamentos.length
-                ? agendamentos.length +
-                  (agendamentos.length === 1 ? " avaliação" : " avaliações")
-                : "";
-
-            vazio.hidden = agendamentos.length > 0;
+            resumo.textContent = contar(pessoas.length, estagio);
+            vazio.hidden = pessoas.length > 0;
         } catch (falha) {
             lista.textContent = "";
             resumo.textContent = "";
@@ -95,24 +105,26 @@ const initAgenda = (sessao) => {
         }
     };
 
-    const andar = (dias) => {
-        dia = new Date(dia.getFullYear(), dia.getMonth(), dia.getDate() + dias);
-        carregar();
+    const adiar = () => {
+        window.clearTimeout(agendado);
+        agendado = window.setTimeout(carregar, ESPERA_DA_BUSCA);
     };
 
-    document.querySelector("#agenda-anterior").addEventListener("click", () => andar(-1));
-    document.querySelector("#agenda-proximo").addEventListener("click", () => andar(1));
+    campo.addEventListener("input", adiar);
 
-    document.querySelector("#agenda-hoje").addEventListener("click", () => {
-        dia = new Date();
+    campo.addEventListener("search", () => {
+        window.clearTimeout(agendado);
         carregar();
     });
 
-    campoDia.addEventListener("change", () => {
-        if (campoDia.value) {
-            dia = deIso(campoDia.value);
+    abas.forEach((aba) => {
+        aba.addEventListener("click", () => {
+            estagio = aba.dataset.estagio;
+
+            abas.forEach((outra) => outra.classList.toggle("esta-aqui", outra === aba));
+
             carregar();
-        }
+        });
     });
 
     document.querySelector("#erp-sair").addEventListener("click", async () => {
@@ -129,5 +141,5 @@ exigirSessao().then((sessao) => {
         return;
     }
 
-    initAgenda(sessao);
+    initPacientes(sessao);
 });

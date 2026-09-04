@@ -19,21 +19,26 @@
 
 <body class="fundo-interno">
 
-<main class="pagina agenda">
+<main class="pagina erp agenda">
 
-  <header class="agenda__topo">
-    <div class="agenda__marca">
-      <img class="agenda__marca-img" src="../../assets/favicon-180.png" alt="" width="180" height="180" />
+  <header class="erp__topo">
+    <div class="erp__marca">
+      <img class="erp__marca-img" src="../../assets/favicon-180.png" alt="" width="180" height="180" />
       <div>
-        <p class="agenda__marca-nome">HARMONIA OROFACIAL</p>
-        <p class="agenda__marca-tipo" id="agenda-quem">CLÍNICA ODONTOLÓGICA</p>
+        <p class="erp__marca-nome">HARMONIA OROFACIAL</p>
+        <p class="erp__marca-tipo" id="erp-quem">CLÍNICA ODONTOLÓGICA</p>
       </div>
     </div>
 
-    <button class="agenda__sair" type="button" id="agenda-sair">Sair</button>
+    <button class="erp__sair" type="button" id="erp-sair">Sair</button>
   </header>
 
-  <h1 class="agenda__titulo">Agenda do dia</h1>
+  <nav class="navegar" aria-label="Telas do sistema">
+    <a class="navegar__link esta-aqui" href="agenda.html" aria-current="page">Agenda do dia</a>
+    <a class="navegar__link" href="../pacientes/pacientes.html">Pacientes</a>
+  </nav>
+
+  <h1 class="erp__titulo">Agenda do dia</h1>
 
   <div class="agenda__navegacao">
     <button class="agenda__seta" type="button" id="agenda-anterior" aria-label="Dia anterior">
@@ -54,103 +59,24 @@
 
   <p class="agenda__resumo" id="agenda-resumo" role="status"></p>
 
-  <ol class="agenda__lista" id="agenda-lista"></ol>
+  <ol class="lista" id="agenda-lista"></ol>
 
-  <p class="agenda__vazio" id="agenda-vazio" hidden>Nenhuma avaliação marcada para este dia.</p>
-  <p class="agenda__erro" id="agenda-erro" role="alert" hidden></p>
+  <p class="vazio" id="agenda-vazio" hidden>Nenhuma avaliação marcada para este dia.</p>
+  <p class="erro" id="agenda-erro" role="alert" hidden></p>
 
-  <section class="atendimento" id="atendimento" hidden aria-labelledby="atendimento-nome">
-
-    <header class="atendimento__topo">
-      <div>
-        <p class="atendimento__hora" id="atendimento-hora"></p>
-        <h2 class="atendimento__nome serif" id="atendimento-nome"></h2>
-        <p class="atendimento__contato" id="atendimento-contato"></p>
-      </div>
-
-      <button class="atendimento__fechar" type="button" id="atendimento-fechar" aria-label="Fechar ficha">
-        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
-      </button>
-    </header>
-
-    <div id="atendimento-ficha"></div>
-
-    <section class="odonto" aria-labelledby="odonto-titulo">
-      <h3 class="odonto__titulo" id="odonto-titulo">Odontograma</h3>
-      <p class="odonto__ajuda">Toque nos dentes envolvidos no caso para marcá-los.</p>
-
-      <div class="odonto__rolagem">
-        <div class="odonto__mapa" id="odonto-mapa">
-          <img class="odonto__imagem" src="../../assets/dentes.png" loading="lazy" decoding="async" alt="Odontograma com os 32 dentes permanentes, numerados pela notação FDI" width="2066" height="761" />
-        </div>
-      </div>
-
-      <p class="odonto__marcados" id="odonto-marcados" role="status">Nenhum dente marcado.</p>
-    </section>
-
-    <section class="parecer" aria-labelledby="parecer-titulo">
-      <h3 class="parecer__titulo" id="parecer-titulo">Sobre o caso</h3>
-      <label class="parecer__rotulo" for="parecer-texto">Avaliação da Dra. Célia</label>
-      <textarea class="parecer__area" id="parecer-texto" rows="7" placeholder="Diagnóstico, plano de tratamento, observações clínicas."></textarea>
-    </section>
-
-    <section class="orcamento" aria-labelledby="orcamento-titulo">
-      <h3 class="orcamento__titulo" id="orcamento-titulo">Orçamento</h3>
-
-      <ol class="orcamento__itens" id="orcamento-itens"></ol>
-
-      <button class="orcamento__somar" type="button" id="orcamento-somar">+ Adicionar procedimento</button>
-
-      <p class="orcamento__total">
-        <span>Total</span>
-        <strong id="orcamento-total">R$ 0,00</strong>
-      </p>
-    </section>
-
-    <footer class="atendimento__acoes">
-      <p class="atendimento__aviso" id="atendimento-aviso" role="status"></p>
-
-      <div class="atendimento__botoes">
-        <button class="atendimento__converter" type="button" id="atendimento-converter">
-          Compareceu — virar cliente
-        </button>
-        <button class="atendimento__salvar" type="button" id="atendimento-salvar">
-          Salvar orçamento
-        </button>
-      </div>
-    </footer>
-
-  </section>
+  <div id="painel"></div>
 
 </main>
 
 <template id="modelo-agendamento">
   <li>
-    <button class="agenda__botao" type="button">
+    <button class="lista__botao" type="button">
       <span class="agenda__hora"></span>
-      <span class="agenda__quem">
-        <span class="agenda__paciente"></span>
-        <span class="agenda__telefone"></span>
+      <span class="lista__quem">
+        <span class="lista__nome"></span>
+        <span class="lista__detalhe"></span>
       </span>
-      <span class="agenda__estagio"></span>
-    </button>
-  </li>
-</template>
-
-<template id="modelo-dente">
-  <button class="odonto__dente" type="button" aria-pressed="false">
-    <span class="odonto__check" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7" /></svg>
-    </span>
-  </button>
-</template>
-
-<template id="modelo-item">
-  <li class="orcamento__item">
-    <input class="orcamento__procedimento" type="text" placeholder="Procedimento" aria-label="Procedimento" />
-    <input class="orcamento__valor" type="text" inputmode="decimal" placeholder="0,00" aria-label="Valor em reais" />
-    <button class="orcamento__tirar" type="button" aria-label="Remover procedimento">
-      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+      <span class="selo"></span>
     </button>
   </li>
 </template>

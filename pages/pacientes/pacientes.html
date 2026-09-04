@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Pacientes · Harmonia Orofacial</title>
+
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="../../assets/favicon-512.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/favicon-180.png" />
+
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="pacientes.css" />
+</head>
+
+<body class="fundo-interno">
+
+<main class="pagina erp pacientes">
+
+  <header class="erp__topo">
+    <div class="erp__marca">
+      <img class="erp__marca-img" src="../../assets/favicon-180.png" alt="" width="180" height="180" />
+      <div>
+        <p class="erp__marca-nome">HARMONIA OROFACIAL</p>
+        <p class="erp__marca-tipo" id="erp-quem">CLÍNICA ODONTOLÓGICA</p>
+      </div>
+    </div>
+
+    <button class="erp__sair" type="button" id="erp-sair">Sair</button>
+  </header>
+
+  <nav class="navegar" aria-label="Telas do sistema">
+    <a class="navegar__link" href="../agenda/agenda.html">Agenda do dia</a>
+    <a class="navegar__link esta-aqui" href="pacientes.html" aria-current="page">Pacientes</a>
+  </nav>
+
+  <h1 class="erp__titulo">Pacientes</h1>
+
+  <div class="pacientes__busca">
+    <svg class="pacientes__lupa" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+    <input class="pacientes__campo" type="search" id="pacientes-busca" placeholder="Buscar por nome, telefone ou e-mail" aria-label="Buscar paciente" autocomplete="off" />
+  </div>
+
+  <div class="pacientes__filtro" role="group" aria-label="Filtrar por estágio">
+    <button class="pacientes__aba esta-aqui" type="button" data-estagio="">Todos</button>
+    <button class="pacientes__aba" type="button" data-estagio="cliente">Clientes</button>
+    <button class="pacientes__aba" type="button" data-estagio="contato">Contatos</button>
+  </div>
+
+  <p class="pacientes__resumo" id="pacientes-resumo" role="status"></p>
+
+  <ol class="lista" id="pacientes-lista"></ol>
+
+  <p class="vazio" id="pacientes-vazio" hidden>Nenhum paciente encontrado.</p>
+  <p class="erro" id="pacientes-erro" role="alert" hidden></p>
+
+  <div id="painel"></div>
+
+</main>
+
+<template id="modelo-paciente">
+  <li>
+    <button class="lista__botao" type="button">
+      <span class="lista__quem">
+        <span class="lista__nome"></span>
+        <span class="lista__detalhe"></span>
+      </span>
+      <span class="selo"></span>
+    </button>
+  </li>
+</template>
+
+<script type="module" src="pacientes.js"></script>
+
+</body>
+</html>
