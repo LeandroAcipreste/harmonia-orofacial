@@ -26,3 +26,23 @@ export const ESTAGIO_INICIAL = ESTAGIOS.contato;
 export const VERSAO_DA_FICHA = 2;
 
 export const DEMONSTRACAO = true;
+
+export const CLINICA = {
+    nome: "Harmonia Orofacial",
+    tipo: "Clínica Odontológica",
+    endereco: "Av. Manoel Pedro dos Santos Neto, 647 — Marcos Freire II",
+    cidade: "Nossa Senhora do Socorro — SE",
+    telefone: "(79) 99876-4880",
+};
+
+export const PROFISSIONAL = {
+    nome: "Dra. Celia Lima",
+    cro: "CRO/SE 04799",
+};
+
+export const ANEXOS = {
+    foto: "foto",
+    exame: "exame",
+};
+
+export const TAMANHO_MAXIMO = 12 * 1024 * 1024;

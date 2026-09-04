@@ -149,6 +149,12 @@ const FICHAS = [
 
 const salvos = new Map();
 
+const anexados = new Map();
+
+const receitados = new Map();
+
+let contador = 0;
+
 const guardado = (id) => {
     const base = FICHAS.find((ficha) => ficha.id === id);
 
@@ -156,7 +162,12 @@ const guardado = (id) => {
         return null;
     }
 
-    return { ...base, parecer: salvos.get(id) || base.parecer };
+    return {
+        ...base,
+        parecer: salvos.get(id) || base.parecer,
+        anexos: anexados.get(id) || [],
+        receituarios: receitados.get(id) || [],
+    };
 };
 
 const espera = (valor) =>
@@ -285,4 +296,37 @@ export const sessaoDeDemonstracao = () => {
 export const sairDeDemonstracao = () => {
     entrou = false;
     lembrar(false);
+};
+
+export const salvarAnexoDeDemonstracao = (id, anexo) => {
+    contador += 1;
+
+    const guardadoAgora = {
+        ...anexo,
+        id: "anx-" + contador,
+        criadoEm: new Date().toISOString(),
+    };
+
+    anexados.set(id, [...(anexados.get(id) || []), guardadoAgora]);
+
+    return espera(guardadoAgora);
+};
+
+export const removerAnexoDeDemonstracao = (id, anexoId) => {
+    anexados.set(
+        id,
+        (anexados.get(id) || []).filter((anexo) => anexo.id !== anexoId),
+    );
+
+    return espera({ ok: true });
+};
+
+export const emitirDeDemonstracao = (id, receita) => {
+    contador += 1;
+
+    const emitida = { ...receita, id: "rec-" + contador };
+
+    receitados.set(id, [emitida, ...(receitados.get(id) || [])]);
+
+    return espera(emitida);
 };

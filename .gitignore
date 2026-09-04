@@ -51,4 +51,8 @@ $RECYCLE.BIN/
 *~
 
 # Claude Code
-.claude/
+.claude/*
+
+# A especificacao do backend e a unica coisa aqui que precisa viajar com o
+# repositorio: e o pedido de obra de quem for construir o servidor.
+!.claude/backend/

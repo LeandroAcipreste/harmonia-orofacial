@@ -1,15 +1,23 @@
-import {
-    IDENTIFICACAO,
-    ROTULOS,
-    SAUDE,
-} from "../../services/agendamento.js";
+import { IDENTIFICACAO, ROTULOS, SAUDE } from "../../services/agendamento.js";
 import {
     converterEmCliente,
+    emitirReceita,
+    enviarTermoDeImagem,
     fichaDe,
+    removerAnexo,
+    salvarAnexo,
     salvarParecer,
 } from "../../services/atendimento.js";
 import { MAPA, emOrdem, nomeDoDente } from "../../services/odontograma.js";
-import { AGENDA, ESTAGIOS } from "../../core/config.js";
+import { ehImagem, emTamanhoLegivel, encolher } from "../../utils/imagem.js";
+import {
+    AGENDA,
+    ANEXOS,
+    CLINICA,
+    ESTAGIOS,
+    PROFISSIONAL,
+    TAMANHO_MAXIMO,
+} from "../../core/config.js";
 
 const MOEDA = new Intl.NumberFormat("pt-BR", {
     style: "currency",
@@ -22,12 +30,33 @@ export const EXTENSO = new Intl.DateTimeFormat("pt-BR", {
     month: "long",
 });
 
+const POR_EXTENSO_SEM_DIA = new Intl.DateTimeFormat("pt-BR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+});
+
 const CONSENTIMENTOS = {
     veracidade: "Confirmou a veracidade das informações",
     dados: "Autorizou o uso dos dados para agendar",
     imagem: "Autorizou registro fotográfico",
     marketing: "Aceita receber campanhas",
 };
+
+const GRUPOS = [
+    {
+        tipo: ANEXOS.foto,
+        titulo: "Fotos da boca",
+        aceita: "image/*",
+        vazio: "Nenhuma foto anexada.",
+    },
+    {
+        tipo: ANEXOS.exame,
+        titulo: "Exames",
+        aceita: "image/*,application/pdf,.pdf",
+        vazio: "Nenhum exame anexado.",
+    },
+];
 
 export const emReais = (centavos) => MOEDA.format(centavos / 100);
 
@@ -99,6 +128,15 @@ const MARCACAO = `
     <p class="odonto__marcados" role="status">Nenhum dente marcado.</p>
   </section>
 
+  <section class="anexos" aria-labelledby="painel-anexos">
+    <h3 class="anexos__titulo" id="painel-anexos">Fotos e exames</h3>
+    <p class="anexos__consentimento" hidden></p>
+    <div class="anexos__termo" hidden>
+      <p class="anexos__termo-texto">O paciente autorizou a divulgação das imagens. Mande o termo por e-mail explicando como elas são protegidas e como revogar.</p>
+      <button class="anexos__termo-enviar" type="button">Enviar termo de imagem</button>
+    </div>
+  </section>
+
   <section class="parecer" aria-labelledby="painel-parecer">
     <h3 class="parecer__titulo" id="painel-parecer">Sobre o caso</h3>
     <label class="parecer__rotulo" for="painel-texto">Avaliação da Dra. Célia</label>
@@ -116,6 +154,24 @@ const MARCACAO = `
       <span>Total</span>
       <strong class="orcamento__valor-total">R$ 0,00</strong>
     </p>
+  </section>
+
+  <section class="receita" aria-labelledby="painel-receita">
+    <h3 class="receita__titulo" id="painel-receita">Receituário</h3>
+    <p class="receita__ajuda">Um medicamento por linha. Ao emitir, abre a janela de impressão para assinar e entregar.</p>
+
+    <ol class="receita__remedios"></ol>
+
+    <button class="receita__somar" type="button">+ Adicionar medicamento</button>
+
+    <div class="receita__acoes">
+      <button class="receita__emitir" type="button">Emitir e imprimir</button>
+    </div>
+
+    <div class="receita__historico" hidden>
+      <h4 class="receita__historico-titulo">Emitidos</h4>
+      <ul class="receita__emitidas"></ul>
+    </div>
   </section>
 
   <footer class="atendimento__acoes">
@@ -145,6 +201,56 @@ const ITEM = `
   <button class="orcamento__tirar" type="button" aria-label="Remover procedimento">
     <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
   </button>
+</li>
+`;
+
+const GRUPO = `
+<div class="anexos__grupo">
+  <div class="anexos__cabeca">
+    <h4 class="anexos__subtitulo"></h4>
+    <button class="anexos__somar" type="button">+ Adicionar</button>
+    <input class="anexos__entrada" type="file" multiple hidden />
+  </div>
+  <ul class="anexos__grade"></ul>
+  <p class="anexos__vazio"></p>
+</div>
+`;
+
+const ANEXO = `
+<li class="anexo">
+  <a class="anexo__mira" target="_blank" rel="noopener noreferrer">
+    <img class="anexo__miniatura" alt="" />
+    <span class="anexo__icone" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /></svg>
+    </span>
+  </a>
+  <div class="anexo__dados">
+    <span class="anexo__nome"></span>
+    <span class="anexo__peso"></span>
+  </div>
+  <button class="anexo__tirar" type="button" aria-label="Remover anexo">
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+  </button>
+</li>
+`;
+
+const REMEDIO = `
+<li class="remedio">
+  <input class="remedio__nome" type="text" placeholder="Medicamento" aria-label="Medicamento" />
+  <input class="remedio__forma" type="text" placeholder="Apresentação (ex.: 500 mg, comprimido)" aria-label="Apresentação" />
+  <input class="remedio__quantidade" type="text" placeholder="Qtd." aria-label="Quantidade" />
+  <button class="remedio__tirar" type="button" aria-label="Remover medicamento">
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+  </button>
+  <textarea class="remedio__posologia" rows="2" placeholder="Posologia — como tomar" aria-label="Posologia"></textarea>
+</li>
+`;
+
+const EMITIDA = `
+<li class="emitida">
+  <span class="emitida__data"></span>
+  <span class="emitida__resumo"></span>
+  <button class="emitida__reimprimir" type="button">Reimprimir</button>
 </li>
 `;
 
@@ -259,6 +365,94 @@ const montarOdontograma = (destino, marcados, aoMudar) => {
     });
 };
 
+/* A folha de impressao vive fora do painel: em @media print o resto da
+   pagina some e so ela e enviada para o papel. */
+const acharFolha = () => {
+    const existente = document.querySelector(".impressao");
+
+    if (existente) {
+        return existente;
+    }
+
+    const folha = criar("div", "impressao");
+
+    folha.setAttribute("aria-hidden", "true");
+    document.body.appendChild(folha);
+
+    return folha;
+};
+
+const montarReceitaImpressa = (folha, { paciente, remedios, quando }) => {
+    folha.textContent = "";
+
+    const cabeca = criar("header", "impressao__topo");
+
+    cabeca.appendChild(criar("p", "impressao__clinica", CLINICA.nome));
+    cabeca.appendChild(criar("p", "impressao__tipo", CLINICA.tipo));
+    cabeca.appendChild(
+        criar("p", "impressao__endereco", CLINICA.endereco + " · " + CLINICA.cidade),
+    );
+    cabeca.appendChild(criar("p", "impressao__endereco", CLINICA.telefone));
+
+    folha.appendChild(cabeca);
+    folha.appendChild(criar("h1", "impressao__titulo", "Receituário"));
+
+    const quem = criar("p", "impressao__paciente");
+
+    quem.appendChild(criar("strong", null, "Paciente: "));
+    quem.appendChild(document.createTextNode(paciente.nome));
+
+    folha.appendChild(quem);
+
+    const lista = criar("ol", "impressao__remedios");
+
+    remedios.forEach((remedio) => {
+        const item = criar("li", "impressao__remedio");
+        const linha = criar("p", "impressao__remedio-nome");
+
+        linha.appendChild(criar("strong", null, remedio.nome));
+
+        if (remedio.forma) {
+            linha.appendChild(document.createTextNode(" — " + remedio.forma));
+        }
+
+        if (remedio.quantidade) {
+            linha.appendChild(
+                criar("span", "impressao__quantidade", "  " + remedio.quantidade),
+            );
+        }
+
+        item.appendChild(linha);
+
+        if (remedio.posologia) {
+            item.appendChild(criar("p", "impressao__posologia", remedio.posologia));
+        }
+
+        lista.appendChild(item);
+    });
+
+    folha.appendChild(lista);
+
+    const pe = criar("footer", "impressao__pe");
+
+    pe.appendChild(
+        criar(
+            "p",
+            "impressao__data",
+            CLINICA.cidade.split("—")[0].trim() +
+                ", " +
+                POR_EXTENSO_SEM_DIA.format(quando) +
+                ".",
+        ),
+    );
+
+    pe.appendChild(criar("p", "impressao__risco", ""));
+    pe.appendChild(criar("p", "impressao__assina", PROFISSIONAL.nome));
+    pe.appendChild(criar("p", "impressao__cro", PROFISSIONAL.cro));
+
+    folha.appendChild(pe);
+};
+
 export const criarPainel = ({ hospedeiro, aoFechar, aoConverter }) => {
     hospedeiro.appendChild(doModelo(MARCACAO));
 
@@ -271,12 +465,22 @@ export const criarPainel = ({ hospedeiro, aoFechar, aoConverter }) => {
     const ficha = achar("atendimento__ficha");
     const mapa = achar("odonto__mapa");
     const marcadosTexto = achar("odonto__marcados");
+    const anexos = achar("anexos");
+    const consentimento = achar("anexos__consentimento");
+    const termo = achar("anexos__termo");
+    const botaoTermo = achar("anexos__termo-enviar");
     const area = achar("parecer__area");
     const itens = achar("orcamento__itens");
     const total = achar("orcamento__valor-total");
+    const remedios = achar("receita__remedios");
+    const historico = achar("receita__historico");
+    const emitidas = achar("receita__emitidas");
+    const botaoEmitir = achar("receita__emitir");
     const aviso = achar("atendimento__aviso");
     const botaoSalvar = achar("atendimento__salvar");
     const botaoConverter = achar("atendimento__converter");
+
+    const folha = acharFolha();
 
     let aberto = null;
     let marcados = new Set();
@@ -327,6 +531,214 @@ export const criarPainel = ({ hospedeiro, aoFechar, aoConverter }) => {
             : "Nenhum dente marcado.";
     };
 
+    /* Anexos */
+
+    const cartaoDeAnexo = (anexo, grade, vazio) => {
+        const cartao = doModelo(ANEXO);
+        const mira = cartao.querySelector(".anexo__mira");
+        const miniatura = cartao.querySelector(".anexo__miniatura");
+        const icone = cartao.querySelector(".anexo__icone");
+        const endereco = anexo.url || anexo.conteudo;
+
+        mira.href = endereco;
+
+        if (anexo.tipo && anexo.tipo.startsWith("image/")) {
+            miniatura.src = endereco;
+            miniatura.alt = anexo.nome;
+            icone.hidden = true;
+        } else {
+            miniatura.hidden = true;
+        }
+
+        cartao.querySelector(".anexo__nome").textContent = anexo.nome;
+        cartao.querySelector(".anexo__peso").textContent = emTamanhoLegivel(
+            anexo.tamanho,
+        );
+
+        cartao.querySelector(".anexo__tirar").addEventListener("click", async () => {
+            const certeza = window.confirm(
+                "Remover " + anexo.nome + "? Isso não volta atrás.",
+            );
+
+            if (!certeza) {
+                return;
+            }
+
+            try {
+                await removerAnexo(aberto.id, anexo.id);
+
+                cartao.remove();
+                vazio.hidden = grade.children.length > 0;
+                recado("Anexo removido.");
+            } catch (falha) {
+                recado(falha.message, true);
+            }
+        });
+
+        return cartao;
+    };
+
+    const montarAnexos = (registro) => {
+        anexos.querySelectorAll(".anexos__grupo").forEach((velho) => velho.remove());
+
+        const guardados = registro.anexos || [];
+
+        const autorizou = Boolean(
+            registro.consentimento && registro.consentimento.imagem,
+        );
+
+        consentimento.textContent = autorizou
+            ? ""
+            : "O paciente não autorizou a divulgação das imagens. Fotos aqui valem só como prontuário.";
+        consentimento.hidden = autorizou;
+
+        termo.hidden = !autorizou || !registro.paciente.email;
+
+        GRUPOS.forEach(({ tipo, titulo, aceita, vazio: recadoVazio }) => {
+            const grupo = doModelo(GRUPO);
+            const entrada = grupo.querySelector(".anexos__entrada");
+            const grade = grupo.querySelector(".anexos__grade");
+            const vazio = grupo.querySelector(".anexos__vazio");
+
+            grupo.dataset.tipo = tipo;
+            grupo.querySelector(".anexos__subtitulo").textContent = titulo;
+            entrada.accept = aceita;
+            vazio.textContent = recadoVazio;
+
+            guardados
+                .filter((anexo) => anexo.tipo_anexo === tipo)
+                .forEach((anexo) => grade.appendChild(cartaoDeAnexo(anexo, grade, vazio)));
+
+            vazio.hidden = grade.children.length > 0;
+
+            grupo
+                .querySelector(".anexos__somar")
+                .addEventListener("click", () => entrada.click());
+
+            entrada.addEventListener("change", async () => {
+                const escolhidos = [...entrada.files];
+
+                entrada.value = "";
+
+                for (const arquivo of escolhidos) {
+                    if (arquivo.size > TAMANHO_MAXIMO) {
+                        recado(
+                            arquivo.name +
+                                " tem " +
+                                emTamanhoLegivel(arquivo.size) +
+                                " e passa do limite.",
+                            true,
+                        );
+                        continue;
+                    }
+
+                    if (tipo === ANEXOS.foto && !ehImagem(arquivo)) {
+                        recado(arquivo.name + " não é uma imagem.", true);
+                        continue;
+                    }
+
+                    recado("Preparando " + arquivo.name + "…");
+
+                    try {
+                        const pronto = await encolher(arquivo);
+                        const salvo = await salvarAnexo(aberto.id, {
+                            ...pronto,
+                            tipo_anexo: tipo,
+                        });
+
+                        grade.appendChild(
+                            cartaoDeAnexo({ ...pronto, ...salvo }, grade, vazio),
+                        );
+
+                        vazio.hidden = true;
+
+                        const ganho =
+                            pronto.tamanhoOriginal > pronto.tamanho
+                                ? " (" +
+                                  emTamanhoLegivel(pronto.tamanhoOriginal) +
+                                  " → " +
+                                  emTamanhoLegivel(pronto.tamanho) +
+                                  ")"
+                                : "";
+
+                        recado(arquivo.name + " anexado" + ganho + ".");
+                    } catch (falha) {
+                        recado(falha.message, true);
+                    }
+                }
+            });
+
+            anexos.appendChild(grupo);
+        });
+    };
+
+    /* Receituário */
+
+    const linhaDeRemedio = (remedio = {}) => {
+        const item = doModelo(REMEDIO);
+
+        item.querySelector(".remedio__nome").value = remedio.nome || "";
+        item.querySelector(".remedio__forma").value = remedio.forma || "";
+        item.querySelector(".remedio__quantidade").value = remedio.quantidade || "";
+        item.querySelector(".remedio__posologia").value = remedio.posologia || "";
+
+        item.querySelector(".remedio__tirar").addEventListener("click", () => {
+            item.remove();
+
+            if (!remedios.children.length) {
+                remedios.appendChild(linhaDeRemedio());
+            }
+        });
+
+        return item;
+    };
+
+    const lerRemedios = () =>
+        [...remedios.children]
+            .map((item) => ({
+                nome: item.querySelector(".remedio__nome").value.trim(),
+                forma: item.querySelector(".remedio__forma").value.trim(),
+                quantidade: item.querySelector(".remedio__quantidade").value.trim(),
+                posologia: item.querySelector(".remedio__posologia").value.trim(),
+            }))
+            .filter((remedio) => remedio.nome);
+
+    const imprimir = (receita) => {
+        montarReceitaImpressa(folha, {
+            paciente: aberto.paciente,
+            remedios: receita.remedios,
+            quando: receita.emitidoEm ? new Date(receita.emitidoEm) : new Date(),
+        });
+
+        window.print();
+    };
+
+    const cartaoEmitido = (receita) => {
+        const cartao = doModelo(EMITIDA);
+        const quando = new Date(receita.emitidoEm);
+
+        cartao.querySelector(".emitida__data").textContent =
+            POR_EXTENSO_SEM_DIA.format(quando);
+
+        cartao.querySelector(".emitida__resumo").textContent = receita.remedios
+            .map((remedio) => remedio.nome)
+            .join(", ");
+
+        cartao.querySelector(".emitida__reimprimir").addEventListener("click", () => {
+            imprimir(receita);
+        });
+
+        return cartao;
+    };
+
+    const montarHistorico = (lista) => {
+        emitidas.textContent = "";
+
+        lista.forEach((receita) => emitidas.appendChild(cartaoEmitido(receita)));
+
+        historico.hidden = !lista.length;
+    };
+
     const fechar = () => {
         raiz.hidden = true;
         aberto = null;
@@ -365,6 +777,8 @@ export const criarPainel = ({ hospedeiro, aoFechar, aoConverter }) => {
         montarOdontograma(mapa, marcados, contarMarcados);
         contarMarcados();
 
+        montarAnexos(completo);
+
         area.value = parecer.texto || "";
 
         itens.textContent = "";
@@ -379,6 +793,11 @@ export const criarPainel = ({ hospedeiro, aoFechar, aoConverter }) => {
 
         somar();
 
+        remedios.textContent = "";
+        remedios.appendChild(linhaDeRemedio());
+
+        montarHistorico(completo.receituarios || []);
+
         botaoConverter.hidden = completo.estagio === ESTAGIOS.cliente;
 
         raiz.hidden = false;
@@ -389,6 +808,70 @@ export const criarPainel = ({ hospedeiro, aoFechar, aoConverter }) => {
 
     achar("orcamento__somar").addEventListener("click", () => {
         itens.appendChild(linha());
+    });
+
+    botaoTermo.addEventListener("click", async () => {
+        if (!aberto) {
+            return;
+        }
+
+        botaoTermo.disabled = true;
+
+        try {
+            const saida = await enviarTermoDeImagem(aberto);
+
+            recado(
+                saida.canal === "mailto"
+                    ? "Termo aberto no seu e-mail. Confira e envie."
+                    : "Termo de imagem enviado para " + aberto.paciente.email + ".",
+            );
+        } catch (falha) {
+            recado(falha.message, true);
+        } finally {
+            botaoTermo.disabled = false;
+        }
+    });
+
+    achar("receita__somar").addEventListener("click", () => {
+        remedios.appendChild(linhaDeRemedio());
+    });
+
+    botaoEmitir.addEventListener("click", async () => {
+        if (!aberto) {
+            return;
+        }
+
+        const lista = lerRemedios();
+
+        if (!lista.length) {
+            recado("Escreva ao menos um medicamento para emitir.", true);
+            return;
+        }
+
+        botaoEmitir.disabled = true;
+        recado("Emitindo…");
+
+        const receita = { remedios: lista, emitidoEm: new Date().toISOString() };
+
+        try {
+            const salva = await emitirReceita(aberto.id, receita);
+            const guardada = { ...receita, ...salva };
+
+            aberto.receituarios = [guardada, ...(aberto.receituarios || [])];
+
+            montarHistorico(aberto.receituarios);
+
+            remedios.textContent = "";
+            remedios.appendChild(linhaDeRemedio());
+
+            recado("Receituário emitido.");
+
+            imprimir(guardada);
+        } catch (falha) {
+            recado(falha.message, true);
+        } finally {
+            botaoEmitir.disabled = false;
+        }
     });
 
     botaoSalvar.addEventListener("click", async () => {

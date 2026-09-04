@@ -105,16 +105,20 @@
 /* Odontograma */
 
 .odonto,
+.anexos,
 .parecer,
-.orcamento {
+.orcamento,
+.receita {
   margin-top: 2rem;
   padding-top: 1.75rem;
   border-top: 1px solid rgb(226 232 240 / 0.14);
 }
 
 .odonto__titulo,
+.anexos__titulo,
 .parecer__titulo,
-.orcamento__titulo {
+.orcamento__titulo,
+.receita__titulo {
   margin: 0 0 0.375rem;
   font-family: var(--font-serif);
   font-size: 1.25rem;
@@ -420,4 +424,522 @@
   .dados__lista .dados__valor {
       grid-column: 2;
     }
+}
+
+/* Fotos e exames */
+
+.anexos__consentimento {
+  margin: 0.75rem 0 0;
+  padding: 0.75rem 1rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--gold-200);
+  background-color: rgb(253 186 116 / 0.1);
+  border-left: 2px solid var(--gold-300);
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.anexos__grupo {
+  margin-top: 1.5rem;
+}
+
+.anexos__cabeca {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.875rem;
+}
+
+.anexos__subtitulo {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-300);
+}
+
+.anexos__somar {
+  padding: 0.4375rem 1rem;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--slate-200);
+  background: none;
+  border: 1px solid rgb(226 232 240 / 0.24);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: color 0.25s, border-color 0.25s;
+}
+
+.anexos__somar:hover {
+  color: var(--white);
+  border-color: rgb(253 186 116 / 0.6);
+}
+
+.anexos__grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.anexos__vazio {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--slate-400);
+}
+
+.anexo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: rgb(0 0 0 / 0.22);
+  border: 1px solid rgb(226 232 240 / 0.14);
+  border-radius: 0.75rem;
+}
+
+.anexo__mira {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  background-color: rgb(0 0 0 / 0.3);
+  color: var(--slate-400);
+}
+
+.anexo__miniatura {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.anexo__icone svg {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.anexo__dados {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: 0.625rem 0.75rem;
+  min-width: 0;
+}
+
+.anexo__nome {
+  font-size: 0.8125rem;
+  color: var(--white);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.anexo__peso {
+  font-size: 0.6875rem;
+  color: var(--slate-400);
+  font-variant-numeric: tabular-nums;
+}
+
+.anexo__tirar {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--white);
+  background-color: rgb(0 0 0 / 0.55);
+  border: 0;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background-color 0.25s;
+}
+
+.anexo__tirar:hover {
+  background-color: rgb(220 38 38 / 0.85);
+}
+
+.anexo__tirar svg {
+  width: 0.8125rem;
+  height: 0.8125rem;
+}
+
+/* Receituário */
+
+.receita__ajuda {
+  margin: 0 0 1.25rem;
+  font-size: 0.875rem;
+  color: var(--slate-200);
+}
+
+.receita__remedios {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.remedio {
+  display: grid;
+  grid-template-columns: 1fr 6rem auto;
+  gap: 0.5rem;
+  padding: 0.875rem;
+  background-color: rgb(255 255 255 / 0.03);
+  border: 1px solid rgb(226 232 240 / 0.12);
+  border-radius: 0.75rem;
+}
+
+.remedio__nome,
+.remedio__forma,
+.remedio__quantidade,
+.remedio__posologia {
+  width: 100%;
+  padding: 0.6875rem 0.875rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--white);
+  background-color: rgb(0 0 0 / 0.22);
+  border: 1px solid rgb(226 232 240 / 0.16);
+  border-radius: 0.5rem;
+  transition: border-color 0.25s;
+}
+
+.remedio__nome {
+  grid-column: 1 / -1;
+}
+
+.remedio__posologia {
+  grid-column: 1 / -1;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.remedio__nome:focus,
+.remedio__forma:focus,
+.remedio__quantidade:focus,
+.remedio__posologia:focus {
+  outline: none;
+  border-color: rgb(253 186 116 / 0.7);
+}
+
+.remedio__nome::placeholder,
+.remedio__forma::placeholder,
+.remedio__quantidade::placeholder,
+.remedio__posologia::placeholder {
+  color: var(--slate-400);
+}
+
+.remedio__tirar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  align-self: center;
+  color: var(--slate-300);
+  background: none;
+  border: 0;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: color 0.25s, background-color 0.25s;
+}
+
+.remedio__tirar:hover {
+  color: #ffd9d9;
+  background-color: rgb(220 38 38 / 0.2);
+}
+
+.remedio__tirar svg {
+  width: 0.9375rem;
+  height: 0.9375rem;
+}
+
+.receita__somar {
+  margin-top: 0.875rem;
+  padding: 0.5rem 0;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--gold-300);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.receita__somar:hover {
+  color: var(--gold-200);
+}
+
+.receita__acoes {
+  margin-top: 1.25rem;
+}
+
+.receita__emitir {
+  padding: 0.8125rem 1.75rem;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--slate-200);
+  background: none;
+  border: 1px solid rgb(253 186 116 / 0.5);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: color 0.25s, background-color 0.25s;
+}
+
+.receita__emitir:hover {
+  color: #2b1a03;
+  background-color: var(--gold-300);
+}
+
+.receita__emitir:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.receita__historico {
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgb(226 232 240 / 0.12);
+}
+
+.receita__historico-titulo {
+  margin: 0 0 0.875rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-300);
+}
+
+.receita__emitidas {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.emitida {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.75rem 1rem;
+  background-color: rgb(255 255 255 / 0.03);
+  border-radius: 0.625rem;
+}
+
+.emitida__data {
+  font-size: 0.8125rem;
+  color: var(--gold-300);
+  white-space: nowrap;
+}
+
+.emitida__resumo {
+  font-size: 0.875rem;
+  color: var(--slate-200);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.emitida__reimprimir {
+  font-family: inherit;
+  font-size: 0.75rem;
+  color: var(--slate-300);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.emitida__reimprimir:hover {
+  color: var(--white);
+  text-decoration: underline;
+}
+
+@media (min-width: 720px) {
+  .remedio {
+    grid-template-columns: 1fr 12rem 6rem auto;
+  }
+
+  .remedio__nome {
+    grid-column: auto;
+  }
+}
+
+/* A folha do receituário. Fora da impressão ela não existe. */
+
+.impressao {
+  display: none;
+}
+
+@media print {
+  body > *:not(.impressao) {
+    display: none !important;
+  }
+
+  .impressao {
+    display: block;
+    padding: 0;
+    color: #000;
+    background: #fff;
+    font-family: var(--font-sans);
+  }
+
+  .impressao__topo {
+    padding-bottom: 1rem;
+    border-bottom: 1.5pt solid #000;
+    text-align: center;
+  }
+
+  .impressao__clinica {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: 18pt;
+    font-weight: 600;
+  }
+
+  .impressao__tipo {
+    margin: 2pt 0 6pt;
+    font-size: 9pt;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .impressao__endereco {
+    margin: 1pt 0;
+    font-size: 9pt;
+  }
+
+  .impressao__titulo {
+    margin: 20pt 0 14pt;
+    font-size: 13pt;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .impressao__paciente {
+    margin: 0 0 18pt;
+    font-size: 11pt;
+  }
+
+  .impressao__remedios {
+    margin: 0;
+    padding-left: 16pt;
+    font-size: 11pt;
+  }
+
+  .impressao__remedio {
+    margin-bottom: 14pt;
+    break-inside: avoid;
+  }
+
+  .impressao__remedio-nome {
+    margin: 0;
+  }
+
+  .impressao__quantidade {
+    float: right;
+  }
+
+  .impressao__posologia {
+    margin: 3pt 0 0;
+    font-size: 10pt;
+    font-style: italic;
+  }
+
+  .impressao__pe {
+    margin-top: 48pt;
+    break-inside: avoid;
+  }
+
+  .impressao__data {
+    margin: 0 0 40pt;
+    font-size: 10pt;
+    text-align: right;
+  }
+
+  .impressao__risco {
+    width: 60%;
+    margin: 0 auto 4pt;
+    border-top: 0.75pt solid #000;
+  }
+
+  .impressao__assina {
+    margin: 0;
+    font-size: 11pt;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .impressao__cro {
+    margin: 2pt 0 0;
+    font-size: 9pt;
+    text-align: center;
+  }
+
+  @page {
+    margin: 18mm 16mm;
+  }
+}
+
+.anexos__termo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.875rem;
+  margin-top: 0.75rem;
+  padding: 0.875rem 1rem;
+  background-color: rgb(255 255 255 / 0.04);
+  border: 1px solid rgb(226 232 240 / 0.14);
+  border-radius: 0.75rem;
+}
+
+.anexos__termo-texto {
+  flex: 1 1 18rem;
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--slate-200);
+}
+
+.anexos__termo-enviar {
+  flex: none;
+  padding: 0.5rem 1.125rem;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--gold-300);
+  background: none;
+  border: 1px solid rgb(253 186 116 / 0.45);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: color 0.25s, background-color 0.25s;
+}
+
+.anexos__termo-enviar:hover {
+  color: #2b1a03;
+  background-color: var(--gold-300);
+}
+
+.anexos__termo-enviar:disabled {
+  opacity: 0.55;
+  cursor: default;
 }

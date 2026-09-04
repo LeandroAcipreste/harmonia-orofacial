@@ -1,9 +1,13 @@
 import { API, DEMONSTRACAO, ESTAGIOS } from "../core/config.js";
+import { comoMailto } from "./email.js";
 import {
     agendaDeDemonstracao,
     converterDeDemonstracao,
+    emitirDeDemonstracao,
     fichaDeDemonstracao,
     pacientesDeDemonstracao,
+    removerAnexoDeDemonstracao,
+    salvarAnexoDeDemonstracao,
     salvarDeDemonstracao,
 } from "./demonstracao.js";
 
@@ -16,6 +20,10 @@ const ROTAS = {
 const MENSAGENS = {
     agenda: "Não foi possível carregar a agenda deste dia.",
     pacientes: "Não foi possível carregar a lista de pacientes.",
+    anexar: "O arquivo não foi anexado. Tente de novo.",
+    remover: "Não foi possível remover o anexo.",
+    receita: "O receituário não foi emitido. Tente de novo.",
+    termo: "O termo de imagem não foi enviado.",
     ficha: "Não foi possível abrir esta ficha.",
     salvar: "O parecer não foi salvo. Tente de novo.",
     converter: "Não foi possível converter em cliente.",
@@ -115,5 +123,59 @@ export const converterEmCliente = (id) => {
         { estagio: ESTAGIOS.cliente },
         MENSAGENS.converter,
         "PUT",
+    );
+};
+
+export const salvarAnexo = (id, anexo) => {
+    if (DEMONSTRACAO) {
+        return salvarAnexoDeDemonstracao(id, anexo);
+    }
+
+    return enviar(
+        ROTAS.ficha + encodeURIComponent(id) + "/anexos",
+        anexo,
+        MENSAGENS.anexar,
+    );
+};
+
+export const removerAnexo = (id, anexoId) => {
+    if (DEMONSTRACAO) {
+        return removerAnexoDeDemonstracao(id, anexoId);
+    }
+
+    return pedir(
+        ROTAS.ficha + encodeURIComponent(id) + "/anexos/" + encodeURIComponent(anexoId),
+        { method: "DELETE" },
+        MENSAGENS.remover,
+    );
+};
+
+export const emitirReceita = (id, receita) => {
+    if (DEMONSTRACAO) {
+        return emitirDeDemonstracao(id, receita);
+    }
+
+    return enviar(
+        ROTAS.ficha + encodeURIComponent(id) + "/receituarios",
+        receita,
+        MENSAGENS.receita,
+    );
+};
+
+/* O termo de imagem so faz sentido para quem autorizou a divulgacao.
+   Sem backend, abre o cliente de e-mail com o texto pronto para revisao
+   antes de sair; com backend, quem envia e o servidor, que registra o
+   envio junto do consentimento. */
+export const enviarTermoDeImagem = (registro) => {
+    if (DEMONSTRACAO) {
+        window.open(comoMailto(registro.paciente), "_blank", "noopener");
+
+        return Promise.resolve({ ok: true, canal: "mailto" });
+    }
+
+    return enviar(
+        ROTAS.ficha + encodeURIComponent(registro.id) + "/termo-imagem",
+        {},
+        MENSAGENS.termo,
     );
 };
