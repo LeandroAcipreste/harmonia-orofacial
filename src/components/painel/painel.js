@@ -768,6 +768,15 @@ export const criarPainel = ({ hospedeiro, aoFechar, aoConverter }) => {
         historico.hidden = !lista.length;
     };
 
+    const ehCliente = () => aberto && aberto.estagio === ESTAGIOS.cliente;
+
+    const ajustarBotoes = () => {
+        const cliente = ehCliente();
+
+        botaoConverter.hidden = cliente;
+        botaoSalvar.textContent = cliente ? "Salvar" : "Salvar orçamento";
+    };
+
     const fechar = () => {
         raiz.hidden = true;
         aberto = null;
@@ -827,7 +836,7 @@ export const criarPainel = ({ hospedeiro, aoFechar, aoConverter }) => {
 
         montarHistorico(completo.receituarios || []);
 
-        botaoConverter.hidden = completo.estagio === ESTAGIOS.cliente;
+        ajustarBotoes();
 
         raiz.hidden = false;
         raiz.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -930,7 +939,7 @@ export const criarPainel = ({ hospedeiro, aoFechar, aoConverter }) => {
                 orcamento,
             });
 
-            recado("Orçamento salvo.");
+            recado(ehCliente() ? "Salvo." : "Orçamento salvo.");
         } catch (falha) {
             recado(falha.message, true);
         } finally {
@@ -950,7 +959,7 @@ export const criarPainel = ({ hospedeiro, aoFechar, aoConverter }) => {
             await converterEmCliente(aberto.id);
 
             aberto.estagio = ESTAGIOS.cliente;
-            botaoConverter.hidden = true;
+            ajustarBotoes();
 
             recado("Agora é cliente. O prontuário passa a valer.");
 
