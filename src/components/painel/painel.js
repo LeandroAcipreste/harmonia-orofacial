@@ -30,6 +30,8 @@ export const EXTENSO = new Intl.DateTimeFormat("pt-BR", {
     month: "long",
 });
 
+const MARCA = "/assets/logo-transparente-png.png";
+
 const POR_EXTENSO_SEM_DIA = new Intl.DateTimeFormat("pt-BR", {
     day: "numeric",
     month: "long",
@@ -382,17 +384,30 @@ const acharFolha = () => {
     return folha;
 };
 
+const marca = (classe) => {
+    const logo = document.createElement("img");
+
+    logo.className = classe;
+    logo.src = MARCA;
+    logo.alt = "";
+    logo.setAttribute("aria-hidden", "true");
+
+    return logo;
+};
+
 const montarReceitaImpressa = (folha, { paciente, remedios, quando }) => {
     folha.textContent = "";
 
+    /* A marca d'agua e uma <img>, nao um background: o navegador so imprime
+       fundo se a pessoa marcar "graficos de fundo" na caixa de impressao,
+       mas imagem sai sempre. Fixa, ela se repete em toda pagina. */
+    folha.appendChild(marca("impressao__agua"));
+
     const cabeca = criar("header", "impressao__topo");
 
+    cabeca.appendChild(marca("impressao__logo"));
     cabeca.appendChild(criar("p", "impressao__clinica", CLINICA.nome));
     cabeca.appendChild(criar("p", "impressao__tipo", CLINICA.tipo));
-    cabeca.appendChild(
-        criar("p", "impressao__endereco", CLINICA.endereco + " · " + CLINICA.cidade),
-    );
-    cabeca.appendChild(criar("p", "impressao__endereco", CLINICA.telefone));
 
     folha.appendChild(cabeca);
     folha.appendChild(criar("h1", "impressao__titulo", "Receituário"));
@@ -451,6 +466,15 @@ const montarReceitaImpressa = (folha, { paciente, remedios, quando }) => {
     pe.appendChild(criar("p", "impressao__cro", PROFISSIONAL.cro));
 
     folha.appendChild(pe);
+
+    const rodape = criar("footer", "impressao__rodape");
+
+    rodape.appendChild(criar("p", "impressao__endereco", CLINICA.endereco));
+    rodape.appendChild(
+        criar("p", "impressao__endereco", CLINICA.cidade + " · " + CLINICA.telefone),
+    );
+
+    folha.appendChild(rodape);
 };
 
 export const criarPainel = ({ hospedeiro, aoFechar, aoConverter }) => {

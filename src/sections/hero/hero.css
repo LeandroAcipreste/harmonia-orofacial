@@ -86,3 +86,105 @@
 .hero.is-fora .hero__video {
   display: none;
 }
+
+/* Aviso de rolagem: aparece quando o vídeo assume a tela e some no primeiro
+   gesto. Fica de fora do fluxo e não intercepta toque. */
+
+.hero__rolar {
+  position: absolute;
+  bottom: max(1.75rem, env(safe-area-inset-bottom));
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  transform: translateX(-50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.9s ease;
+}
+
+.hero.esta-livre .hero__rolar {
+  opacity: 1;
+  transition-delay: 0.35s;
+}
+
+.hero.ja-rolou .hero__rolar {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  transition-delay: 0s;
+}
+
+.hero__rolar-texto {
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  text-transform: uppercase;
+  color: var(--gold-200);
+  text-shadow: 0 1px 6px rgb(0 0 0 / 0.55);
+}
+
+.hero__rolar-trilho {
+  position: relative;
+  width: 1px;
+  height: 3.25rem;
+  overflow: hidden;
+  background-image: linear-gradient(
+    to bottom,
+    rgb(254 215 170 / 0.45),
+    rgb(254 215 170 / 0)
+  );
+}
+
+.hero__rolar-ponto {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 3px;
+  height: 0.75rem;
+  margin-left: -1.5px;
+  border-radius: 9999px;
+  background-color: var(--gold-200);
+  box-shadow: 0 0 8px rgb(254 215 170 / 0.8);
+  animation: heroRolarDescer 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes heroRolarDescer {
+  0% {
+    transform: translateY(-0.75rem);
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  75% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(3.25rem);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__rolar-ponto {
+    animation: none;
+    top: 0.25rem;
+  }
+}
+
+/* Em tela baixa e deitada o aviso rouba espaço do vídeo: fica só o traço. */
+@media (max-height: 460px) {
+  .hero__rolar-texto {
+    display: none;
+  }
+
+  .hero__rolar-trilho {
+    height: 2.25rem;
+  }
+}

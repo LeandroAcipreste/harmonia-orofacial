@@ -99,8 +99,19 @@ const prepararParaTocar = (video) => {
 const CLASSE_PRONTO = "esta-pronto";
 const EVENTO_PRELOADER = "harmonia:preloader-fim";
 
+const CLASSE_LIVRE = "esta-livre";
+const CLASSE_ROLOU = "ja-rolou";
+
 const acendeu = (video) => {
-    window.requestAnimationFrame(() => video.classList.add(CLASSE_PRONTO));
+    window.requestAnimationFrame(() => {
+        video.classList.add(CLASSE_PRONTO);
+
+        const hero = video.closest(".hero");
+
+        if (hero) {
+            hero.classList.add(CLASSE_LIVRE);
+        }
+    });
 };
 
 let retentativaArmada = false;
@@ -168,9 +179,14 @@ export const initHero = () => {
 
         video.load();
 
-        document.addEventListener(EVENTO_PRELOADER, () => tocar(video), {
-            once: true,
-        });
+        document.addEventListener(
+            EVENTO_PRELOADER,
+            () => {
+                hero.classList.add(CLASSE_LIVRE);
+                tocar(video);
+            },
+            { once: true },
+        );
 
         video.addEventListener("pause", () => {
             if (trocandoFonte) {
@@ -203,6 +219,10 @@ const animarNaRolagem = (hero, video) => {
             end: "60% top",
             scrub: true,
             onUpdate: (self) => {
+                if (self.progress > 0) {
+                    hero.classList.add(CLASSE_ROLOU);
+                }
+
                 if (!video) {
                     return;
                 }
