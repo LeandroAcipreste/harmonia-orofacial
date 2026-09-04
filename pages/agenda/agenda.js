@@ -439,7 +439,7 @@ const initAgenda = (sessao) => {
                 orcamento,
             });
 
-            recadoDoPainel("Parecer salvo.");
+            recadoDoPainel("Orçamento salvo.");
         } catch (falha) {
             recadoDoPainel(falha.message, true);
         } finally {
