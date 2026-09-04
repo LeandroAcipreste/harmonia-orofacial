@@ -1,9 +1,10 @@
 import { entrar, reenviarCodigo, verificar } from "../../src/services/sessao.js";
 import { destinoDeVolta } from "../../src/services/guarda.js";
+import { DEMONSTRACAO } from "../../src/core/config.js";
 
 const PAINEL = "/pages/agenda/agenda.html";
 
-const MIN_SENHA = 8;
+const MIN_SENHA = DEMONSTRACAO ? 1 : 8;
 
 /* Aceita "nome@dominio.br". Validação de e-mail no cliente serve para
    pegar erro de digitação, não para decidir se o endereço existe. */

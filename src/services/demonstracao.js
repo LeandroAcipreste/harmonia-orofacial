@@ -194,8 +194,57 @@ export const converterDeDemonstracao = (id) => {
     return espera({ ok: true, estagio: ESTAGIOS.cliente });
 };
 
-export const sessaoDeDemonstracao = () => ({
+const CREDENCIAL = {
+    email: "adm@adm.com",
+    senha: "12345",
+};
+
+const QUEM = {
     nome: "DRA. CÉLIA",
-    email: "celia@harmoniaorofacial.com.br",
+    email: CREDENCIAL.email,
     papel: "dentista",
-});
+};
+
+const CHAVE = "harmonia:demonstracao";
+
+let entrou = false;
+
+const lembrar = (ligado) => {
+    try {
+        if (ligado) {
+            sessionStorage.setItem(CHAVE, "1");
+        } else {
+            sessionStorage.removeItem(CHAVE);
+        }
+    } catch (falha) {
+        entrou = ligado;
+    }
+};
+
+export const entrarDeDemonstracao = ({ email, senha }) => {
+    const confere =
+        String(email).trim().toLowerCase() === CREDENCIAL.email &&
+        String(senha) === CREDENCIAL.senha;
+
+    if (!confere) {
+        return espera({ ok: false, erro: "E-mail ou senha não conferem." });
+    }
+
+    entrou = true;
+    lembrar(true);
+
+    return espera({ ok: true, etapa: "pronto" });
+};
+
+export const sessaoDeDemonstracao = () => {
+    try {
+        return sessionStorage.getItem(CHAVE) ? QUEM : null;
+    } catch (falha) {
+        return entrou ? QUEM : null;
+    }
+};
+
+export const sairDeDemonstracao = () => {
+    entrou = false;
+    lembrar(false);
+};

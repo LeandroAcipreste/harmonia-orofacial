@@ -1,4 +1,9 @@
-import { API } from "../core/config.js";
+import { API, DEMONSTRACAO } from "../core/config.js";
+import {
+    entrarDeDemonstracao,
+    sairDeDemonstracao,
+    sessaoDeDemonstracao,
+} from "./demonstracao.js";
 
 const ROTAS = {
     entrar: "/api/sessao",
@@ -64,6 +69,18 @@ const pedir = async (rota, corpo) => {
 export const entrar = async ({ email, senha, lembrar }) => {
     if (estaBloqueado()) {
         return { ok: false, erro: MENSAGENS.bloqueado };
+    }
+
+    if (DEMONSTRACAO) {
+        const saida = await entrarDeDemonstracao({ email, senha });
+
+        if (saida.ok) {
+            limparFalhas();
+        } else {
+            registrarFalha();
+        }
+
+        return saida;
     }
 
     try {
@@ -139,6 +156,13 @@ export const reenviarCodigo = async () => {
 };
 
 export const sair = async () => {
+    if (DEMONSTRACAO) {
+        sairDeDemonstracao();
+        limparFalhas();
+
+        return;
+    }
+
     try {
         await pedir(ROTAS.sair);
     } catch (falha) {
@@ -149,6 +173,10 @@ export const sair = async () => {
 };
 
 export const sessaoAtual = async () => {
+    if (DEMONSTRACAO) {
+        return sessaoDeDemonstracao();
+    }
+
     try {
         const resposta = await fetch(API.base + ROTAS.atual, {
             credentials: "include",

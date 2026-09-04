@@ -262,9 +262,20 @@ atendido tem prazo de guarda próprio.
 ### Modo de demonstração
 
 `DEMONSTRACAO` em `src/core/config.js` está **ligado** enquanto o backend
-não existe. Com ele ligado, `atendimento.js` e `guarda.js` respondem com os
-dados de `src/services/demonstracao.js` e a tela entra sem sessão — é para
-avaliar a interface, não para uso real.
+não existe. Com ele ligado, `atendimento.js` e `sessao.js` respondem com os
+dados de `src/services/demonstracao.js` — é para avaliar a interface, não
+para uso real.
+
+O login funciona de ponta a ponta, contra a credencial fixa em
+`demonstracao.js` (`adm@adm.com` / `12345`). A guarda, a trava de cinco
+tentativas e o `?volta=` seguem o mesmo caminho de sempre; só a resposta do
+servidor é que vem de dentro do arquivo. O mínimo de 8 caracteres da senha
+também cede ao modo demo, e volta sozinho quando ele desliga.
+
+**Isso não é autenticação.** Credencial escrita em JavaScript de front-end é
+legível por qualquer pessoa que abra o arquivo ou o DevTools: ela destranca
+a interface, não protege dado nenhum. Quem autentica é o servidor, e é ele
+que precisa validar a sessão em cada rota.
 
 **Ao subir o backend: `export const DEMONSTRACAO = false;`** — e
 `demonstracao.js` pode ser apagado. Deixar isso ligado em produção abre o
