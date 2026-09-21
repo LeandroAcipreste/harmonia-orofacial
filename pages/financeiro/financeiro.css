@@ -1,0 +1,738 @@
+@import "../../src/core/erp.css";
+
+/* O BALANÇO
+
+   Três cartões, e o número grande é sempre o líquido. A doutora precisa
+   saber o que sobrou, não o que passou na máquina: bruto e taxa ficam
+   embaixo, menores, para conferência. */
+
+.balanco {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.balanco__cartao {
+  padding: 1.25rem 1.375rem;
+  background-color: rgb(255 255 255 / 0.04);
+  border: 1px solid rgb(226 232 240 / 0.12);
+  border-radius: 1rem;
+}
+
+.balanco__cartao--mes {
+  border-color: rgb(253 186 116 / 0.4);
+  background-color: rgb(253 186 116 / 0.07);
+}
+
+.balanco__rotulo {
+  margin: 0 0 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-300);
+}
+
+.balanco__liquido {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-serif);
+  font-size: 1.875rem;
+  font-weight: 600;
+  color: var(--white);
+  font-variant-numeric: tabular-nums;
+}
+
+.balanco__linha {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 0.25rem;
+  font-size: 0.8125rem;
+  color: var(--slate-300);
+}
+
+.balanco__linha strong {
+  font-weight: 500;
+  color: var(--slate-200);
+  font-variant-numeric: tabular-nums;
+}
+
+.balanco__quantos {
+  margin: 0.75rem 0 0;
+  padding-top: 0.625rem;
+  font-size: 0.75rem;
+  color: var(--slate-400);
+  border-top: 1px solid rgb(226 232 240 / 0.1);
+}
+
+.fin__nota {
+  margin: 0 0 2.5rem;
+  font-size: 0.8125rem;
+  color: var(--slate-400);
+}
+
+/* Blocos da página */
+
+.fin__bloco {
+  margin-bottom: 2.75rem;
+}
+
+.fin__cabeca {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.fin__secao {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.fin__ajuda {
+  margin: 0 0 1.25rem;
+  max-width: 62ch;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--slate-300);
+}
+
+.fin__total {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  color: var(--gold-300);
+  font-variant-numeric: tabular-nums;
+}
+
+.fin__aviso {
+  margin: 0.875rem 0 0;
+  min-height: 1.25rem;
+  font-size: 0.8125rem;
+  color: var(--gold-300);
+}
+
+.fin__aviso.esta-errado {
+  color: #ffd9d9;
+}
+
+/* Filtro e formulários */
+
+.fin__filtro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.625rem;
+}
+
+.fin__campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.fin__rotulo {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--slate-400);
+}
+
+.fin__entrada {
+  padding: 0.5625rem 0.75rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--white);
+  background-color: rgb(0 0 0 / 0.22);
+  border: 1px solid rgb(226 232 240 / 0.16);
+  border-radius: 0.5rem;
+  transition: border-color 0.25s;
+}
+
+.fin__entrada:focus {
+  outline: none;
+  border-color: rgb(253 186 116 / 0.7);
+}
+
+.fin__entrada option {
+  color: #0f172a;
+}
+
+.fin__acao {
+  padding: 0.625rem 1.125rem;
+  font-family: inherit;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #2b1a03;
+  background-color: var(--gold-300);
+  border: 0;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: filter 0.25s;
+}
+
+.fin__acao:hover {
+  filter: brightness(1.08);
+}
+
+.fin__acao--calma {
+  color: var(--slate-200);
+  background: none;
+  border: 1px solid rgb(226 232 240 / 0.25);
+}
+
+.fin__acao--calma:hover {
+  color: var(--white);
+  border-color: rgb(253 186 116 / 0.5);
+}
+
+.fin__acao:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* Por forma de pagamento */
+
+.formas {
+  display: grid;
+  gap: 0.625rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.forma {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem 1.125rem;
+  background-color: rgb(255 255 255 / 0.03);
+  border-radius: 0.75rem;
+}
+
+.forma__nome {
+  font-size: 0.9375rem;
+  color: var(--white);
+}
+
+.forma__quantos {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--slate-400);
+}
+
+.forma__valores {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.forma__liquido {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--gold-300);
+}
+
+.forma__taxa {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--slate-400);
+}
+
+/* Lançamentos */
+
+.lancamentos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lancamento {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem 1.125rem;
+  background-color: rgb(255 255 255 / 0.04);
+  border: 1px solid rgb(226 232 240 / 0.1);
+  border-radius: 0.75rem;
+}
+
+.lancamento.esta-estornado {
+  opacity: 0.55;
+}
+
+.lancamento.esta-estornado .lancamento__valor {
+  text-decoration: line-through;
+}
+
+.lancamento__quem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.lancamento__paciente {
+  font-size: 0.9375rem;
+  color: var(--white);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lancamento__meio {
+  font-size: 0.75rem;
+  color: var(--slate-400);
+}
+
+.lancamento__valores {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.lancamento__valor {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.lancamento__taxa {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--slate-400);
+}
+
+.lancamento__estornar {
+  padding: 0.4375rem 0.875rem;
+  font-family: inherit;
+  font-size: 0.6875rem;
+  color: var(--slate-300);
+  background: none;
+  border: 1px solid rgb(226 232 240 / 0.2);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: color 0.25s, border-color 0.25s;
+}
+
+.lancamento__estornar:hover {
+  color: #ffd9d9;
+  border-color: rgb(220 38 38 / 0.6);
+}
+
+/* Em aberto */
+
+.lista__botao--parado {
+  cursor: default;
+}
+
+.aberto__saldo {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--gold-300);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Taxas */
+
+.taxas {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.taxa {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1.125rem;
+  background-color: rgb(255 255 255 / 0.03);
+  border-radius: 0.75rem;
+}
+
+.taxa__forma {
+  font-size: 0.9375rem;
+  color: var(--white);
+}
+
+.taxa__percentual {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--gold-300);
+  font-variant-numeric: tabular-nums;
+}
+
+.taxa-forma {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+/* O estorno */
+
+.estorno {
+  width: min(30rem, calc(100vw - 2rem));
+  padding: 1.75rem;
+  color: var(--slate-200);
+  background-color: var(--interno-bg);
+  border: 1px solid rgb(253 186 116 / 0.28);
+  border-radius: 1rem;
+}
+
+.estorno,
+.estorno input,
+.estorno button {
+  font-family: var(--font-sans);
+}
+
+.estorno::backdrop {
+  background-color: rgb(0 6 24 / 0.72);
+}
+
+.estorno__titulo {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  color: var(--white);
+}
+
+.estorno__resumo {
+  margin: 0 0 1rem;
+  font-size: 0.9375rem;
+  color: var(--gold-300);
+}
+
+.estorno__aviso {
+  margin: 0 0 1.25rem;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--slate-300);
+}
+
+.estorno__acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+@media (min-width: 720px) {
+  .balanco {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* AS ABAS */
+
+.fin__abas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.fin__aba {
+  padding: 0.5rem 1.125rem;
+  font-family: inherit;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--slate-200);
+  background: none;
+  border: 1px solid rgb(226 232 240 / 0.2);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: color 0.25s, border-color 0.25s, background-color 0.25s;
+}
+
+.fin__aba:hover {
+  border-color: rgb(253 186 116 / 0.5);
+}
+
+.fin__aba.esta-aqui {
+  color: #2b1a03;
+  background-color: var(--gold-300);
+  border-color: transparent;
+}
+
+/* O CUSTO DA HORA */
+
+.hora {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.hora__cartao {
+  padding: 1.125rem 1.25rem;
+  background-color: rgb(255 255 255 / 0.04);
+  border: 1px solid rgb(226 232 240 / 0.12);
+  border-radius: 1rem;
+}
+
+.hora__cartao--destaque {
+  border-color: rgb(253 186 116 / 0.45);
+  background-color: rgb(253 186 116 / 0.08);
+}
+
+.hora__valor {
+  margin: 0.375rem 0 0;
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--white);
+  font-variant-numeric: tabular-nums;
+}
+
+.hora__cartao--destaque .hora__valor {
+  color: var(--gold-300);
+}
+
+.hora__nota {
+  margin: 0.375rem 0 0;
+  font-size: 0.75rem;
+  color: var(--slate-400);
+}
+
+/* O CATÁLOGO */
+
+.procedimentos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.procedimento {
+  display: grid;
+  gap: 0.875rem;
+  padding: 1rem 1.25rem;
+  background-color: rgb(255 255 255 / 0.04);
+  border: 1px solid rgb(226 232 240 / 0.12);
+  border-radius: 0.875rem;
+}
+
+/* Preço abaixo do sugerido não é erro, é escolha. A borda marca sem gritar,
+   e nada é corrigido sozinho. */
+.procedimento.esta-abaixo {
+  border-color: rgb(253 186 116 / 0.4);
+}
+
+.procedimento__quem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.procedimento__nome {
+  font-size: 1rem;
+  color: var(--white);
+}
+
+.procedimento__detalhe {
+  font-size: 0.75rem;
+  color: var(--slate-400);
+}
+
+.procedimento__numeros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+}
+
+.procedimento__linha {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--slate-400);
+}
+
+.procedimento__linha strong {
+  font-weight: 600;
+  color: var(--slate-200);
+  font-variant-numeric: tabular-nums;
+}
+
+.procedimento__linha--sugerido strong {
+  color: var(--gold-300);
+}
+
+.procedimento__margem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  text-align: left;
+}
+
+.procedimento__margem strong {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--white);
+  font-variant-numeric: tabular-nums;
+}
+
+.procedimento__margem span {
+  font-size: 0.75rem;
+  color: var(--slate-400);
+}
+
+.esta-no-vermelho {
+  color: #ffd9d9 !important;
+}
+
+/* RENTABILIDADE */
+
+.rentaveis {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rentavel {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem;
+  background-color: rgb(255 255 255 / 0.04);
+  border: 1px solid rgb(226 232 240 / 0.1);
+  border-radius: 0.875rem;
+}
+
+/* O primeiro da lista é o que merece a agenda: a borda dourada diz isso
+   sem precisar de legenda. */
+.rentavel:first-child {
+  border-color: rgb(253 186 116 / 0.5);
+  background-color: rgb(253 186 116 / 0.07);
+}
+
+.rentavel__quem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.rentavel__nome {
+  font-size: 1rem;
+  color: var(--white);
+}
+
+.rentavel__detalhe {
+  font-size: 0.75rem;
+  color: var(--slate-400);
+}
+
+.rentavel__numeros {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.rentavel__hora {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--gold-300);
+  font-variant-numeric: tabular-nums;
+}
+
+.rentavel__margem {
+  font-size: 0.75rem;
+  color: var(--slate-400);
+}
+
+/* O bloco que a automação lê */
+
+.fin__rota {
+  margin: 0 0 0.75rem;
+  padding: 0.625rem 0.875rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8125rem;
+  color: var(--gold-300);
+  background-color: rgb(0 0 0 / 0.3);
+  border-radius: 0.5rem;
+  overflow-x: auto;
+}
+
+.fin__json {
+  margin: 0;
+  padding: 1rem 1.125rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--slate-200);
+  background-color: rgb(0 0 0 / 0.3);
+  border: 1px solid rgb(226 232 240 / 0.1);
+  border-radius: 0.75rem;
+  overflow-x: auto;
+}
+
+/* Custos fixos */
+
+.custo__valores {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.custo__tirar {
+  font-family: inherit;
+  font-size: 0.75rem;
+  color: var(--slate-400);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.custo__tirar:hover {
+  color: #ffd9d9;
+}
+
+@media (min-width: 720px) {
+  .hora {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .procedimento {
+    grid-template-columns: 1fr auto 9rem;
+    align-items: center;
+  }
+
+  .procedimento__margem {
+    text-align: right;
+  }
+
+  .rentavel {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+
+  .rentavel__numeros {
+    text-align: right;
+  }
+}
+

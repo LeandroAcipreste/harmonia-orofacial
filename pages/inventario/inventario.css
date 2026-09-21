@@ -1,0 +1,414 @@
+@import "../../src/core/erp.css";
+
+/* Barra de busca e abas */
+
+.inv__barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.inv__busca {
+  flex: 1;
+  min-width: 14rem;
+}
+
+.inv__rotulo-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.inv__abas {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.inv__aba {
+  padding: 0.5rem 1rem;
+  font-family: inherit;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--slate-200);
+  background: none;
+  border: 1px solid rgb(226 232 240 / 0.2);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: color 0.25s, border-color 0.25s, background-color 0.25s;
+}
+
+.inv__aba:hover {
+  border-color: rgb(253 186 116 / 0.5);
+}
+
+.inv__aba.esta-aqui {
+  color: #2b1a03;
+  background-color: var(--gold-300);
+  border-color: transparent;
+}
+
+.inv__resumo {
+  margin: 0 0 1rem;
+  font-size: 0.8125rem;
+  color: var(--slate-400);
+}
+
+/* A prateleira */
+
+.insumos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.insumo {
+  display: grid;
+  gap: 0.875rem;
+  padding: 1rem 1.25rem;
+  background-color: rgb(255 255 255 / 0.04);
+  border: 1px solid rgb(226 232 240 / 0.12);
+  border-radius: 0.875rem;
+}
+
+/* No mínimo, a linha inteira muda de cor: a doutora precisa bater o olho na
+   lista e ver o que comprar, sem ler número por número. */
+.insumo.esta-no-minimo {
+  background-color: rgb(253 186 116 / 0.08);
+  border-color: rgb(253 186 116 / 0.45);
+}
+
+.insumo.esta-parado {
+  opacity: 0.5;
+}
+
+.insumo__quem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.insumo__nome {
+  font-size: 1rem;
+  color: var(--white);
+}
+
+.insumo__categoria {
+  font-size: 0.75rem;
+  color: var(--slate-400);
+}
+
+.insumo__saldo {
+  display: flex;
+  align-items: baseline;
+  gap: 0.625rem;
+}
+
+.insumo__quantidade {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--white);
+  font-variant-numeric: tabular-nums;
+}
+
+.insumo.esta-no-minimo .insumo__quantidade {
+  color: var(--gold-300);
+}
+
+.insumo__minimo {
+  font-size: 0.75rem;
+  color: var(--slate-400);
+}
+
+.insumo__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.insumo__acao {
+  padding: 0.4375rem 0.875rem;
+  font-family: inherit;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--slate-300);
+  background: none;
+  border: 1px solid rgb(226 232 240 / 0.2);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: color 0.25s, border-color 0.25s;
+}
+
+.insumo__acao:hover {
+  color: var(--white);
+  border-color: rgb(253 186 116 / 0.55);
+}
+
+.insumo__acao--extrato {
+  color: var(--gold-300);
+  border-color: rgb(253 186 116 / 0.3);
+}
+
+/* Cadastro */
+
+.inv__bloco {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgb(226 232 240 / 0.12);
+}
+
+.inv__secao {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.inv__ajuda {
+  margin: 0 0 1.5rem;
+  max-width: 62ch;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--slate-300);
+}
+
+.inv__forma {
+  display: grid;
+  gap: 0.875rem;
+  align-items: end;
+}
+
+.inv__campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.inv__rotulo {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--slate-400);
+}
+
+.inv__entrada {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--white);
+  background-color: rgb(0 0 0 / 0.22);
+  border: 1px solid rgb(226 232 240 / 0.16);
+  border-radius: 0.5rem;
+  transition: border-color 0.25s;
+}
+
+.inv__entrada:focus {
+  outline: none;
+  border-color: rgb(253 186 116 / 0.7);
+}
+
+.inv__entrada::placeholder {
+  color: var(--slate-500);
+}
+
+.inv__acao {
+  padding: 0.6875rem 1.25rem;
+  font-family: inherit;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #2b1a03;
+  background-color: var(--gold-300);
+  border: 0;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: filter 0.25s;
+}
+
+.inv__acao:hover {
+  filter: brightness(1.08);
+}
+
+.inv__acao--calma {
+  color: var(--slate-200);
+  background: none;
+  border: 1px solid rgb(226 232 240 / 0.25);
+}
+
+.inv__acao:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.inv__aviso {
+  margin: 0.875rem 0 0;
+  min-height: 1.25rem;
+  font-size: 0.8125rem;
+  color: var(--gold-300);
+}
+
+.inv__aviso.esta-errado {
+  color: #ffd9d9;
+}
+
+/* As duas janelas */
+
+.movimento,
+.extrato {
+  width: min(32rem, calc(100vw - 2rem));
+  padding: 1.75rem;
+  color: var(--slate-200);
+  background-color: var(--interno-bg);
+  border: 1px solid rgb(253 186 116 / 0.28);
+  border-radius: 1rem;
+}
+
+.movimento,
+.extrato,
+.movimento input,
+.movimento button,
+.extrato button {
+  font-family: var(--font-sans);
+}
+
+.movimento::backdrop,
+.extrato::backdrop {
+  background-color: rgb(0 6 24 / 0.72);
+}
+
+.movimento__titulo,
+.extrato__titulo {
+  margin: 0 0 0.25rem;
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  color: var(--white);
+}
+
+.movimento__insumo,
+.extrato__saldo {
+  margin: 0 0 1rem;
+  font-size: 0.9375rem;
+  color: var(--gold-300);
+}
+
+.movimento__ajuda {
+  margin: 0 0 1.25rem;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--slate-300);
+}
+
+.movimento__acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.extrato[open] {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 3rem);
+}
+
+.extrato__topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex: 0 0 auto;
+}
+
+.extrato__fechar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  color: var(--slate-300);
+  background: none;
+  border: 0;
+  border-radius: 9999px;
+  cursor: pointer;
+}
+
+.extrato__fechar:hover {
+  color: var(--white);
+  background-color: rgb(255 255 255 / 0.1);
+}
+
+.extrato__fechar svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.extrato__lista {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.extrato__linha {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr auto;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.6875rem 0;
+  font-size: 0.8125rem;
+  border-bottom: 1px solid rgb(226 232 240 / 0.08);
+}
+
+.extrato__tipo {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-300);
+}
+
+.extrato__detalhe {
+  color: var(--slate-300);
+}
+
+.extrato__quantidade {
+  font-weight: 600;
+  color: var(--white);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.extrato__quantidade.esta-saindo {
+  color: #ffd9d9;
+}
+
+@media (min-width: 720px) {
+  .insumo {
+    grid-template-columns: 1fr 12rem auto;
+    align-items: center;
+  }
+
+  .inv__forma {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+  }
+
+  .inv__campo--largo {
+    grid-column: span 2;
+  }
+}

@@ -4,6 +4,11 @@
   right: 0;
   left: 0;
   z-index: 50;
+
+  /* translate, e não transform: a entrada em GSAP deixa um transform no
+     estilo inline, que venceria qualquer classe. As duas propriedades se
+     somam sem brigar. */
+  transition: translate 0.45s cubic-bezier(0.16, 1, 0.3, 1);
   background-color: rgb(5 10 28 / 0.4);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -267,6 +272,22 @@
   .nav__botao-traco::before,
   .nav__botao-traco::after,
   .nav__botao-seta {
+    transition: none;
+  }
+}
+
+/* A barra recolhida, depois da hero. Quem navega pelo teclado e cai num
+   link dela traz a barra de volta, senão estaria focando algo invisível. */
+.nav.esta-recolhida {
+  translate: 0 -100%;
+}
+
+.nav.esta-recolhida:focus-within {
+  translate: 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav {
     transition: none;
   }
 }

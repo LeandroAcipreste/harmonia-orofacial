@@ -20,6 +20,10 @@ banco**. Ele coleta, valida e entrega. Toda decisão fica no servidor.
 | [08-anexos.md](08-anexos.md) | fotos da boca e exames |
 | [09-receituario.md](09-receituario.md) | receituário, impressão e o problema da assinatura |
 | [10-email-termo-de-imagem.md](10-email-termo-de-imagem.md) | o e-mail que sai quando o paciente autoriza a imagem |
+| [11-requisicao-de-exame.md](11-requisicao-de-exame.md) | o pedido de exame que o paciente leva à clínica de imagem |
+| [12-financeiro.md](12-financeiro.md) | recebimentos, taxas de cartão, balanço e quem ainda deve |
+| [13-inventario.md](13-inventario.md) | insumos, consumo por atendimento e aviso de estoque mínimo |
+| [14-precificacao.md](14-precificacao.md) | custo da hora, preço sugerido, rentabilidade e o que o n8n lê |
 
 ---
 
@@ -46,6 +50,7 @@ está escrito em cada arquivo, no lugar em que importa.
 | método | rota | arquivo |
 |---|---|---|
 | `POST` | `/api/agendamentos` | 01 |
+| `GET` | `/api/horarios?de=&ate=` | 03 |
 | `POST` | `/api/sessao` | 04 |
 | `POST` | `/api/sessao/verificar` | 04 |
 | `POST` | `/api/sessao/reenviar` | 04 |
@@ -59,6 +64,29 @@ está escrito em cada arquivo, no lugar em que importa.
 | `POST` | `/api/agendamentos/:id/anexos` | 08 |
 | `DELETE` | `/api/agendamentos/:id/anexos/:anexoId` | 08 |
 | `POST` | `/api/agendamentos/:id/receituarios` | 09 |
+| `POST` | `/api/agendamentos/:id/requisicoes` | 11 |
+| `POST` | `/api/agendamentos/:id/pagamentos` | 12 |
+| `PUT` | `/api/financeiro/pagamentos/:id/estorno` | 12 |
+| `GET` | `/api/financeiro/lancamentos?de=&ate=&formato=` | 12 |
+| `GET` | `/api/financeiro/balanco?data=` | 12 |
+| `GET` | `/api/financeiro/abertos` | 12 |
+| `GET` `POST` | `/api/financeiro/taxas` | 12 |
+| `GET` | `/api/insumos?busca=&situacao=` | 13 |
+| `GET` | `/api/insumos/alertas` | 13 |
+| `GET` | `/api/insumos/:id/extrato` | 13 |
+| `POST` | `/api/insumos` | 13 |
+| `PUT` | `/api/insumos/:id` | 13 |
+| `POST` | `/api/insumos/:id/movimentos` | 13 |
+| `POST` | `/api/agendamentos/:id/insumos` | 13 |
+| `GET` | `/api/precificacao` | 14 |
+| `GET` | `/api/precificacao/catalogo` | 14 |
+| `GET` `POST` | `/api/precificacao/custos` | 14 |
+| `POST` | `/api/precificacao/parametros` | 14 |
+| `POST` `PUT` | `/api/precificacao/procedimentos` | 14 |
+| `GET` | `/api/relatorios/rentabilidade?de=&ate=` | 14 |
+| `POST` | `/api/usuarios/agentes` | 04 |
+| `GET` `POST` | `/api/usuarios/:id/chaves` | 04 |
+| `PUT` | `/api/usuarios/chaves/:id/revogacao` | 04 |
 | `POST` | `/api/agendamentos/:id/termo-imagem` | 10 |
 
 Todas com `credentials: "include"` — o cookie de sessão viaja sozinho.

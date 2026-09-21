@@ -7,6 +7,7 @@ import {
     fichaDeDemonstracao,
     pacientesDeDemonstracao,
     removerAnexoDeDemonstracao,
+    requisitarDeDemonstracao,
     salvarAnexoDeDemonstracao,
     salvarDeDemonstracao,
 } from "./demonstracao.js";
@@ -23,10 +24,11 @@ const MENSAGENS = {
     anexar: "O arquivo não foi anexado. Tente de novo.",
     remover: "Não foi possível remover o anexo.",
     receita: "O receituário não foi emitido. Tente de novo.",
+    requisicao: "A requisição de exames não foi emitida. Tente de novo.",
     termo: "O termo de imagem não foi enviado.",
     ficha: "Não foi possível abrir esta ficha.",
     salvar: "O parecer não foi salvo. Tente de novo.",
-    converter: "Não foi possível converter em cliente.",
+    converter: "Não foi possível tornar paciente. Tente de novo.",
     conexao: "A conexão falhou. Verifique a internet e tente de novo.",
 };
 
@@ -159,6 +161,21 @@ export const emitirReceita = (id, receita) => {
         ROTAS.ficha + encodeURIComponent(id) + "/receituarios",
         receita,
         MENSAGENS.receita,
+    );
+};
+
+/* Requisicao emitida nao se edita nem se apaga, como o receituario: ela sai
+   assinada e vai na mao do paciente para a clinica de imagem. Errou, emite
+   outra, e o historico mostra as duas. */
+export const emitirRequisicao = (id, requisicao) => {
+    if (DEMONSTRACAO) {
+        return requisitarDeDemonstracao(id, requisicao);
+    }
+
+    return enviar(
+        ROTAS.ficha + encodeURIComponent(id) + "/requisicoes",
+        requisicao,
+        MENSAGENS.requisicao,
     );
 };
 

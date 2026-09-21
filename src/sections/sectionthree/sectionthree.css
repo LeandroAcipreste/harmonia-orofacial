@@ -277,8 +277,16 @@
     padding-top: 40vh;
   }
 
+  /* Quadrado também no celular: largura e altura iguais em qualquer
+     tela. A foto ocupa o que sobra do card depois da linha do ícone. */
+  .s3__card {
+    aspect-ratio: 1 / 1;
+  }
+
   .s3__etapas {
-    height: 14rem;
+    flex: 1;
+    height: auto;
+    min-height: 0;
   }
 
   .s3__grade {
@@ -297,20 +305,23 @@
     padding: 1.25rem;
   }
 
-  .s3__grade {
-    max-width: calc(100vh - 9rem);
-  }
-
   .s3__icone {
     width: 2.25rem;
     height: 2.25rem;
   }
 }
 
+/* OS CARDS NO COMPUTADOR
+
+   Os cards são quadrados: largura e altura iguais, sempre.
+
+   Em 2×2, dois quadrados empilhados precisam caber na altura da tela, e
+   a largura da grade acompanha a altura. Por isso ela é calc(100vh -
+   14rem): numa tela alta e estreita, é o 2×2 que dá o maior quadrado. */
 @media (min-width: 900px) {
   .s3__grade {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    max-width: calc(100vh - 14rem);
+    max-width: min(100%, calc(100vh - 14rem));
     margin-inline: auto;
   }
 
@@ -329,6 +340,39 @@
     border: 1px solid rgb(226 232 240 / 0.07);
     border-radius: 1.75rem;
     background-color: rgb(10 17 40 / 0.5);
+  }
+}
+
+/* Tela baixa (notebook com a barra do navegador). Precisa vir depois da
+   regra de desktop acima: com o mesmo peso, quem vem depois ganha, e antes
+   ela nunca chegava a valer. */
+@media (max-height: 720px) and (min-width: 900px) {
+  .s3__grade {
+    max-width: min(100%, calc(100vh - 9rem));
+  }
+}
+
+/* TELA LARGA: OS QUATRO LADO A LADO
+
+   Em tela deitada (notebook, monitor), o 2×2 desperdiça a largura: a
+   altura trava o quadrado e sobra tela dos dois lados. Com os quatro numa
+   fileira, quem limita passa a ser a largura, que é justamente o que
+   sobra, e cada quadrado cresce. Num notebook 1366×657, o lado vai de
+   ~250px para ~315px; num monitor 1920×947, de ~350px para ~450px.
+
+   A virada é em 3:2. Abaixo disso (tela mais quadrada) o 2×2 volta a dar
+   o quadrado maior. O teto da largura garante que o quadrado nunca fique
+   mais alto que a altura útil. */
+@media (min-width: 900px) and (min-aspect-ratio: 3/2) {
+  .s3__grade {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    max-width: min(100%, calc((100vh - 14rem) * 4 + 3.75rem));
+  }
+}
+
+@media (min-width: 900px) and (min-aspect-ratio: 3/2) and (max-height: 720px) {
+  .s3__grade {
+    max-width: min(100%, calc((100vh - 9rem) * 4 + 3.75rem));
   }
 }
 

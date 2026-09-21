@@ -522,3 +522,86 @@ button.acesso__esqueci {
   border: none;
   cursor: pointer;
 }
+
+/* AS CONTAS DE DEMONSTRAÇÃO
+
+   Bloco temporário: ele só existe enquanto DEMONSTRACAO for true em
+   src/core/config.js. Com o backend no ar, o JavaScript nem revela o
+   quadro, e estas regras deixam de ter o que pintar.
+
+   Aparência deliberadamente discreta, de recado de bastidor, para ninguém
+   confundir com parte do produto. */
+
+.contas {
+  margin-top: 2rem;
+  padding: 1.125rem 1.25rem;
+  border: 1px dashed rgb(148 163 184 / 0.35);
+  border-radius: 0.875rem;
+}
+
+.contas__titulo {
+  margin: 0 0 0.875rem;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--slate-400);
+}
+
+.contas__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contas__usar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  width: 100%;
+  padding: 0.75rem 0.875rem;
+  font-family: inherit;
+  text-align: left;
+  background-color: rgb(255 255 255 / 0.04);
+  border: 1px solid rgb(226 232 240 / 0.12);
+  border-radius: 0.625rem;
+  cursor: pointer;
+  transition: border-color 0.25s, background-color 0.25s;
+}
+
+.contas__usar:hover {
+  background-color: rgb(255 255 255 / 0.07);
+  border-color: rgb(253 186 116 / 0.45);
+}
+
+.contas__papel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--white);
+}
+
+.contas__email {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  color: var(--gold-300);
+}
+
+.contas__vê {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--slate-400);
+}
+
+.contas__senha {
+  margin: 0.875rem 0 0;
+  font-size: 0.75rem;
+  color: var(--slate-400);
+}
+
+.contas__senha strong {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--slate-200);
+}

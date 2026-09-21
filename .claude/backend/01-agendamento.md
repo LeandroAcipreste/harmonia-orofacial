@@ -64,3 +64,18 @@ Campos vazios **não são enviados**. `saude` pode vir como `{}`.
 
 `versao` existe para o backend aceitar fichas antigas quando o formulário
 mudar. Campo obrigatório novo = subir `VERSAO_DA_FICHA`.
+
+### Versão 3: horário reservado
+
+Com `CANAL = "api"` e a agenda do Google ligada no backend, a ficha mostra
+os horários livres e manda também:
+
+```json
+{ "versao": 3, "horario": "2026-09-15T08:40" }
+```
+
+O horário vai na hora da clínica, sem fuso. Quando ele vem, `preferencia`
+é ignorada e a reserva acontece no envio. **409** quer dizer que outra
+pessoa pegou o horário; a tela avisa e recarrega as opções. Sem agenda
+online, a ficha segue mandando só `preferencia`. Detalhes em
+[03-google-agenda.md](03-google-agenda.md).

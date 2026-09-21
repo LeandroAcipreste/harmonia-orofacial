@@ -1,5 +1,6 @@
 import { exigirSessao } from "../../src/services/guarda.js";
 import { sair } from "../../src/services/sessao.js";
+import { montarAvisoDeEstoque } from "../../src/components/aviso-estoque/aviso-estoque.js";
 import { pacientes } from "../../src/services/atendimento.js";
 import { criarPainel } from "../../src/components/painel/painel.js";
 import { ESTAGIOS } from "../../src/core/config.js";
@@ -46,6 +47,7 @@ const initPacientes = (sessao) => {
         hospedeiro: document.querySelector("#painel"),
         aoFechar: limparDestaque,
         aoConverter: () => carregar(),
+        sessao,
     });
 
     const avisar = (recado) => {
@@ -136,10 +138,11 @@ const initPacientes = (sessao) => {
     carregar();
 };
 
-exigirSessao().then((sessao) => {
-    if (!sessao) {
-        return;
-    }
-
-    initPacientes(sessao);
-});
+/* Chamado pelo main.js, que descobre a página pelo data-pagina do body. */
+export const init = () =>
+    exigirSessao().then((sessao) => {
+        if (sessao) {
+            initPacientes(sessao);
+            montarAvisoDeEstoque(sessao);
+        }
+    });

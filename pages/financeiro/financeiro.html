@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Financeiro · Harmonia Orofacial</title>
+
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="../../assets/favicon-512.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/favicon-180.png" />
+
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="financeiro.css" />
+</head>
+
+<body class="fundo-interno" data-pagina="financeiro">
+
+<main class="pagina erp financeiro">
+
+  <header class="erp__topo">
+    <div class="erp__marca">
+      <img class="erp__marca-img" src="../../assets/favicon-180.png" alt="" width="180" height="180" />
+      <div>
+        <p class="erp__marca-nome">HARMONIA OROFACIAL</p>
+        <p class="erp__marca-tipo" id="erp-quem">CLÍNICA ODONTOLÓGICA</p>
+      </div>
+    </div>
+
+    <button class="erp__sair" type="button" id="erp-sair">Sair</button>
+  </header>
+
+  <nav class="navegar" aria-label="Telas do sistema">
+    <a class="navegar__link" href="../agenda/agenda.html" data-permissao="agenda.ver" hidden>Agenda do dia</a>
+    <a class="navegar__link" href="../pacientes/pacientes.html" data-permissao="pacientes.ver" hidden>Pacientes</a>
+    <a class="navegar__link" href="../exames/exames.html" data-permissao="exames.conferir" hidden>Exames</a>
+    <a class="navegar__link esta-aqui" href="financeiro.html" aria-current="page" data-permissao="financeiro.caixa" hidden>Financeiro</a>
+    <a class="navegar__link" href="../inventario/inventario.html" data-permissao="inventario.ver" hidden>
+      Inventário
+      <span class="navegar__selo" id="selo-insumos" hidden></span>
+    </a>
+    <a class="navegar__link" href="../administracao/administracao.html" data-permissao="usuarios.gerenciar" hidden>Administração</a>
+  </nav>
+
+  <h1 class="erp__titulo">Financeiro</h1>
+
+  <p class="vazio" id="fin-sem-acesso" hidden>
+    Seu acesso não permite ver o financeiro.
+  </p>
+
+  <div id="fin-conteudo" hidden>
+
+    <div class="fin__abas" id="fin-abas" role="group" aria-label="Seções do financeiro" hidden>
+      <button class="fin__aba esta-aqui" type="button" data-painel="caixa">Caixa</button>
+      <button class="fin__aba" type="button" data-painel="precificacao">Precificação</button>
+      <button class="fin__aba" type="button" data-painel="rentabilidade">Rentabilidade</button>
+    </div>
+
+    <p class="erro" id="fin-erro" role="alert" hidden></p>
+
+    <div id="fin-painel-caixa">
+
+    <section class="balanco" id="fin-balanco" aria-label="Balanço do período" hidden>
+      <article class="balanco__cartao" data-periodo="dia">
+        <p class="balanco__rotulo">Hoje</p>
+        <p class="balanco__liquido" data-liquido>R$ 0,00</p>
+        <p class="balanco__linha"><span>Bruto</span><strong data-bruto>R$ 0,00</strong></p>
+        <p class="balanco__linha"><span>Taxas</span><strong data-taxa>R$ 0,00</strong></p>
+        <p class="balanco__quantos" data-quantos>nenhum recebimento</p>
+      </article>
+
+      <article class="balanco__cartao" data-periodo="semana">
+        <p class="balanco__rotulo">Esta semana</p>
+        <p class="balanco__liquido" data-liquido>R$ 0,00</p>
+        <p class="balanco__linha"><span>Bruto</span><strong data-bruto>R$ 0,00</strong></p>
+        <p class="balanco__linha"><span>Taxas</span><strong data-taxa>R$ 0,00</strong></p>
+        <p class="balanco__quantos" data-quantos>nenhum recebimento</p>
+      </article>
+
+      <article class="balanco__cartao balanco__cartao--mes" data-periodo="mes">
+        <p class="balanco__rotulo">Este mês</p>
+        <p class="balanco__liquido" data-liquido>R$ 0,00</p>
+        <p class="balanco__linha"><span>Bruto</span><strong data-bruto>R$ 0,00</strong></p>
+        <p class="balanco__linha"><span>Taxas</span><strong data-taxa>R$ 0,00</strong></p>
+        <p class="balanco__quantos" data-quantos>nenhum recebimento</p>
+      </article>
+    </section>
+
+    <p class="fin__nota" id="fin-nota-liquido" hidden>
+      O valor grande é o líquido: o que sobra depois da taxa da maquininha.
+    </p>
+
+    <section class="fin__bloco" id="fin-formas" hidden>
+      <h2 class="fin__secao">Por forma de pagamento, no mês</h2>
+      <ul class="formas" id="fin-formas-lista"></ul>
+    </section>
+
+    <section class="fin__bloco">
+      <div class="fin__cabeca">
+        <h2 class="fin__secao" id="fin-titulo-lista">Caixa de hoje</h2>
+
+        <div class="fin__filtro" id="fin-filtro" hidden>
+          <label class="fin__campo">
+            <span class="fin__rotulo">De</span>
+            <input class="fin__entrada" type="date" id="fin-de" />
+          </label>
+          <label class="fin__campo">
+            <span class="fin__rotulo">Até</span>
+            <input class="fin__entrada" type="date" id="fin-ate" />
+          </label>
+          <button class="fin__acao" type="button" id="fin-filtrar">Ver período</button>
+          <a class="fin__acao fin__acao--calma" id="fin-planilha" href="#" download>Exportar planilha</a>
+        </div>
+      </div>
+
+      <p class="fin__total" id="fin-total" role="status"></p>
+
+      <ul class="lancamentos" id="fin-lista"></ul>
+
+      <p class="vazio" id="fin-vazio" hidden>Nenhum recebimento neste período.</p>
+    </section>
+
+    <section class="fin__bloco" id="fin-abertos" hidden>
+      <h2 class="fin__secao">Em aberto</h2>
+      <p class="fin__total" id="fin-abertos-total"></p>
+      <ul class="lista" id="fin-abertos-lista"></ul>
+      <p class="vazio" id="fin-abertos-vazio" hidden>Ninguém com saldo em aberto.</p>
+    </section>
+
+
+    <section class="fin__bloco" id="fin-taxas" hidden>
+      <h2 class="fin__secao">Taxas da maquininha</h2>
+
+      <p class="fin__ajuda">
+        A taxa vale para o que for lançado daqui para a frente. Os
+        recebimentos que já entraram guardam a taxa do dia em que entraram,
+        então o balanço do mês passado não muda quando a taxa muda.
+      </p>
+
+      <ul class="taxas" id="fin-taxas-lista"></ul>
+
+      <form class="taxa-forma" id="fin-taxa-form">
+        <label class="fin__campo">
+          <span class="fin__rotulo">Forma</span>
+          <select class="fin__entrada" id="taxa-forma">
+            <option value="pix">Pix</option>
+            <option value="dinheiro">Dinheiro</option>
+            <option value="debito">Débito</option>
+            <option value="credito">Crédito</option>
+          </select>
+        </label>
+
+        <label class="fin__campo" id="taxa-faixa-de" hidden>
+          <span class="fin__rotulo">De (parcelas)</span>
+          <input class="fin__entrada" type="number" id="taxa-de" min="1" max="12" value="1" />
+        </label>
+
+        <label class="fin__campo" id="taxa-faixa-ate" hidden>
+          <span class="fin__rotulo">Até (parcelas)</span>
+          <input class="fin__entrada" type="number" id="taxa-ate" min="1" max="12" value="1" />
+        </label>
+
+        <label class="fin__campo">
+          <span class="fin__rotulo">Taxa (%)</span>
+          <input class="fin__entrada" type="text" id="taxa-percentual" inputmode="decimal" placeholder="4,5" />
+        </label>
+
+        <button class="fin__acao" type="submit">Salvar taxa</button>
+      </form>
+
+      <p class="fin__aviso" id="fin-taxa-aviso" role="status"></p>
+    </section>
+
+    </div>
+
+    <div id="fin-painel-precificacao" hidden>
+
+      <section class="fin__bloco">
+        <h2 class="fin__secao">O custo da hora de cadeira</h2>
+
+        <p class="fin__ajuda">
+          É o número que a clínica gira em torno: tudo que sai do caixa por
+          mês, dividido pelas horas em que a cadeira realmente atende. Todo
+          preço daqui para baixo nasce dele.
+        </p>
+
+        <div class="hora">
+          <article class="hora__cartao">
+            <p class="balanco__rotulo">Custos fixos</p>
+            <p class="hora__valor" id="hora-fixos">R$ 0,00</p>
+            <p class="hora__nota">por mês</p>
+          </article>
+
+          <article class="hora__cartao">
+            <p class="balanco__rotulo">Pró-labore</p>
+            <p class="hora__valor" id="hora-prolabore">R$ 0,00</p>
+            <p class="hora__nota">o trabalho da doutora</p>
+          </article>
+
+          <article class="hora__cartao hora__cartao--destaque">
+            <p class="balanco__rotulo">Custo da hora</p>
+            <p class="hora__valor" id="hora-hora">R$ 0,00</p>
+            <p class="hora__nota" id="hora-detalhe">em 0 horas por mês</p>
+          </article>
+        </div>
+
+        <form class="taxa-forma" id="fin-parametros">
+          <label class="fin__campo">
+            <span class="fin__rotulo">Horas por mês</span>
+            <input class="fin__entrada" type="text" id="par-horas" inputmode="decimal" />
+          </label>
+
+          <label class="fin__campo">
+            <span class="fin__rotulo">Pró-labore</span>
+            <input class="fin__entrada" type="text" id="par-prolabore" inputmode="decimal" placeholder="8.000,00" />
+          </label>
+
+          <label class="fin__campo">
+            <span class="fin__rotulo">Margem (%)</span>
+            <input class="fin__entrada" type="text" id="par-margem" inputmode="decimal" />
+          </label>
+
+          <label class="fin__campo">
+            <span class="fin__rotulo">Impostos (%)</span>
+            <input class="fin__entrada" type="text" id="par-impostos" inputmode="decimal" />
+          </label>
+
+          <button class="fin__acao" type="submit">Salvar parâmetros</button>
+        </form>
+
+        <p class="fin__aviso" id="fin-parametros-aviso" role="status"></p>
+      </section>
+
+      <section class="fin__bloco">
+        <h2 class="fin__secao">Custos fixos do mês</h2>
+
+        <p class="fin__ajuda">
+          Tudo que a clínica paga mesmo com a agenda vazia: aluguel, energia,
+          internet, salário, contador, manutenção.
+        </p>
+
+        <ul class="taxas" id="fin-custos"></ul>
+
+        <form class="taxa-forma" id="fin-custo-form">
+          <label class="fin__campo">
+            <span class="fin__rotulo">Custo</span>
+            <input class="fin__entrada" type="text" id="custo-nome" placeholder="Aluguel" />
+          </label>
+
+          <label class="fin__campo">
+            <span class="fin__rotulo">Categoria</span>
+            <input class="fin__entrada" type="text" id="custo-categoria" placeholder="Instalações" />
+          </label>
+
+          <label class="fin__campo">
+            <span class="fin__rotulo">Valor mensal</span>
+            <input class="fin__entrada" type="text" id="custo-valor" inputmode="decimal" placeholder="2.800,00" />
+          </label>
+
+          <button class="fin__acao" type="submit">Acrescentar</button>
+        </form>
+
+        <p class="fin__aviso" id="fin-custo-aviso" role="status"></p>
+      </section>
+
+      <section class="fin__bloco">
+        <h2 class="fin__secao">Procedimentos</h2>
+
+        <p class="fin__ajuda">
+          O preço sugerido é o custo dividido pelo que a clínica não fica:
+          margem, imposto e taxa de cartão. Dividir, e não somar, é o que
+          impede o preço de sair menor do que a maquininha leva.
+        </p>
+
+        <ul class="procedimentos" id="fin-procedimentos"></ul>
+
+        <form class="taxa-forma" id="fin-procedimento-form">
+          <label class="fin__campo">
+            <span class="fin__rotulo">Procedimento</span>
+            <input class="fin__entrada" type="text" id="proc-nome" placeholder="Clareamento" />
+          </label>
+
+          <label class="fin__campo">
+            <span class="fin__rotulo">Duração (min)</span>
+            <input class="fin__entrada" type="text" id="proc-duracao" inputmode="numeric" placeholder="60" />
+          </label>
+
+          <label class="fin__campo">
+            <span class="fin__rotulo">Preço praticado</span>
+            <input class="fin__entrada" type="text" id="proc-preco" inputmode="decimal" placeholder="1.200,00" />
+          </label>
+
+          <button class="fin__acao" type="submit">Acrescentar</button>
+        </form>
+
+        <p class="fin__aviso" id="fin-procedimento-aviso" role="status"></p>
+      </section>
+
+    </div>
+
+    <div id="fin-painel-rentabilidade" hidden>
+
+      <section class="fin__bloco">
+        <div class="fin__cabeca">
+          <h2 class="fin__secao">O que deu dinheiro</h2>
+
+          <div class="fin__filtro">
+            <label class="fin__campo">
+              <span class="fin__rotulo">De</span>
+              <input class="fin__entrada" type="date" id="rent-de" />
+            </label>
+            <label class="fin__campo">
+              <span class="fin__rotulo">Até</span>
+              <input class="fin__entrada" type="date" id="rent-ate" />
+            </label>
+            <button class="fin__acao" type="button" id="rent-ver">Ver período</button>
+          </div>
+        </div>
+
+        <p class="fin__ajuda">
+          A ordem é por margem por hora de cadeira, e não por faturamento. A
+          clínica vende tempo: o procedimento que deixa mais dinheiro por
+          hora merece a agenda, mesmo com ticket menor.
+        </p>
+
+        <p class="fin__total" id="rent-total" role="status"></p>
+
+        <ul class="rentaveis" id="rent-lista"></ul>
+
+        <p class="vazio" id="rent-vazio" hidden>
+          Ainda não há recebimento ligado a procedimento do catálogo neste
+          período. O item do orçamento entra no relatório quando o nome bate
+          com um procedimento cadastrado.
+        </p>
+      </section>
+
+      <section class="fin__bloco">
+        <h2 class="fin__secao">O que a automação lê</h2>
+
+        <p class="fin__ajuda">
+          É este bloco que o n8n busca para decidir sobre o que produzir
+          conteúdo. Vai por chave do agente, e não carrega nome, CPF nem
+          ficha de ninguém: só nome de procedimento e número somado.
+        </p>
+
+        <p class="fin__rota" id="rent-rota"></p>
+
+        <pre class="fin__json" id="rent-json"></pre>
+      </section>
+
+    </div>
+
+
+  </div>
+
+  <dialog class="estorno" id="fin-estorno">
+    <h2 class="estorno__titulo">Estornar recebimento</h2>
+    <p class="estorno__resumo" id="estorno-resumo"></p>
+
+    <p class="estorno__aviso">
+      O lançamento não some: ele fica marcado como estornado, com o motivo e
+      o seu nome, e para de contar no balanço.
+    </p>
+
+    <label class="fin__campo">
+      <span class="fin__rotulo">Motivo</span>
+      <input class="fin__entrada" type="text" id="estorno-motivo" placeholder="Lançado no paciente errado." />
+    </label>
+
+    <p class="fin__aviso" id="estorno-erro" role="alert"></p>
+
+    <footer class="estorno__acoes">
+      <button class="fin__acao fin__acao--calma" type="button" id="estorno-cancelar">Cancelar</button>
+      <button class="fin__acao" type="button" id="estorno-confirmar">Estornar</button>
+    </footer>
+  </dialog>
+
+  <template id="modelo-lancamento">
+    <li class="lancamento">
+      <div class="lancamento__quem">
+        <span class="lancamento__paciente"></span>
+        <span class="lancamento__meio"></span>
+      </div>
+      <div class="lancamento__valores">
+        <span class="lancamento__valor"></span>
+        <span class="lancamento__taxa"></span>
+      </div>
+      <button class="lancamento__estornar" type="button">Estornar</button>
+    </li>
+  </template>
+
+  <template id="modelo-taxa">
+    <li class="taxa">
+      <span class="taxa__forma"></span>
+      <span class="taxa__percentual"></span>
+    </li>
+  </template>
+
+  <template id="modelo-procedimento">
+    <li class="procedimento">
+      <div class="procedimento__quem">
+        <span class="procedimento__nome"></span>
+        <span class="procedimento__detalhe"></span>
+      </div>
+
+      <div class="procedimento__numeros">
+        <span class="procedimento__linha"><span>Custo</span><strong data-custo></strong></span>
+        <span class="procedimento__linha"><span>Preço hoje</span><strong data-preco></strong></span>
+        <span class="procedimento__linha procedimento__linha--sugerido"><span>Sugerido</span><strong data-sugerido></strong></span>
+      </div>
+
+      <div class="procedimento__margem">
+        <strong data-margem></strong>
+        <span data-hora></span>
+      </div>
+    </li>
+  </template>
+
+  <template id="modelo-rentavel">
+    <li class="rentavel">
+      <div class="rentavel__quem">
+        <span class="rentavel__nome"></span>
+        <span class="rentavel__detalhe"></span>
+      </div>
+
+      <div class="rentavel__numeros">
+        <strong class="rentavel__hora"></strong>
+        <span class="rentavel__margem"></span>
+      </div>
+    </li>
+  </template>
+
+  <template id="modelo-custo">
+    <li class="taxa">
+      <span class="taxa__forma"></span>
+      <span class="custo__valores">
+        <span class="taxa__percentual"></span>
+        <button class="custo__tirar" type="button">Remover</button>
+      </span>
+    </li>
+  </template>
+
+  <template id="modelo-aberto">
+    <li>
+      <div class="lista__botao lista__botao--parado">
+        <span class="lista__quem">
+          <span class="lista__nome"></span>
+          <span class="lista__detalhe"></span>
+        </span>
+        <strong class="aberto__saldo"></strong>
+      </div>
+    </li>
+  </template>
+
+</main>
+
+<script type="module" src="../../main.js"></script>
+
+</body>
+</html>

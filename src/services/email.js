@@ -3,7 +3,7 @@ import { CLINICA, PROFISSIONAL } from "../core/config.js";
 const primeiroNome = (nome) => String(nome || "").trim().split(/\s+/)[0] || "";
 
 export const TERMO_DE_IMAGEM = {
-    assunto: "Suas fotos clínicas na " + CLINICA.nome + " — como elas são protegidas",
+    assunto: "Suas fotos clínicas na " + CLINICA.nome + ": como elas são protegidas",
 
     corpo: (paciente) =>
         [
@@ -48,7 +48,7 @@ export const TERMO_DE_IMAGEM = {
             "",
             PROFISSIONAL.nome,
             PROFISSIONAL.cro,
-            CLINICA.nome + " — " + CLINICA.tipo,
+            CLINICA.nome + " · " + CLINICA.tipo,
             CLINICA.endereco,
             CLINICA.cidade,
             CLINICA.telefone,

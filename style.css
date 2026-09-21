@@ -1,4 +1,5 @@
 @import "./src/core/base.css";
+@import "./src/core/barra-de-rolagem.css";
 
 @import "./src/components/preloader/preloader.css";
 @import "./src/components/navigation/navigation.css";
@@ -12,3 +13,4 @@
 @import "./src/sections/letreiro/letreiro.css";
 @import "./src/sections/sectionfour/sectionfour.css";
 @import "./src/sections/sectionfive/sectionfive.css";
+@import "./src/sections/avaliacoes/avaliacoes.css";

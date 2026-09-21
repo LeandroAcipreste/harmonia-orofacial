@@ -1,0 +1,246 @@
+/* AS AVALIAÇÕES
+
+   Um mosaico de depoimentos, depois das fotos da clínica. Os cards começam
+   escondidos e, conforme a rolagem chega neles, entram vindos do lado em
+   que vão ficar e assentam no lugar, como peças de quebra-cabeça.
+
+   Quem dispara é um IntersectionObserver, uma vez por card, e o movimento
+   é transição de CSS em transform e opacity, no compositor. Nenhum
+   trabalho por quadro, nenhum ScrollTrigger: a home já está no limite. */
+
+.avaliacoes {
+  position: relative;
+  padding: 5rem 0 6rem;
+  overflow: hidden;
+
+  contain: layout paint style;
+}
+
+.avaliacoes__cabeca {
+  max-width: 84rem;
+  margin: 0 auto 3.5rem;
+  padding: 0 1.5rem;
+}
+
+.avaliacoes__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  margin: 0 0 1.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold-300);
+}
+
+.avaliacoes__eyebrow::before {
+  content: "";
+  width: 2.5rem;
+  height: 1px;
+  background-color: rgb(253 186 116 / 0.45);
+}
+
+.avaliacoes__placar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  margin: 0;
+}
+
+.avaliacoes__nota {
+  font-size: clamp(2.75rem, 7vw, 4.5rem);
+  font-weight: 500;
+  line-height: 1;
+  color: var(--white);
+}
+
+.avaliacoes__estrelas {
+  font-size: 1.375rem;
+  letter-spacing: 0.15em;
+  color: var(--gold-300);
+}
+
+.avaliacoes__total {
+  flex-basis: 100%;
+  font-size: 0.9375rem;
+  color: var(--slate-300);
+}
+
+/* O MOSAICO
+
+   Colunas de CSS: cada coluna empilha cards de alturas diferentes, e é
+   isso que faz as peças se encaixarem sem buraco, o efeito de quebra-
+   cabeça. Três colunas no computador, duas no tablet, uma no celular; o
+   próprio columns decide, pela largura mínima de 20rem. */
+
+.avaliacoes__mosaico {
+  max-width: 84rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  list-style: none;
+  columns: 3 20rem;
+  column-gap: 1.5rem;
+}
+
+/* O CARD */
+
+/* A PEÇA
+
+   Começa invisível e deslocada: --de-x, --de-y e --de-giro saem do
+   JavaScript, calculados pela coluna onde a peça vai parar, e --atraso
+   escalona as que entram juntas. Ao ganhar .esta-encaixada, ela volta
+   para o lugar.
+
+   inline-block com largura cheia é o que impede a peça de rachar entre
+   duas colunas; o break-inside sozinho não segura em todo navegador. */
+.avaliacao {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  margin: 0 0 1.5rem;
+  break-inside: avoid;
+  padding: 1.5rem 1.75rem 1.5rem;
+  box-sizing: border-box;
+  background:
+    linear-gradient(160deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.02) 55%),
+    rgb(4 12 48 / 0.45);
+  border: 1px solid rgb(253 186 116 / 0.26);
+  border-radius: 1.25rem;
+  box-shadow: 0 1.75rem 3rem -2rem rgb(0 0 0 / 0.7);
+
+  opacity: 0;
+  transform:
+    translate3d(var(--de-x, 0), var(--de-y, 3rem), 0)
+    rotate(var(--de-giro, 0deg))
+    scale(0.94);
+
+  /* O atraso vale só para a entrada (opacity e transform). O hover, que
+     usa translate, responde na hora. */
+  transition:
+    opacity 0.7s ease,
+    transform 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+    translate 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.3s;
+  transition-delay: var(--atraso, 0s), var(--atraso, 0s), 0s, 0s;
+}
+
+.avaliacao.esta-encaixada {
+  opacity: 1;
+  transform: none;
+}
+
+.avaliacao:hover,
+.avaliacao:focus-visible {
+  translate: 0 -0.25rem;
+  border-color: rgb(253 186 116 / 0.6);
+  outline: none;
+}
+
+.avaliacao__topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  height: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* A aspa é tipografia, e não ícone: a mesma serifa dos títulos da home,
+   grande e apagada, dizendo "isto é a fala de alguém" antes da primeira
+   palavra. */
+.avaliacao__aspas {
+  font-size: 4.75rem;
+  line-height: 0.85;
+  color: var(--gold-300);
+  opacity: 0.5;
+}
+
+.avaliacao__estrelas {
+  padding-top: 0.375rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.14em;
+  color: var(--gold-300);
+}
+
+/* Onze linhas no máximo. Os textos foram escolhidos, ou recortados com
+   [...], para caber; o corte é só a rede para uma tela muito estreita. */
+.avaliacao__texto {
+  display: -webkit-box;
+  -webkit-line-clamp: 11;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0 0 1.5rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--slate-200);
+}
+
+.avaliacao__quem {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding-top: 1.125rem;
+  border-top: 1px solid rgb(226 232 240 / 0.1);
+}
+
+/* A inicial no círculo é o avatar do Google, redesenhado no dourado da
+   casa: quem conhece o Google reconhece o formato, e nenhuma foto de
+   paciente é republicada. */
+.avaliacao__inicial {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2b1a03;
+  background: linear-gradient(135deg, var(--gold-200), var(--gold-400));
+  border-radius: 9999px;
+}
+
+.avaliacao__identidade {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.avaliacao__nome {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--white);
+}
+
+.avaliacao__origem {
+  font-size: 0.75rem;
+  color: var(--slate-400);
+}
+
+/* MOVIMENTO REDUZIDO
+
+   A mesma decisão do resto da home: a animação não some, fica mais
+   mansa. A peça ainda chega aparecendo, mas sem giro e sem atravessar a
+   tela; só sobe um pouco enquanto acende. */
+
+@media (prefers-reduced-motion: reduce) {
+  .avaliacao {
+    transform: translate3d(0, 1.25rem, 0);
+    transition:
+      opacity 0.5s ease,
+      transform 0.6s ease,
+      border-color 0.3s;
+    transition-delay: var(--atraso, 0s), var(--atraso, 0s), 0s;
+  }
+
+  .avaliacao.esta-encaixada {
+    transform: none;
+  }
+
+  .avaliacao:hover,
+  .avaliacao:focus-visible {
+    translate: none;
+  }
+}

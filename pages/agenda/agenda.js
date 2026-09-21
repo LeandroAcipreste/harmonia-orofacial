@@ -1,5 +1,6 @@
 import { exigirSessao } from "../../src/services/guarda.js";
 import { sair } from "../../src/services/sessao.js";
+import { montarAvisoDeEstoque } from "../../src/components/aviso-estoque/aviso-estoque.js";
 import { agendaDoDia } from "../../src/services/atendimento.js";
 import { criarPainel, EXTENSO, emIso, deIso } from "../../src/components/painel/painel.js";
 import { ESTAGIOS } from "../../src/core/config.js";
@@ -30,6 +31,7 @@ const initAgenda = (sessao) => {
         hospedeiro: document.querySelector("#painel"),
         aoFechar: limparDestaque,
         aoConverter: () => carregar(),
+        sessao,
     });
 
     const avisar = (recado) => {
@@ -44,7 +46,7 @@ const initAgenda = (sessao) => {
             const item = modelo.content.firstElementChild.cloneNode(true);
             const botao = item.querySelector(".lista__botao");
 
-            item.querySelector(".agenda__hora").textContent = registro.hora || "—";
+            item.querySelector(".agenda__hora").textContent = registro.hora || "·";
             item.querySelector(".lista__nome").textContent = registro.paciente.nome;
             item.querySelector(".lista__detalhe").textContent =
                 registro.paciente.telefone || "";
@@ -124,10 +126,11 @@ const initAgenda = (sessao) => {
     carregar();
 };
 
-exigirSessao().then((sessao) => {
-    if (!sessao) {
-        return;
-    }
-
-    initAgenda(sessao);
-});
+/* Chamado pelo main.js, que descobre a página pelo data-pagina do body. */
+export const init = () =>
+    exigirSessao().then((sessao) => {
+        if (sessao) {
+            initAgenda(sessao);
+            montarAvisoDeEstoque(sessao);
+        }
+    });

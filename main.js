@@ -1,34 +1,29 @@
-import { initAbertura } from "./src/core/abertura.js";
-import { initPreloader } from "./src/components/preloader/preloader.js";
-import { preaquecerFundos } from "./src/utils/preaquecer.js";
-import { initScroll, recalcularAoCarregar } from "./src/core/scroll.js";
-import { initNavigation } from "./src/components/navigation/navigation.js";
-import { initFooter } from "./src/components/footer/footer.js";
-import { initHero } from "./src/sections/hero/hero.js";
-import { initSectionTwo } from "./src/sections/sectiontwo/sectiontwo.js";
-import { initSectionThree } from "./src/sections/sectionthree/sectionthree.js";
-import { initFaixaMarquee } from "./src/components/faixa-marquee/faixa-marquee.js";
-import { initLetreiro, initTransicao } from "./src/sections/letreiro/letreiro.js";
-import { montarLeituraDaDobra } from "./src/sections/sectionfour/sectionfour.js";
-import { initSectionFive } from "./src/sections/sectionfive/sectionfive.js";
+/* Ponto de entrada único do site.
 
-initAbertura();
-initPreloader();
+   Cada página diz quem é pelo data-pagina do <body>, e só o módulo dela é
+   baixado, por import() dinâmico. Sem isso, as telas do sistema
+   arrastariam o código da home: preloader, hero, letreiro e WebGL.
 
-preaquecerFundos();
+   Página nova: crie a pasta com os três arquivos, exporte init do .js,
+   ponha o data-pagina no <body> e acrescente uma linha aqui. */
 
-initScroll();
+const PAGINAS = {
+    home: () => import("./src/core/home.js"),
+    avaliacao: () => import("./pages/avaliacao/avaliacao.js"),
+    login: () => import("./pages/login/login.js"),
+    agenda: () => import("./pages/agenda/agenda.js"),
+    pacientes: () => import("./pages/pacientes/pacientes.js"),
+    exames: () => import("./pages/exames/exames.js"),
+    financeiro: () => import("./pages/financeiro/financeiro.js"),
+    inventario: () => import("./pages/inventario/inventario.js"),
+    administracao: () => import("./pages/administracao/administracao.js"),
+};
 
-initNavigation();
-initHero();
-initSectionTwo();
-initSectionThree();
-initFaixaMarquee();
-initLetreiro();
+const pagina = document.body.dataset.pagina;
+const carregar = PAGINAS[pagina];
 
-
-initTransicao({ aoRecolher: montarLeituraDaDobra });
-initSectionFive();
-initFooter();
-
-recalcularAoCarregar();
+if (carregar) {
+    carregar().then((modulo) => modulo.init());
+} else if (pagina) {
+    console.warn("Página sem módulo no main.js:", pagina);
+}

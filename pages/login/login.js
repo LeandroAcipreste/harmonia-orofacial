@@ -1,10 +1,51 @@
 import { entrar, reenviarCodigo, verificar } from "../../src/services/sessao.js";
-import { destinoDeVolta } from "../../src/services/guarda.js";
+import { destinoDeVolta, telaInicialDe } from "../../src/services/guarda.js";
+import { sessaoAtual } from "../../src/services/sessao.js";
 import { DEMONSTRACAO } from "../../src/core/config.js";
 
 const PAINEL = "/pages/agenda/agenda.html";
 
+/* Depois de entrar, cada perfil cai na primeira tela que ele pode abrir.
+   O financeiro não tem agenda.ver: mandá-lo para a agenda seria entregar
+   uma tela que o servidor recusa logo depois de ele acertar a senha. */
+const irParaOPainel = async (destino) => {
+    if (destino) {
+        location.assign(destinoDeVolta(destino));
+        return;
+    }
+
+    const sessao = await sessaoAtual();
+
+    location.assign(destinoDeVolta(sessao ? telaInicialDe(sessao) : PAINEL));
+};
+
 const MIN_SENHA = DEMONSTRACAO ? 1 : 8;
+
+/* Na demonstração, um clique preenche o formulário: trocar de perfil para
+   conferir permissão tem que ser barato, senão ninguém confere. */
+const montarContasDeTeste = () => {
+    const quadro = document.querySelector("#contas-de-teste");
+
+    if (!quadro || !DEMONSTRACAO) {
+        return;
+    }
+
+    quadro.hidden = false;
+
+    quadro.querySelectorAll(".contas__usar").forEach((botao) => {
+        botao.addEventListener("click", () => {
+            const email = document.querySelector("#login-email");
+            const senha = document.querySelector("#login-senha");
+
+            email.value = botao.dataset.email;
+            senha.value = "12345";
+
+            email.dispatchEvent(new Event("input", { bubbles: true }));
+            senha.dispatchEvent(new Event("input", { bubbles: true }));
+            senha.focus();
+        });
+    });
+};
 
 /* Aceita "nome@dominio.br". Validação de e-mail no cliente serve para
    pegar erro de digitação, não para decidir se o endereço existe. */
@@ -44,6 +85,8 @@ const initLogin = () => {
     if (!form) {
         return;
     }
+
+    montarContasDeTeste();
 
     const pagina = document.querySelector(".acesso");
     const alerta = form.querySelector("#login-alerta");
@@ -107,7 +150,7 @@ const initLogin = () => {
             return;
         }
 
-        location.assign(destinoDeVolta(saida.destino || PAINEL));
+        await irParaOPainel(saida.destino);
     });
 
     ligarVerificacao(form);
@@ -208,8 +251,6 @@ const animarEntrada = () => {
         .from(".trilho", { opacity: 0, duration: 0.8 }, "-=0.6");
 };
 
-initLogin();
-
 const abrirVerificacao = (formLogin, email) => {
     const formCodigo = document.querySelector("#codigo-form");
     const destino = document.querySelector("#codigo-destino");
@@ -272,7 +313,7 @@ const ligarVerificacao = (formLogin) => {
             return;
         }
 
-        location.assign(destinoDeVolta(saida.destino || PAINEL));
+        await irParaOPainel(saida.destino);
     });
 
     const reenviar = formCodigo.querySelector("#codigo-reenviar");
@@ -301,3 +342,9 @@ const ligarVerificacao = (formLogin) => {
         });
     }
 };
+
+/* Chamado pelo main.js, que descobre a página pelo data-pagina do body.
+   No fim do arquivo, depois de tudo que a função usa: chamando antes, o
+   ligarVerificacao ainda não existia e a inicialização parava no meio,
+   sem barra de progresso e sem animação de entrada. */
+export const init = initLogin;

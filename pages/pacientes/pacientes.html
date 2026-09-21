@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="pacientes.css" />
 </head>
 
-<body class="fundo-interno">
+<body class="fundo-interno" data-pagina="pacientes">
 
 <main class="pagina erp pacientes">
 
@@ -34,8 +34,15 @@
   </header>
 
   <nav class="navegar" aria-label="Telas do sistema">
-    <a class="navegar__link" href="../agenda/agenda.html">Agenda do dia</a>
-    <a class="navegar__link esta-aqui" href="pacientes.html" aria-current="page">Pacientes</a>
+    <a class="navegar__link" href="../agenda/agenda.html" data-permissao="agenda.ver" hidden>Agenda do dia</a>
+    <a class="navegar__link esta-aqui" href="pacientes.html" aria-current="page" data-permissao="pacientes.ver" hidden>Pacientes</a>
+    <a class="navegar__link" href="../exames/exames.html" data-permissao="exames.conferir" hidden>Exames</a>
+    <a class="navegar__link" href="../financeiro/financeiro.html" data-permissao="financeiro.caixa" hidden>Financeiro</a>
+    <a class="navegar__link" href="../inventario/inventario.html" data-permissao="inventario.ver" hidden>
+      Inventário
+      <span class="navegar__selo" id="selo-insumos" hidden></span>
+    </a>
+    <a class="navegar__link" href="../administracao/administracao.html" data-permissao="usuarios.gerenciar" hidden>Administração</a>
   </nav>
 
   <h1 class="erp__titulo">Pacientes</h1>
@@ -74,7 +81,7 @@
   </li>
 </template>
 
-<script type="module" src="pacientes.js"></script>
+<script type="module" src="../../main.js"></script>
 
 </body>
 </html>

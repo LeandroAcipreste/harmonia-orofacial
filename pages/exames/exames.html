@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Exames · Harmonia Orofacial</title>
+
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="../../assets/favicon-512.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/favicon-180.png" />
+
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="exames.css" />
+</head>
+
+<body class="fundo-interno" data-pagina="exames">
+
+<main class="pagina erp exames">
+
+  <header class="erp__topo">
+    <div class="erp__marca">
+      <img class="erp__marca-img" src="../../assets/favicon-180.png" alt="" width="180" height="180" />
+      <div>
+        <p class="erp__marca-nome">HARMONIA OROFACIAL</p>
+        <p class="erp__marca-tipo" id="erp-quem">CLÍNICA ODONTOLÓGICA</p>
+      </div>
+    </div>
+
+    <button class="erp__sair" type="button" id="erp-sair">Sair</button>
+  </header>
+
+  <nav class="navegar" aria-label="Telas do sistema">
+    <a class="navegar__link" href="../agenda/agenda.html" data-permissao="agenda.ver" hidden>Agenda do dia</a>
+    <a class="navegar__link" href="../pacientes/pacientes.html" data-permissao="pacientes.ver" hidden>Pacientes</a>
+    <a class="navegar__link esta-aqui" href="exames.html" aria-current="page" data-permissao="exames.conferir" hidden>Exames</a>
+    <a class="navegar__link" href="../financeiro/financeiro.html" data-permissao="financeiro.caixa" hidden>Financeiro</a>
+    <a class="navegar__link" href="../inventario/inventario.html" data-permissao="inventario.ver" hidden>
+      Inventário
+      <span class="navegar__selo" id="selo-insumos" hidden></span>
+    </a>
+    <a class="navegar__link" href="../administracao/administracao.html" data-permissao="usuarios.gerenciar" hidden>Administração</a>
+  </nav>
+
+  <h1 class="erp__titulo">Exames</h1>
+
+  <p class="vazio" id="exames-sem-acesso" hidden>
+    Esta tela é de quem atende. Seu acesso não permite conferir exames.
+  </p>
+
+  <div id="exames-conteudo" hidden>
+
+    <section class="exames__busca">
+      <div class="exames__busca-texto">
+        <p class="exames__rotulo">Busca no e-mail da clínica</p>
+        <p class="exames__status" id="exames-status" role="status">Carregando…</p>
+      </div>
+
+      <button class="exames__acao" type="button" id="exames-buscar">Buscar agora</button>
+    </section>
+
+    <h2 class="exames__secao">Em conferência</h2>
+
+    <p class="exames__ajuda">
+      O exame de laboratório cadastrado, com CPF no assunto e ficha correspondente,
+      entra sozinho no prontuário. O que aparece aqui precisa da sua decisão.
+    </p>
+
+    <p class="exames__resumo" id="exames-resumo" role="status"></p>
+
+    <ol class="exames__fila" id="exames-fila"></ol>
+
+    <p class="vazio" id="exames-vazio" hidden>Nenhum exame esperando conferência.</p>
+    <p class="erro" id="exames-erro" role="alert" hidden></p>
+
+    <section class="exames__laboratorios">
+      <h2 class="exames__secao">Laboratórios</h2>
+
+      <p class="exames__ajuda">
+        Só entra sozinho o exame vindo destes endereços, e apenas quando o
+        provedor de e-mail confirma que a mensagem veio mesmo deles.
+      </p>
+
+      <ul class="exames__labs" id="exames-labs"></ul>
+
+      <form class="exames__form" id="exames-lab-form" novalidate>
+        <label class="exames__campo">
+          <span class="exames__rotulo">Nome do laboratório</span>
+          <input class="exames__entrada" type="text" name="nome" autocomplete="off" required />
+        </label>
+
+        <label class="exames__campo">
+          <span class="exames__rotulo">E-mail que envia os resultados</span>
+          <input class="exames__entrada" type="email" name="email" autocomplete="off" inputmode="email" required />
+        </label>
+
+        <button class="exames__acao" type="submit">Cadastrar</button>
+      </form>
+
+      <p class="erro" id="exames-lab-erro" role="alert" hidden></p>
+    </section>
+
+  </div>
+
+</main>
+
+<template id="modelo-exame">
+  <li class="cartao">
+    <div class="cartao__topo">
+      <div class="cartao__quem">
+        <p class="cartao__assunto"></p>
+        <p class="cartao__de"></p>
+      </div>
+      <span class="cartao__motivo"></span>
+    </div>
+
+    <ul class="cartao__anexos"></ul>
+    <p class="cartao__sem-anexo" hidden>Nenhum arquivo aproveitável veio nesta mensagem.</p>
+
+    <div class="cartao__acoes">
+      <button class="cartao__botao cartao__botao--principal" type="button" data-sugestao hidden></button>
+      <button class="cartao__botao" type="button" data-buscar>Escolher outra ficha</button>
+      <button class="cartao__botao cartao__botao--risco" type="button" data-descartar>Descartar</button>
+    </div>
+
+    <div class="cartao__procura" hidden>
+      <input class="cartao__campo" type="search" placeholder="Buscar por nome, CPF ou telefone" aria-label="Buscar ficha" autocomplete="off" />
+      <ul class="cartao__achados"></ul>
+      <p class="cartao__aviso" data-procura-vazia hidden>Nenhuma ficha encontrada.</p>
+    </div>
+
+    <div class="cartao__confirma" hidden>
+      <p class="cartao__aviso">Descartar apaga o arquivo do servidor. Confirma?</p>
+      <button class="cartao__botao cartao__botao--risco" type="button" data-confirma>Sim, descartar</button>
+      <button class="cartao__botao" type="button" data-cancela>Não</button>
+    </div>
+  </li>
+</template>
+
+<template id="modelo-achado">
+  <li>
+    <button class="cartao__achado" type="button">
+      <span class="cartao__achado-nome"></span>
+      <span class="cartao__achado-detalhe"></span>
+    </button>
+  </li>
+</template>
+
+<template id="modelo-lab">
+  <li class="exames__lab">
+    <span class="exames__lab-quem">
+      <span class="exames__lab-nome"></span>
+      <span class="exames__lab-email"></span>
+    </span>
+    <button class="cartao__botao" type="button"></button>
+  </li>
+</template>
+
+<script type="module" src="../../main.js"></script>
+
+</body>
+</html>

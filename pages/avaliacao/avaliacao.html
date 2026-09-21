@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="avaliacao.css" />
 </head>
 
-<body class="fundo-interno">
+<body class="fundo-interno" data-pagina="avaliacao">
 
 <main class="pagina ficha">
 
@@ -54,10 +54,22 @@
 
       <div class="ficha__linha">
         <label class="ficha__campo">
+          <span class="ficha__rotulo">CPF</span>
+          <input class="ficha__entrada" type="text" name="cpf" id="ficha-cpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" />
+        </label>
+
+        <label class="ficha__campo">
+          <span class="ficha__rotulo">RG</span>
+          <input class="ficha__entrada" type="text" name="rg" maxlength="20" placeholder="Número e órgão emissor" />
+        </label>
+
+        <label class="ficha__campo">
           <span class="ficha__rotulo">Idade</span>
           <input class="ficha__entrada" type="number" name="idade" min="0" max="120" inputmode="numeric" />
         </label>
+      </div>
 
+      <div class="ficha__linha">
         <label class="ficha__campo">
           <span class="ficha__rotulo">Telefone</span>
           <input class="ficha__entrada" type="tel" name="telefone" autocomplete="tel" inputmode="tel" required />
@@ -93,8 +105,24 @@
     </fieldset>
 
     <fieldset class="ficha__grupo">
-      <legend class="ficha__legenda">Preferência de horário</legend>
+      <legend class="ficha__legenda">Horário da avaliação</legend>
 
+      <div class="horarios" id="horarios" hidden>
+        <p class="ficha__aviso">
+          Escolha o dia e depois o horário. Estes são os horários livres na
+          agenda da clínica agora.
+        </p>
+
+        <div class="horarios__dias" id="horarios-dias" role="radiogroup" aria-label="Dia da avaliação"></div>
+        <div class="horarios__horas" id="horarios-horas" role="radiogroup" aria-label="Horário da avaliação" hidden></div>
+
+        <p class="horarios__vazio" id="horarios-vazio" hidden>
+          Não há horários abertos nos próximos dias. Deixe sua preferência
+          abaixo e a clínica entra em contato.
+        </p>
+      </div>
+
+      <div id="preferencia">
       <p class="ficha__aviso">
         Diga quando fica melhor para você. A clínica confirma o horário
         exato no contato.
@@ -114,6 +142,7 @@
             <option value="tarde">Tarde (14h às 18h)</option>
           </select>
         </label>
+      </div>
       </div>
     </fieldset>
 
@@ -245,6 +274,7 @@
     </fieldset>
 
     <p class="ficha__erro" id="ficha-erro" role="alert" hidden></p>
+    <p class="ficha__ok" id="ficha-ok" role="status" hidden></p>
 
     <button class="ficha__enviar" type="submit">
       Enviar e agendar avaliação
@@ -258,7 +288,7 @@
 
 </main>
 
-<script type="module" src="avaliacao.js"></script>
+<script type="module" src="../../main.js"></script>
 
 </body>
 </html>

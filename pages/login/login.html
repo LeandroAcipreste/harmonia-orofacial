@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="login-style.css" />
 </head>
 
-<body class="fundo-interno">
+<body class="fundo-interno" data-pagina="login">
 
 <main class="pagina acesso">
 
@@ -104,6 +104,38 @@
       </button>
     </form>
 
+    <!-- Só aparece enquanto DEMONSTRACAO for true, em src/core/config.js.
+         Com o backend no ar, o bloco some sozinho. -->
+    <div class="contas" id="contas-de-teste" hidden>
+      <p class="contas__titulo">Contas de demonstração</p>
+
+      <ul class="contas__lista">
+        <li class="contas__item">
+          <button class="contas__usar" type="button" data-email="adm@adm.com">
+            <span class="contas__papel">Doutora</span>
+            <span class="contas__email">adm@adm.com</span>
+            <span class="contas__vê">vê tudo, inclusive prontuário e administração</span>
+          </button>
+        </li>
+        <li class="contas__item">
+          <button class="contas__usar" type="button" data-email="secretaria@teste.com">
+            <span class="contas__papel">Secretária</span>
+            <span class="contas__email">secretaria@teste.com</span>
+            <span class="contas__vê">agenda, caixa do dia e inventário, sem prontuário</span>
+          </button>
+        </li>
+        <li class="contas__item">
+          <button class="contas__usar" type="button" data-email="financeiro@teste.com">
+            <span class="contas__papel">Financeiro</span>
+            <span class="contas__email">financeiro@teste.com</span>
+            <span class="contas__vê">o financeiro inteiro, sem prontuário e sem inventário</span>
+          </button>
+        </li>
+      </ul>
+
+      <p class="contas__senha">Senha das três: <strong>12345</strong></p>
+    </div>
+
     <form class="acesso__form acesso__form--codigo" id="codigo-form" hidden novalidate>
       <p class="acesso__alerta" id="codigo-alerta" role="alert" hidden></p>
 
@@ -149,7 +181,7 @@
 </main>
 
 <script src="../../src/vendor/gsap.min.js"></script>
-<script type="module" src="login.js"></script>
+<script type="module" src="../../main.js"></script>
 
 </body>
 </html>

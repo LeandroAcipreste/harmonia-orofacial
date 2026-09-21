@@ -108,7 +108,8 @@
 .anexos,
 .parecer,
 .orcamento,
-.receita {
+.receita,
+.requisicao {
   margin-top: 2rem;
   padding-top: 1.75rem;
   border-top: 1px solid rgb(226 232 240 / 0.14);
@@ -118,7 +119,8 @@
 .anexos__titulo,
 .parecer__titulo,
 .orcamento__titulo,
-.receita__titulo {
+.receita__titulo,
+.requisicao__titulo {
   margin: 0 0 0.375rem;
   font-family: var(--font-serif);
   font-size: 1.25rem;
@@ -573,7 +575,8 @@
 
 /* Receituário */
 
-.receita__ajuda {
+.receita__ajuda,
+.requisicao__ajuda {
   margin: 0 0 1.25rem;
   font-size: 0.875rem;
   color: var(--slate-200);
@@ -683,7 +686,9 @@
   margin-top: 1.25rem;
 }
 
-.receita__emitir {
+.receita__emitir,
+.requisicao__abrir,
+.pedido__emitir {
   padding: 0.8125rem 1.75rem;
   font-family: inherit;
   font-size: 0.75rem;
@@ -698,23 +703,29 @@
   transition: color 0.25s, background-color 0.25s;
 }
 
-.receita__emitir:hover {
+.receita__emitir:hover,
+.requisicao__abrir:hover,
+.pedido__emitir:hover {
   color: #2b1a03;
   background-color: var(--gold-300);
 }
 
-.receita__emitir:disabled {
+.receita__emitir:disabled,
+.requisicao__abrir:disabled,
+.pedido__emitir:disabled {
   opacity: 0.55;
   cursor: default;
 }
 
-.receita__historico {
+.receita__historico,
+.requisicao__historico {
   margin-top: 1.75rem;
   padding-top: 1.25rem;
   border-top: 1px solid rgb(226 232 240 / 0.12);
 }
 
-.receita__historico-titulo {
+.receita__historico-titulo,
+.requisicao__historico-titulo {
   margin: 0 0 0.875rem;
   font-size: 0.6875rem;
   font-weight: 600;
@@ -723,7 +734,8 @@
   color: var(--gold-300);
 }
 
-.receita__emitidas {
+.receita__emitidas,
+.requisicao__emitidas {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -771,7 +783,618 @@
   text-decoration: underline;
 }
 
+
+/* Pagamentos e insumos, no painel do paciente */
+
+.conta,
+.insumos-usados {
+  margin-top: 2rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid rgb(226 232 240 / 0.14);
+}
+
+.conta__titulo,
+.insumos-usados__titulo {
+  margin: 0 0 0.375rem;
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.insumos-usados__ajuda {
+  margin: 0 0 1.25rem;
+  font-size: 0.875rem;
+  color: var(--slate-200);
+}
+
+.conta__resumo {
+  display: grid;
+  gap: 0.625rem;
+  margin: 1rem 0 1.5rem;
+}
+
+.conta__caixa {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0;
+  padding: 0.875rem 1.125rem;
+  background-color: rgb(255 255 255 / 0.04);
+  border-radius: 0.75rem;
+}
+
+/* O saldo é o número que decide a conversa no balcão, então ele se destaca
+   dos outros dois. */
+.conta__caixa--saldo {
+  background-color: rgb(253 186 116 / 0.1);
+  border: 1px solid rgb(253 186 116 / 0.35);
+}
+
+.conta__rotulo {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--slate-400);
+}
+
+.conta__valor {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--white);
+  font-variant-numeric: tabular-nums;
+}
+
+.conta__caixa--saldo .conta__valor {
+  color: var(--gold-300);
+}
+
+.conta__forma {
+  display: grid;
+  gap: 0.75rem;
+  align-items: end;
+  margin-bottom: 1.5rem;
+}
+
+.conta__campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.conta__campo-rotulo {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--slate-400);
+}
+
+.conta__entrada {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--white);
+  background-color: rgb(0 0 0 / 0.22);
+  border: 1px solid rgb(226 232 240 / 0.16);
+  border-radius: 0.5rem;
+  transition: border-color 0.25s;
+}
+
+.conta__entrada:focus {
+  outline: none;
+  border-color: rgb(253 186 116 / 0.7);
+}
+
+.conta__entrada option {
+  color: #0f172a;
+}
+
+.conta__registrar {
+  padding: 0.75rem 1.5rem;
+  font-family: inherit;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #2b1a03;
+  background-color: var(--gold-300);
+  border: 0;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: filter 0.25s;
+}
+
+.conta__registrar:hover {
+  filter: brightness(1.08);
+}
+
+.conta__registrar:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.conta__pagamentos,
+.insumos-usados__lancados {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pagamento,
+.insumo-usado {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  background-color: rgb(255 255 255 / 0.03);
+  border-radius: 0.625rem;
+}
+
+.pagamento__meio,
+.insumo-usado__nome {
+  color: var(--slate-200);
+}
+
+.pagamento__valor,
+.insumo-usado__quantidade {
+  font-weight: 600;
+  color: var(--white);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.pagamento.esta-estornado {
+  opacity: 0.5;
+}
+
+.pagamento.esta-estornado .pagamento__valor {
+  text-decoration: line-through;
+}
+
+.insumos-usados__linhas {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.linha-insumo {
+  display: grid;
+  grid-template-columns: 1fr 6rem auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.linha-insumo__qual,
+.linha-insumo__quanto {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--white);
+  background-color: rgb(0 0 0 / 0.22);
+  border: 1px solid rgb(226 232 240 / 0.16);
+  border-radius: 0.5rem;
+}
+
+.linha-insumo__qual:focus,
+.linha-insumo__quanto:focus {
+  outline: none;
+  border-color: rgb(253 186 116 / 0.7);
+}
+
+.linha-insumo__qual option {
+  color: #0f172a;
+}
+
+.linha-insumo__tirar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  color: var(--slate-300);
+  background: none;
+  border: 0;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: color 0.25s, background-color 0.25s;
+}
+
+.linha-insumo__tirar:hover {
+  color: #ffd9d9;
+  background-color: rgb(220 38 38 / 0.2);
+}
+
+.linha-insumo__tirar svg {
+  width: 0.9375rem;
+  height: 0.9375rem;
+}
+
+.insumos-usados__somar {
+  margin-top: 0.875rem;
+  padding: 0.5rem 0;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--gold-300);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.insumos-usados__somar:hover {
+  color: var(--gold-200);
+}
+
+.insumos-usados__acoes {
+  margin-top: 1rem;
+}
+
+.insumos-usados__lancar {
+  padding: 0.75rem 1.5rem;
+  font-family: inherit;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--slate-200);
+  background: none;
+  border: 1px solid rgb(253 186 116 / 0.5);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: color 0.25s, background-color 0.25s;
+}
+
+.insumos-usados__lancar:hover {
+  color: #2b1a03;
+  background-color: var(--gold-300);
+}
+
+.insumos-usados__lancar:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* Requisição de exames: o modal */
+
+.pedido {
+  width: min(46rem, calc(100vw - 2rem));
+  max-height: calc(100vh - 3rem);
+  padding: 0;
+  color: var(--slate-200);
+  background-color: var(--interno-bg);
+  border: 1px solid rgb(253 186 116 / 0.28);
+  border-radius: 1.125rem;
+  box-shadow: 0 1.5rem 3.5rem rgb(0 0 0 / 0.45);
+  overflow: hidden;
+}
+
+/* O [open] no seletor não é enfeite: sem ele, o display abaixo venceria o
+   display: none que o navegador dá ao <dialog> fechado, e o modal ficaria
+   sempre na tela. Com flex em coluna, só o corpo rola, e o cabeçalho e as
+   ações ficam parados. */
+.pedido[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.pedido__topo,
+.pedido__acoes {
+  flex: 0 0 auto;
+}
+
+.pedido__corpo {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* O <dialog> não herda a fonte do documento em todo navegador, e o modal
+   mora fora da árvore visual do painel. Por isso repete o básico aqui. */
+.pedido,
+.pedido input,
+.pedido select,
+.pedido textarea,
+.pedido button {
+  font-family: var(--font-sans);
+}
+
+.pedido::backdrop {
+  background-color: rgb(0 6 24 / 0.72);
+}
+
+.pedido__topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem 1.5rem 1.125rem;
+  border-bottom: 1px solid rgb(226 232 240 / 0.14);
+}
+
+.pedido__titulo {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.pedido__paciente {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  color: var(--gold-300);
+}
+
+.pedido__fechar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  color: var(--slate-300);
+  background: none;
+  border: 0;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: color 0.25s, background-color 0.25s;
+}
+
+.pedido__fechar:hover {
+  color: var(--white);
+  background-color: rgb(255 255 255 / 0.1);
+}
+
+.pedido__fechar svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* O corpo rola sozinho: o cabeçalho e as ações ficam parados, e o formulário
+   é longo demais para caber inteiro em qualquer tela. */
+.pedido__corpo {
+  padding: 1.25rem 1.5rem 1.5rem;
+  overflow-y: auto;
+}
+
+.pedido__campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.pedido__rotulo {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-300);
+}
+
+.pedido__laboratorio,
+.pedido__observacao,
+.pedido__linha {
+  width: 100%;
+  padding: 0.6875rem 0.875rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--white);
+  background-color: rgb(0 0 0 / 0.22);
+  border: 1px solid rgb(226 232 240 / 0.16);
+  border-radius: 0.5rem;
+  transition: border-color 0.25s;
+}
+
+.pedido__observacao {
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.pedido__laboratorio:focus,
+.pedido__observacao:focus,
+.pedido__linha:focus {
+  outline: none;
+  border-color: rgb(253 186 116 / 0.7);
+}
+
+.pedido__laboratorio option {
+  color: #0f172a;
+}
+
+.pedido__dentes {
+  margin: 0 0 1.25rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.8125rem;
+  color: var(--slate-200);
+  background-color: rgb(255 255 255 / 0.04);
+  border-left: 2px solid var(--gold-300);
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.pedido__blocos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin-bottom: 1.25rem;
+}
+
+.pedido__bloco {
+  background-color: rgb(255 255 255 / 0.03);
+  border: 1px solid rgb(226 232 240 / 0.12);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.pedido__bloco.tem-marcado {
+  border-color: rgb(253 186 116 / 0.5);
+}
+
+.pedido__bloco-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--white);
+  cursor: pointer;
+  list-style: none;
+}
+
+.pedido__bloco-topo::-webkit-details-marker {
+  display: none;
+}
+
+.pedido__bloco-topo::after {
+  content: "+";
+  font-size: 1.125rem;
+  line-height: 1;
+  color: var(--gold-300);
+}
+
+.pedido__bloco[open] .pedido__bloco-topo::after {
+  content: "−";
+}
+
+.pedido__bloco-nome {
+  flex: 1;
+}
+
+.pedido__bloco-conta:not(:empty) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.375rem;
+  height: 1.375rem;
+  padding: 0 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #2b1a03;
+  background-color: var(--gold-300);
+  border-radius: 9999px;
+}
+
+.pedido__opcoes {
+  display: grid;
+  gap: 0.125rem;
+  padding: 0 1rem 1rem;
+}
+
+.pedido__opcao {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  padding: 0.5rem 0.625rem;
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.pedido__opcao:hover {
+  background-color: rgb(255 255 255 / 0.05);
+}
+
+.pedido__opcao--escrita {
+  flex-direction: column;
+  gap: 0.375rem;
+  cursor: default;
+}
+
+.pedido__caixa {
+  width: 1rem;
+  height: 1rem;
+  margin: 0.125rem 0 0;
+  accent-color: var(--gold-400);
+  cursor: pointer;
+}
+
+.pedido__opcao-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.pedido__opcao-nota {
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--slate-400);
+}
+
+.pedido__acoes {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 1.125rem 1.5rem;
+  background-color: rgb(0 0 0 / 0.2);
+  border-top: 1px solid rgb(226 232 240 / 0.14);
+}
+
+.pedido__aviso {
+  flex: 1;
+  margin: 0;
+  min-width: 10rem;
+  font-size: 0.8125rem;
+  color: var(--gold-300);
+}
+
+.pedido__aviso.esta-errado {
+  color: #ffd9d9;
+}
+
+.pedido__cancelar {
+  padding: 0.8125rem 1.25rem;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--slate-300);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.pedido__cancelar:hover {
+  color: var(--white);
+}
+
 @media (min-width: 720px) {
+  .conta__resumo {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .conta__forma {
+    grid-template-columns: 8rem 9rem 7rem 1fr auto;
+  }
+
+  .conta__campo--largo {
+    grid-column: auto;
+  }
+
+  .pedido__opcoes {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .pedido__opcao--escrita {
+    grid-column: 1 / -1;
+  }
+
   .remedio {
     grid-template-columns: 1fr 12rem 6rem auto;
   }
@@ -872,6 +1495,10 @@
   .impressao__titulo,
   .impressao__paciente,
   .impressao__remedios,
+  .impressao__dentes,
+  .impressao__grupo,
+  .impressao__observacao,
+  .impressao__destino,
   .impressao__pe,
   .impressao__rodape {
     position: relative;
@@ -1001,6 +1628,91 @@
     margin: 1pt 0;
     font-size: 8.5pt;
     color: #55524a;
+  }
+
+  .impressao__dentes {
+    margin: 0 0 16pt;
+    font-size: 10.5pt;
+    font-weight: 600;
+    color: #0f2a6b;
+  }
+
+  .impressao__grupo {
+    margin-bottom: 14pt;
+    break-inside: avoid;
+  }
+
+  .impressao__grupo-titulo {
+    margin: 0 0 5pt;
+    padding-bottom: 2pt;
+    font-size: 9pt;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #8a6d1f;
+    border-bottom: 0.5pt solid #e4dfcd;
+  }
+
+  .impressao__itens {
+    margin: 0;
+    padding-left: 14pt;
+    font-size: 10.5pt;
+    list-style: square;
+  }
+
+  .impressao__item {
+    margin-bottom: 3pt;
+  }
+
+  .impressao__item::marker {
+    color: #8a6d1f;
+  }
+
+  .impressao__nota {
+    display: block;
+    font-size: 8.5pt;
+    font-style: italic;
+    color: #55524a;
+  }
+
+  .impressao__observacao {
+    margin: 0 0 16pt;
+    font-size: 10.5pt;
+  }
+
+  /* O destinatário é a clínica de imagem que a doutora indicou. A folha
+     continua sendo da Harmonia: isto aqui é para onde o paciente leva. */
+  .impressao__destino {
+    margin-top: 18pt;
+    padding: 9pt 11pt;
+    break-inside: avoid;
+    border: 0.75pt solid #c9a227;
+    border-radius: 3pt;
+  }
+
+  .impressao__destino-rotulo {
+    margin: 0 0 3pt;
+    font-size: 8pt;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #8a6d1f;
+  }
+
+  .impressao__destino-nome {
+    margin: 0 0 2pt;
+    font-size: 11pt;
+    font-weight: 600;
+    color: #0f2a6b;
+  }
+
+  .impressao__destino-linha {
+    margin: 0;
+    font-size: 9pt;
+    color: #3d3a34;
+  }
+
+  .impressao__pe {
+    margin-top: 34pt;
   }
 
   @page {

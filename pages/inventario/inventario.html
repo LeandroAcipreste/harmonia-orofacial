@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Inventário · Harmonia Orofacial</title>
+
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="../../assets/favicon-512.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/favicon-180.png" />
+
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="inventario.css" />
+</head>
+
+<body class="fundo-interno" data-pagina="inventario">
+
+<main class="pagina erp inventario">
+
+  <header class="erp__topo">
+    <div class="erp__marca">
+      <img class="erp__marca-img" src="../../assets/favicon-180.png" alt="" width="180" height="180" />
+      <div>
+        <p class="erp__marca-nome">HARMONIA OROFACIAL</p>
+        <p class="erp__marca-tipo" id="erp-quem">CLÍNICA ODONTOLÓGICA</p>
+      </div>
+    </div>
+
+    <button class="erp__sair" type="button" id="erp-sair">Sair</button>
+  </header>
+
+  <nav class="navegar" aria-label="Telas do sistema">
+    <a class="navegar__link" href="../agenda/agenda.html" data-permissao="agenda.ver" hidden>Agenda do dia</a>
+    <a class="navegar__link" href="../pacientes/pacientes.html" data-permissao="pacientes.ver" hidden>Pacientes</a>
+    <a class="navegar__link" href="../exames/exames.html" data-permissao="exames.conferir" hidden>Exames</a>
+    <a class="navegar__link" href="../financeiro/financeiro.html" data-permissao="financeiro.caixa" hidden>Financeiro</a>
+    <a class="navegar__link esta-aqui" href="inventario.html" aria-current="page" data-permissao="inventario.ver" hidden>
+      Inventário
+      <span class="navegar__selo" id="selo-insumos" hidden></span>
+    </a>
+    <a class="navegar__link" href="../administracao/administracao.html" data-permissao="usuarios.gerenciar" hidden>Administração</a>
+  </nav>
+
+  <h1 class="erp__titulo">Inventário</h1>
+
+  <p class="vazio" id="inv-sem-acesso" hidden>
+    Seu acesso não permite ver o inventário.
+  </p>
+
+  <div id="inv-conteudo" hidden>
+
+    <p class="aviso-estoque" id="aviso-estoque" role="status" hidden></p>
+
+    <p class="erro" id="inv-erro" role="alert" hidden></p>
+
+    <section class="inv__barra">
+      <label class="inv__busca">
+        <span class="inv__rotulo-oculto">Buscar insumo</span>
+        <input class="inv__entrada" type="search" id="inv-busca" placeholder="Buscar insumo" autocomplete="off" />
+      </label>
+
+      <div class="inv__abas" role="group" aria-label="Filtrar">
+        <button class="inv__aba esta-aqui" type="button" data-situacao="">Todos</button>
+        <button class="inv__aba" type="button" data-situacao="baixos">No mínimo</button>
+      </div>
+    </section>
+
+    <p class="inv__resumo" id="inv-resumo" role="status"></p>
+
+    <ul class="insumos" id="inv-lista"></ul>
+
+    <p class="vazio" id="inv-vazio" hidden>Nenhum insumo por aqui.</p>
+
+    <section class="inv__bloco" id="inv-cadastro" hidden>
+      <h2 class="inv__secao">Cadastrar insumo</h2>
+
+      <p class="inv__ajuda">
+        O mínimo é o que dispara o aviso. Coloque a quantidade com que você
+        ainda consegue trabalhar até a próxima compra chegar, não a
+        quantidade em que já acabou.
+      </p>
+
+      <form class="inv__forma" id="inv-form">
+        <label class="inv__campo inv__campo--largo">
+          <span class="inv__rotulo">Nome</span>
+          <input class="inv__entrada" type="text" id="novo-nome" placeholder="Anestésico Mepivacaína 3%" />
+        </label>
+
+        <label class="inv__campo">
+          <span class="inv__rotulo">Categoria</span>
+          <input class="inv__entrada" type="text" id="novo-categoria" placeholder="Anestesia" />
+        </label>
+
+        <label class="inv__campo">
+          <span class="inv__rotulo">Unidade</span>
+          <input class="inv__entrada" type="text" id="novo-unidade" placeholder="tubete" />
+        </label>
+
+        <label class="inv__campo">
+          <span class="inv__rotulo">Mínimo</span>
+          <input class="inv__entrada" type="text" id="novo-minimo" inputmode="decimal" placeholder="20" />
+        </label>
+
+        <button class="inv__acao" type="submit">Cadastrar</button>
+      </form>
+
+      <p class="inv__aviso" id="inv-cadastro-aviso" role="status"></p>
+    </section>
+
+  </div>
+
+  <dialog class="movimento" id="inv-movimento">
+    <h2 class="movimento__titulo" id="mov-titulo">Movimento</h2>
+    <p class="movimento__insumo" id="mov-insumo"></p>
+
+    <p class="movimento__ajuda" id="mov-ajuda"></p>
+
+    <label class="inv__campo">
+      <span class="inv__rotulo" id="mov-rotulo">Quantidade</span>
+      <input class="inv__entrada" type="text" id="mov-quantidade" inputmode="decimal" />
+    </label>
+
+    <label class="inv__campo" id="mov-campo-custo" hidden>
+      <span class="inv__rotulo">Custo de cada unidade</span>
+      <input class="inv__entrada" type="text" id="mov-custo" inputmode="decimal" placeholder="5,00" />
+    </label>
+
+    <label class="inv__campo">
+      <span class="inv__rotulo">Motivo</span>
+      <input class="inv__entrada" type="text" id="mov-motivo" placeholder="Compra de setembro" />
+    </label>
+
+    <p class="inv__aviso" id="mov-erro" role="alert"></p>
+
+    <footer class="movimento__acoes">
+      <button class="inv__acao inv__acao--calma" type="button" id="mov-cancelar">Cancelar</button>
+      <button class="inv__acao" type="button" id="mov-confirmar">Lançar</button>
+    </footer>
+  </dialog>
+
+  <dialog class="extrato" id="inv-extrato">
+    <header class="extrato__topo">
+      <div>
+        <h2 class="extrato__titulo" id="ext-nome">Extrato</h2>
+        <p class="extrato__saldo" id="ext-saldo"></p>
+      </div>
+      <button class="extrato__fechar" type="button" id="ext-fechar" aria-label="Fechar">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+      </button>
+    </header>
+
+    <ul class="extrato__lista" id="ext-lista"></ul>
+  </dialog>
+
+  <template id="modelo-insumo">
+    <li class="insumo">
+      <div class="insumo__quem">
+        <span class="insumo__nome"></span>
+        <span class="insumo__categoria"></span>
+      </div>
+
+      <div class="insumo__saldo">
+        <strong class="insumo__quantidade"></strong>
+        <span class="insumo__minimo"></span>
+      </div>
+
+      <div class="insumo__acoes">
+        <button class="insumo__acao" type="button" data-tipo="entrada">Entrada</button>
+        <button class="insumo__acao" type="button" data-tipo="perda">Perda</button>
+        <button class="insumo__acao" type="button" data-tipo="ajuste">Ajuste</button>
+        <button class="insumo__acao insumo__acao--extrato" type="button" data-extrato>Extrato</button>
+      </div>
+    </li>
+  </template>
+
+  <template id="modelo-movimento">
+    <li class="extrato__linha">
+      <span class="extrato__tipo"></span>
+      <span class="extrato__detalhe"></span>
+      <span class="extrato__quantidade"></span>
+    </li>
+  </template>
+
+</main>
+
+<script type="module" src="../../main.js"></script>
+
+</body>
+</html>

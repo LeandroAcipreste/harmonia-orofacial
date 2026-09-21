@@ -19,7 +19,7 @@
   <link rel="preload" as="image" href="assets/lustre-trama.jpg" />
 </head>
 
-<body>
+<body data-pagina="home">
 
 
 
@@ -467,6 +467,42 @@
 
     </div>
   </section>
+
+  <!--
+    Avaliações do Google. Os textos vêm de
+    src/sections/avaliacoes/avaliacoes-dados.js; enquanto a lista estiver
+    vazia, a seção inteira fica escondida.
+  -->
+  <section class="avaliacoes" id="avaliacoes" aria-labelledby="avaliacoes-titulo" hidden>
+    <div class="avaliacoes__cabeca">
+      <p class="avaliacoes__eyebrow" id="avaliacoes-titulo">O que dizem os pacientes</p>
+
+      <p class="avaliacoes__placar">
+        <span class="avaliacoes__nota serif">5,0</span>
+        <span class="avaliacoes__estrelas" aria-label="Cinco de cinco estrelas">★★★★★</span>
+        <span class="avaliacoes__total">Nota máxima em 61 avaliações no Google</span>
+      </p>
+    </div>
+
+    <ul class="avaliacoes__mosaico"></ul>
+  </section>
+
+  <template id="modelo-avaliacao">
+    <li class="avaliacao">
+      <div class="avaliacao__topo">
+        <span class="avaliacao__aspas serif" aria-hidden="true">“</span>
+        <span class="avaliacao__estrelas" aria-label="Cinco estrelas">★★★★★</span>
+      </div>
+      <p class="avaliacao__texto"></p>
+      <div class="avaliacao__quem">
+        <span class="avaliacao__inicial" aria-hidden="true"></span>
+        <span class="avaliacao__identidade">
+          <span class="avaliacao__nome"></span>
+          <span class="avaliacao__origem"></span>
+        </span>
+      </div>
+    </li>
+  </template>
 
 </main>
 

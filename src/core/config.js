@@ -5,6 +5,7 @@ export const WHATSAPP = "5579998764880";
 export const API = {
     base: "",
     agendamentos: "/api/agendamentos",
+    horarios: "/api/horarios",
 };
 
 export const AGENDA = {
@@ -23,15 +24,22 @@ export const ESTAGIOS = {
 
 export const ESTAGIO_INICIAL = ESTAGIOS.contato;
 
-export const VERSAO_DA_FICHA = 2;
+export const VERSAO_DA_FICHA = 3;
 
 export const DEMONSTRACAO = true;
+
+/* A data das folhas impressas pede o município sozinho ("Nossa Senhora do
+   Socorro, 18 de setembro de 2026"), e o rodapé pede município e estado.
+   Antes o primeiro saía de um split no travessão do segundo; agora cada um
+   tem o seu campo, e trocar o separador não quebra a impressão. */
+const MUNICIPIO = "Nossa Senhora do Socorro";
 
 export const CLINICA = {
     nome: "Harmonia Orofacial",
     tipo: "Clínica Odontológica",
-    endereco: "Av. Manoel Pedro dos Santos Neto, 647 — Marcos Freire II",
-    cidade: "Nossa Senhora do Socorro — SE",
+    endereco: "Av. Manoel Pedro dos Santos Neto, 647 · Marcos Freire II",
+    municipio: MUNICIPIO,
+    cidade: MUNICIPIO + " · SE",
     telefone: "(79) 99876-4880",
 };
 

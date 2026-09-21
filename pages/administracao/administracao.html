@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Administração · Harmonia Orofacial</title>
+
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="../../assets/favicon-512.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/favicon-180.png" />
+
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="administracao.css" />
+</head>
+
+<body class="fundo-interno" data-pagina="administracao">
+
+<main class="pagina erp administracao">
+
+  <header class="erp__topo">
+    <div class="erp__marca">
+      <img class="erp__marca-img" src="../../assets/favicon-180.png" alt="" width="180" height="180" />
+      <div>
+        <p class="erp__marca-nome">HARMONIA OROFACIAL</p>
+        <p class="erp__marca-tipo" id="erp-quem">CLÍNICA ODONTOLÓGICA</p>
+      </div>
+    </div>
+
+    <button class="erp__sair" type="button" id="erp-sair">Sair</button>
+  </header>
+
+  <nav class="navegar" aria-label="Telas do sistema">
+    <a class="navegar__link" href="../agenda/agenda.html" data-permissao="agenda.ver" hidden>Agenda do dia</a>
+    <a class="navegar__link" href="../pacientes/pacientes.html" data-permissao="pacientes.ver" hidden>Pacientes</a>
+    <a class="navegar__link" href="../exames/exames.html" data-permissao="exames.conferir" hidden>Exames</a>
+    <a class="navegar__link" href="../financeiro/financeiro.html" data-permissao="financeiro.caixa" hidden>Financeiro</a>
+    <a class="navegar__link" href="../inventario/inventario.html" data-permissao="inventario.ver" hidden>
+      Inventário
+      <span class="navegar__selo" id="selo-insumos" hidden></span>
+    </a>
+    <a class="navegar__link esta-aqui" href="administracao.html" aria-current="page" data-permissao="usuarios.gerenciar" hidden>Administração</a>
+  </nav>
+
+  <h1 class="erp__titulo">Administração</h1>
+
+  <p class="vazio" id="adm-sem-acesso" hidden>
+    Esta tela é de quem administra o sistema.
+  </p>
+
+  <div id="adm-conteudo" hidden>
+
+    <p class="erro" id="adm-erro" role="alert" hidden></p>
+
+    <section class="adm__bloco">
+      <h2 class="adm__secao">O agente de atendimento</h2>
+
+      <p class="adm__ajuda">
+        O agente é o robô que atende no WhatsApp e cuida das automações. Ele
+        entra no sistema por uma chave, e não por senha, e faz tudo em nome
+        próprio: cada ação dele fica registrada com o nome dele no
+        histórico do paciente.
+      </p>
+
+      <ul class="agentes" id="adm-agentes"></ul>
+
+      <p class="vazio" id="adm-sem-agente" hidden>
+        Nenhum agente criado ainda.
+      </p>
+
+      <form class="adm__forma" id="adm-agente-form">
+        <label class="adm__campo adm__campo--largo">
+          <span class="adm__rotulo">Criar agente</span>
+          <input class="adm__entrada" type="text" id="agente-nome" placeholder="Atendimento WhatsApp" />
+        </label>
+
+        <button class="adm__acao" type="submit">Criar</button>
+      </form>
+
+      <p class="adm__aviso" id="adm-agente-aviso" role="status"></p>
+    </section>
+
+    <section class="adm__bloco">
+      <h2 class="adm__secao">Pessoas</h2>
+
+      <p class="adm__ajuda">
+        Cada pessoa entra com o próprio login. O perfil decide o que ela
+        enxerga: a recepção não abre prontuário, o financeiro não abre
+        prontuário nem inventário.
+      </p>
+
+      <ul class="pessoas" id="adm-pessoas"></ul>
+
+      <form class="adm__forma" id="adm-pessoa-form">
+        <label class="adm__campo">
+          <span class="adm__rotulo">Nome</span>
+          <input class="adm__entrada" type="text" id="pessoa-nome" placeholder="Maria da Recepção" />
+        </label>
+
+        <label class="adm__campo">
+          <span class="adm__rotulo">E-mail</span>
+          <input class="adm__entrada" type="email" id="pessoa-email" placeholder="maria@harmonia.com" />
+        </label>
+
+        <label class="adm__campo">
+          <span class="adm__rotulo">Senha inicial</span>
+          <input class="adm__entrada" type="text" id="pessoa-senha" placeholder="ela troca depois" />
+        </label>
+
+        <label class="adm__campo">
+          <span class="adm__rotulo">Perfil</span>
+          <select class="adm__entrada" id="pessoa-papel"></select>
+        </label>
+
+        <button class="adm__acao" type="submit">Cadastrar</button>
+      </form>
+
+      <p class="adm__aviso" id="adm-pessoa-aviso" role="status"></p>
+    </section>
+
+    <section class="adm__bloco">
+      <h2 class="adm__secao">Conta Google da clínica</h2>
+
+      <p class="adm__ajuda">
+        É por ela que a agenda publica os horários livres e que os exames
+        chegam pelo e-mail da clínica.
+      </p>
+
+      <div class="google" id="adm-google">
+        <p class="google__situacao" id="google-situacao">Verificando…</p>
+        <p class="google__detalhe" id="google-detalhe"></p>
+        <a class="adm__acao adm__acao--calma" id="google-conectar" href="#" hidden>Conectar o Google</a>
+      </div>
+    </section>
+
+  </div>
+
+  <dialog class="chave" id="adm-chave">
+    <h2 class="chave__titulo">A chave do agente</h2>
+
+    <p class="chave__aviso">
+      Copie agora. Por segurança, o sistema guarda só uma impressão digital
+      dela: esta é a única vez que ela aparece na tela. Se fechar sem
+      copiar, é só emitir outra.
+    </p>
+
+    <code class="chave__valor" id="chave-valor"></code>
+
+    <p class="chave__ajuda">
+      Ela vai no cofre de credenciais da automação (no n8n, em Credentials,
+      do tipo Header Auth), nunca dentro do fluxo nem num print.
+    </p>
+
+    <footer class="chave__acoes">
+      <button class="adm__acao adm__acao--calma" type="button" id="chave-copiar">Copiar</button>
+      <button class="adm__acao" type="button" id="chave-fechar">Já copiei</button>
+    </footer>
+  </dialog>
+
+  <template id="modelo-agente">
+    <li class="agente">
+      <div class="agente__quem">
+        <span class="agente__nome"></span>
+        <span class="agente__situacao"></span>
+      </div>
+
+      <ul class="agente__chaves"></ul>
+
+      <div class="agente__acoes">
+        <button class="adm__acao adm__acao--calma" type="button" data-emitir>Emitir chave nova</button>
+        <button class="adm__acao adm__acao--perigo" type="button" data-desligar>Desligar agente</button>
+      </div>
+    </li>
+  </template>
+
+  <template id="modelo-chave">
+    <li class="chave-linha">
+      <span class="chave-linha__prefixo"></span>
+      <span class="chave-linha__datas"></span>
+      <button class="chave-linha__revogar" type="button">Revogar</button>
+    </li>
+  </template>
+
+  <template id="modelo-pessoa">
+    <li class="pessoa">
+      <div class="pessoa__quem">
+        <span class="pessoa__nome"></span>
+        <span class="pessoa__detalhe"></span>
+      </div>
+
+      <button class="pessoa__alternar" type="button"></button>
+    </li>
+  </template>
+
+</main>
+
+<script type="module" src="../../main.js"></script>
+
+</body>
+</html>

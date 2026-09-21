@@ -1,0 +1,377 @@
+@import "../../src/core/erp.css";
+
+.adm__bloco {
+  margin-bottom: 3rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid rgb(226 232 240 / 0.12);
+}
+
+.adm__bloco:last-of-type {
+  border-bottom: 0;
+}
+
+.adm__secao {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.adm__ajuda {
+  margin: 0 0 1.5rem;
+  max-width: 64ch;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--slate-300);
+}
+
+.adm__forma {
+  display: grid;
+  gap: 0.875rem;
+  align-items: end;
+  margin-top: 1.5rem;
+}
+
+.adm__campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.adm__rotulo {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--slate-400);
+}
+
+.adm__entrada {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--white);
+  background-color: rgb(0 0 0 / 0.22);
+  border: 1px solid rgb(226 232 240 / 0.16);
+  border-radius: 0.5rem;
+  transition: border-color 0.25s;
+}
+
+.adm__entrada:focus {
+  outline: none;
+  border-color: rgb(253 186 116 / 0.7);
+}
+
+.adm__entrada option {
+  color: #0f172a;
+}
+
+.adm__acao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6875rem 1.25rem;
+  font-family: inherit;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #2b1a03;
+  background-color: var(--gold-300);
+  border: 0;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: filter 0.25s, color 0.25s, border-color 0.25s;
+}
+
+.adm__acao:hover {
+  filter: brightness(1.08);
+}
+
+.adm__acao--calma {
+  color: var(--slate-200);
+  background: none;
+  border: 1px solid rgb(226 232 240 / 0.25);
+}
+
+.adm__acao--calma:hover {
+  color: var(--white);
+  border-color: rgb(253 186 116 / 0.5);
+}
+
+/* Desligar o agente é o botão que a doutora usa quando alguma coisa sai do
+   lugar. Ele não se esconde, mas também não convida: fica em vermelho
+   discreto, e só vira vermelho cheio no hover. */
+.adm__acao--perigo {
+  color: #ffd9d9;
+  background: none;
+  border: 1px solid rgb(220 38 38 / 0.45);
+}
+
+.adm__acao--perigo:hover {
+  color: #fff;
+  background-color: rgb(220 38 38 / 0.35);
+}
+
+.adm__aviso {
+  margin: 0.875rem 0 0;
+  min-height: 1.25rem;
+  font-size: 0.8125rem;
+  color: var(--gold-300);
+}
+
+.adm__aviso.esta-errado {
+  color: #ffd9d9;
+}
+
+/* OS AGENTES */
+
+.agentes,
+.pessoas {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.agente {
+  padding: 1.25rem;
+  background-color: rgb(255 255 255 / 0.04);
+  border: 1px solid rgb(253 186 116 / 0.28);
+  border-radius: 0.875rem;
+}
+
+.agente.esta-desligado,
+.pessoa.esta-desligado {
+  opacity: 0.55;
+  border-color: rgb(226 232 240 / 0.14);
+}
+
+.agente__quem {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.agente__nome {
+  font-size: 1.0625rem;
+  color: var(--white);
+}
+
+.agente__situacao {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-300);
+}
+
+.agente.esta-desligado .agente__situacao {
+  color: var(--slate-400);
+}
+
+.agente__chaves {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  list-style: none;
+}
+
+.chave-linha {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background-color: rgb(0 0 0 / 0.22);
+  border-radius: 0.5rem;
+}
+
+.chave-linha.esta-revogada {
+  opacity: 0.5;
+}
+
+.chave-linha__prefixo {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8125rem;
+  color: var(--gold-300);
+}
+
+.chave-linha.esta-revogada .chave-linha__prefixo {
+  color: var(--slate-400);
+  text-decoration: line-through;
+}
+
+.chave-linha__datas {
+  font-size: 0.75rem;
+  color: var(--slate-400);
+}
+
+.chave-linha__revogar {
+  font-family: inherit;
+  font-size: 0.75rem;
+  color: var(--slate-300);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.chave-linha__revogar:hover {
+  color: #ffd9d9;
+}
+
+.agente__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+
+/* AS PESSOAS */
+
+.pessoa {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background-color: rgb(255 255 255 / 0.04);
+  border: 1px solid rgb(226 232 240 / 0.12);
+  border-radius: 0.875rem;
+}
+
+.pessoa__quem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.pessoa__nome {
+  font-size: 1rem;
+  color: var(--white);
+}
+
+.pessoa__detalhe {
+  font-size: 0.75rem;
+  color: var(--slate-400);
+}
+
+.pessoa__alternar {
+  padding: 0.4375rem 0.875rem;
+  font-family: inherit;
+  font-size: 0.6875rem;
+  color: var(--slate-300);
+  background: none;
+  border: 1px solid rgb(226 232 240 / 0.2);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: color 0.25s, border-color 0.25s;
+}
+
+.pessoa__alternar:hover {
+  color: var(--white);
+  border-color: rgb(253 186 116 / 0.5);
+}
+
+/* O GOOGLE */
+
+.google {
+  padding: 1.25rem;
+  background-color: rgb(255 255 255 / 0.04);
+  border: 1px solid rgb(226 232 240 / 0.12);
+  border-radius: 0.875rem;
+}
+
+.google__situacao {
+  margin: 0 0 0.375rem;
+  font-size: 1rem;
+  color: var(--white);
+}
+
+.google__detalhe {
+  margin: 0 0 1rem;
+  font-size: 0.8125rem;
+  color: var(--slate-400);
+}
+
+/* A JANELA DA CHAVE */
+
+.chave {
+  width: min(34rem, calc(100vw - 2rem));
+  padding: 1.75rem;
+  color: var(--slate-200);
+  background-color: var(--interno-bg);
+  border: 1px solid rgb(253 186 116 / 0.35);
+  border-radius: 1rem;
+}
+
+.chave,
+.chave button {
+  font-family: var(--font-sans);
+}
+
+.chave::backdrop {
+  background-color: rgb(0 6 24 / 0.75);
+}
+
+.chave__titulo {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  color: var(--white);
+}
+
+.chave__aviso {
+  margin: 0 0 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--gold-300);
+}
+
+/* A chave inteira na tela, sem cortar e sem rolagem horizontal: ela precisa
+   ser selecionável com o mouse de quem não vai usar o botão de copiar. */
+.chave__valor {
+  display: block;
+  padding: 0.875rem 1rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: var(--white);
+  background-color: rgb(0 0 0 / 0.35);
+  border: 1px solid rgb(226 232 240 / 0.14);
+  border-radius: 0.625rem;
+  word-break: break-all;
+  user-select: all;
+}
+
+.chave__ajuda {
+  margin: 1rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--slate-400);
+}
+
+.chave__acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 720px) {
+  .adm__forma {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+  }
+
+  .adm__campo--largo {
+    grid-column: span 4;
+  }
+}

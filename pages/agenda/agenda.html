@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="agenda.css" />
 </head>
 
-<body class="fundo-interno">
+<body class="fundo-interno" data-pagina="agenda">
 
 <main class="pagina erp agenda">
 
@@ -34,11 +34,20 @@
   </header>
 
   <nav class="navegar" aria-label="Telas do sistema">
-    <a class="navegar__link esta-aqui" href="agenda.html" aria-current="page">Agenda do dia</a>
-    <a class="navegar__link" href="../pacientes/pacientes.html">Pacientes</a>
+    <a class="navegar__link esta-aqui" href="agenda.html" aria-current="page" data-permissao="agenda.ver" hidden>Agenda do dia</a>
+    <a class="navegar__link" href="../pacientes/pacientes.html" data-permissao="pacientes.ver" hidden>Pacientes</a>
+    <a class="navegar__link" href="../exames/exames.html" data-permissao="exames.conferir" hidden>Exames</a>
+    <a class="navegar__link" href="../financeiro/financeiro.html" data-permissao="financeiro.caixa" hidden>Financeiro</a>
+    <a class="navegar__link" href="../inventario/inventario.html" data-permissao="inventario.ver" hidden>
+      Inventário
+      <span class="navegar__selo" id="selo-insumos" hidden></span>
+    </a>
+    <a class="navegar__link" href="../administracao/administracao.html" data-permissao="usuarios.gerenciar" hidden>Administração</a>
   </nav>
 
   <h1 class="erp__titulo">Agenda do dia</h1>
+
+  <p class="aviso-estoque" id="aviso-estoque" role="status" hidden></p>
 
   <div class="agenda__navegacao">
     <button class="agenda__seta" type="button" id="agenda-anterior" aria-label="Dia anterior">
@@ -46,7 +55,7 @@
     </button>
 
     <label class="agenda__data">
-      <span class="agenda__data-rotulo" id="agenda-extenso">—</span>
+      <span class="agenda__data-rotulo" id="agenda-extenso">·</span>
       <input class="agenda__data-campo" type="date" id="agenda-dia" aria-label="Escolher o dia" />
     </label>
 
@@ -81,7 +90,7 @@
   </li>
 </template>
 
-<script type="module" src="agenda.js"></script>
+<script type="module" src="../../main.js"></script>
 
 </body>
 </html>

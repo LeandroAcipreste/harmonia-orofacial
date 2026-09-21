@@ -3,7 +3,10 @@ import { ligarBrilhoDoCursor } from "../../components/shellcard/shellcard.js";
 const PASSO_DA_LETRA = 0.014;
 const DURACAO_DA_LETRA = 0.3;
 
-const ARRASTO = 2;
+/* O quanto a animação corre atrás da rolagem, em segundos. Era 2, e o
+   texto seguia chegando depois que a pessoa parava de rolar. Com o Lenis
+   já suavizando a roda, pouco atraso basta para não ficar duro. */
+const ARRASTO = 0.6;
 
 const dividirEmLetras = (elemento) => {
     if (!elemento) {
@@ -85,10 +88,15 @@ export const initSectionFive = () => {
             ease: "power2.out",
             duration: DURACAO_DA_LETRA,
             stagger: PASSO_DA_LETRA,
+            /* O gatilho é o bloco de texto, e não a seção: as fotos ficam
+               embaixo do texto dentro da mesma seção, e com o fim amarrado
+               ao pé da seção a última letra só chegava com as fotos já na
+               tela. Agora o texto termina de aparecer quando o pé dele
+               passa do meio da tela, ainda inteiro à vista. */
             scrollTrigger: {
-                trigger: secao,
-                start: "top 75%",
-                end: "bottom 85%",
+                trigger: coluna,
+                start: "top 85%",
+                end: "bottom 50%",
                 scrub: ARRASTO,
                 invalidateOnRefresh: true,
             },

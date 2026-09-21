@@ -56,3 +56,8 @@ $RECYCLE.BIN/
 # A especificacao do backend e a unica coisa aqui que precisa viajar com o
 # repositorio: e o pedido de obra de quem for construir o servidor.
 !.claude/backend/
+
+# O contrato com a clínica, em PDF, para consulta local.
+# Tem CPF, CNPJ e endereço das partes, e este repositório é público: não
+# pode subir. A fonte fica em C:\Users\User\Documents\contratos\harmonia-orofacial\.
+/Contrato-Harmonia-Orofacial-*.pdf
