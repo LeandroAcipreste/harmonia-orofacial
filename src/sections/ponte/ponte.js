@@ -6,8 +6,10 @@
                   termina no primeiro quadro do loop (medido: 24, dentro da variacao natural das ondas)
      0,95 a 1     a pelicula da clinica escurece um pouco, para o texto que vai subir */
 import { escolherFonte } from "../../core/retrato.js";
+import { freio } from "../../core/rolagem-toque.js";
+import { buscarQuadro, ligarPorZona } from "../../core/video-rolagem.js";
 
-const FREIO = 0.06;
+const FREIO = freio(0.06);
 // a dobra da doutora ja saiu com a animacao dela (sectionfour.js): o video comeca logo no inicio do trilho
 const VEU_ATE = 0.08;
 const VIDEO_DE = 0.02;
@@ -108,9 +110,7 @@ export const initPonte = () => {
 
         const tempo = p * Math.min(FIM_DA_TRANSICAO, transicao.duration - 0.05);
 
-        if (Math.abs(transicao.currentTime - tempo) > 1 / 48) {
-            transicao.currentTime = tempo;
-        }
+        buscarQuadro(transicao, tempo);
     };
 
     const tocarLoop = () => {
@@ -246,8 +246,8 @@ export const initPonte = () => {
     const levarEstrela = (q) => {
         const d = duracaoDaEstrela();
 
-        if (d && Math.abs(estrela.currentTime - q * d) > 1 / 48) {
-            estrela.currentTime = q * d;
+        if (d) {
+            buscarQuadro(estrela, q * d);
         }
     };
 
@@ -423,6 +423,19 @@ export const initPonte = () => {
 
     alvo = atual = caminho.progress;
     pintar(atual);
+
+    // no toque, cada video da ponte so fica ligado perto do trecho dele (video-rolagem.js); fora dele a doutora
+    // mostra o cartaz do video, que e o mesmo quadro 0
+    ligarPorZona(transicao, trilho);
+    ligarPorZona(loop, clinica, tocarLoop);
+
+    if (trilhoEstrela) {
+        ligarPorZona(estrela, trilhoEstrela);
+    }
+
+    if (avaliacoes && !avaliacoes.hidden) {
+        ligarPorZona(estrelaLoop, avaliacoes, tocarLoopDaEstrela);
+    }
 
     if (trilhoEstrela && estrela && estrelaLoop && loop) {
         const seguirTrilhoDaEstrela = (progresso) => {

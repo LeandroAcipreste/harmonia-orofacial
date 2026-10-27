@@ -3,6 +3,10 @@
    escolhe o lugar (uma das classes --*) onde ele nao fica em cima de texto, foto ou card. */
 .rolar-devagar {
   position: fixed;
+  /* leitura sobre fundo claro (a recepcao branca, o vidro da porta): uma sombra escura e suave atras */
+  padding: 0.75rem 1.25rem;
+  border-radius: 9999px;
+  background-image: radial-gradient(closest-side, rgb(5 10 28 / 0.55), rgb(5 10 28 / 0));
   z-index: 40;
   display: flex;
   flex-direction: column;
@@ -24,25 +28,21 @@
   transform: translateX(-50%);
 }
 
-.rolar-devagar--direita {
-  right: 1.5rem;
-  bottom: max(1.75rem, env(safe-area-inset-bottom));
-}
-
-.rolar-devagar--esquerda {
-  bottom: max(1.75rem, env(safe-area-inset-bottom));
-  left: 1.5rem;
-}
-
 .rolar-devagar--meio {
   top: 50%;
-  right: 1.5rem;
-  transform: translateY(-50%);
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
+/* no alto (a dobra da doutora, entre as duas colunas): so a frase, sem o traco, colada no topo */
 .rolar-devagar--alto {
-  top: 1.75rem;
-  right: 1.5rem;
+  top: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.rolar-devagar--alto .rolar-devagar__trilho {
+  display: none;
 }
 
 .rolar-devagar__texto {

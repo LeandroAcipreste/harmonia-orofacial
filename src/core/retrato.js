@@ -10,7 +10,14 @@ export const escolherFonte = (video) => {
         return;
     }
 
-    if (window.matchMedia(CELULAR_EM_PE).matches) {
+    if (!window.matchMedia(CELULAR_EM_PE).matches) {
+        return;
+    }
+
+    // solto (longe da tela, video-rolagem.js): so troca o arquivo que ele vai usar quando voltar
+    if (video.dataset.solto === "1") {
+        video.dataset.fonte = video.dataset.retrato;
+    } else {
         video.src = video.dataset.retrato;
     }
 };

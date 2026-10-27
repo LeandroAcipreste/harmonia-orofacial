@@ -1,6 +1,8 @@
 import { ligarBrilhoDoCursor } from "../../components/shellcard/shellcard.js";
 import { prefereMovimentoReduzido } from "../../utils/movimento.js";
 import { escolherFonte } from "../../core/retrato.js";
+import { freio, rolagem } from "../../core/rolagem-toque.js";
+import { buscarQuadro, ligarPorZona } from "../../core/video-rolagem.js";
 
 const ROLAGEM_POR_CARD = 0.9;
 
@@ -11,7 +13,7 @@ const ROLAGEM_DO_FILME = 3;
 // peso do video na linha do tempo presa (os cartoes somam ~2,6 cada)
 const DURACAO_DO_FILME = 7;
 // celular: a cada quadro o video anda essa fracao do que falta ate a rolagem (deslize rapido nao pula quadros)
-const FREIO = 0.08;
+const FREIO = freio(0.08);
 
 const DEITADO = { rotateX: 90, scaleX: 0.44, yPercent: 44 };
 const DE_FRENTE = { rotateX: 0, scaleX: 1, yPercent: 0 };
@@ -52,9 +54,7 @@ const levarFilme = (filme, p) => {
 
     const tempo = Math.min(1, Math.max(0, p)) * Math.max(0, filme.duration - 0.05);
 
-    if (Math.abs(filme.currentTime - tempo) > 1 / 48) {
-        filme.currentTime = tempo;
-    }
+    buscarQuadro(filme, tempo);
 };
 
 const prepararFilme = (secao) => {
@@ -68,6 +68,7 @@ const prepararFilme = (secao) => {
     escolherFonte(filme);
     filme.preload = "auto";
     filme.load();
+    ligarPorZona(filme, secao);
 
     // o Safari do iPhone so desenha o quadro buscado depois de o video ter tocado uma vez
     let acordado = false;
@@ -108,7 +109,7 @@ const ligarSequencia = (secao) => {
         montarMestre(secao, cards, filme, {
             start: "top top",
             end: () =>
-                `+=${window.innerHeight * (ROLAGEM_POR_CARD * cards.length + ROLAGEM_DA_TELA + (filme ? ROLAGEM_DO_FILME : 0))}`,
+                `+=${window.innerHeight * rolagem(ROLAGEM_POR_CARD * cards.length + ROLAGEM_DA_TELA + (filme ? ROLAGEM_DO_FILME : 0))}`,
             pin: true,
             pinSpacing: true,
             anticipatePin: 1,

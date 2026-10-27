@@ -8,7 +8,9 @@ const OLHAR_MS = 200;
 // e tambem com a pagina parada: o conteudo continua chegando depois da rolagem (o texto da doutora terminando de
 // entrar, a clinica no fim do video, as fotos correndo sozinhas)
 const VIGIA_MS = 500;
-const LUGARES = ["centro", "direita", "esquerda", "meio", "alto"];
+// sempre no meio da largura da tela (nos cantos ele ficava sobre o vidro da porta, sem leitura): embaixo, no meio
+// da altura ou no alto
+const LUGARES = ["centro", "meio", "alto"];
 const FOLGA = 12;
 // foto ou card que ocupa mais que isso da tela e fundo, nao informacao
 const FUNDO = 0.5;

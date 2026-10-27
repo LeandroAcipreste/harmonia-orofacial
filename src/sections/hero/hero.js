@@ -1,5 +1,7 @@
 import { nivelDaConexao } from "../../core/conexao.js";
 import { escolherFonte } from "../../core/retrato.js";
+import { freio } from "../../core/rolagem-toque.js";
+import { buscarQuadro, ligarPorZona } from "../../core/video-rolagem.js";
 
 const MONTAGENS = [
     {
@@ -233,7 +235,7 @@ export const initHero = () => {
    a .hero, porque a hero fica presa (sticky). */
 const ACELERA = 3;
 // freio: a cada quadro o video anda essa fracao do que falta ate a rolagem. Rolando rapido, ele chega devagar.
-const FREIO = 0.06;
+const FREIO = freio(0.06);
 // so a hero do desktop (16:9) e a mesma imagem do comeco da transicao; nas outras a troca e imediata
 const MESMA_IMAGEM = /hero-espiral(-leve)?\.mp4$/;
 
@@ -250,6 +252,7 @@ const animarNaRolagem = (hero, video) => {
     escolherFonte(transicao);
     transicao.preload = "auto";
     transicao.load();
+    ligarPorZona(transicao, abertura);
 
     let fase = "hero";            // hero | acelerando | transicao
     let alvo = 0;                 // onde a rolagem quer o video (0 a 1)
@@ -265,9 +268,7 @@ const animarNaRolagem = (hero, video) => {
 
         const tempo = p * Math.max(0, transicao.duration - 0.05);
 
-        if (Math.abs(transicao.currentTime - tempo) > 1 / 48) {
-            transicao.currentTime = tempo;
-        }
+        buscarQuadro(transicao, tempo);
     };
 
     // o Safari do iPhone so desenha o quadro buscado depois de o video ter tocado uma vez

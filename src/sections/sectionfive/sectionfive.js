@@ -1,4 +1,5 @@
 import { ligarBrilhoDoCursor } from "../../components/shellcard/shellcard.js";
+import { arrasto, rolagem } from "../../core/rolagem-toque.js";
 
 const PASSO_DA_LETRA = 0.014;
 const DURACAO_DA_LETRA = 0.3;
@@ -6,7 +7,7 @@ const DURACAO_DA_LETRA = 0.3;
 /* O quanto a animação corre atrás da rolagem, em segundos. Era 2, e o
    texto seguia chegando depois que a pessoa parava de rolar. Com o Lenis
    já suavizando a roda, pouco atraso basta para não ficar duro. */
-const ARRASTO = 0.6;
+const ARRASTO = arrasto(0.6);
 // a clinica fica presa na tela enquanto o texto aparece letra por letra (quanto de rolagem, em telas)
 const ROLAGEM_DAS_LETRAS = 1.6;
 
@@ -100,7 +101,7 @@ export const initSectionFive = () => {
             scrollTrigger: {
                 trigger: secao,
                 start: "top top",
-                end: () => `+=${window.innerHeight * ROLAGEM_DAS_LETRAS}`,
+                end: () => `+=${window.innerHeight * rolagem(ROLAGEM_DAS_LETRAS)}`,
                 pin: true,
                 pinSpacing: true,
                 anticipatePin: 1,

@@ -86,6 +86,13 @@
   }
 }
 
+/* toque: metade do trecho (rolagem-toque.js) */
+@media (hover: none) and (pointer: coarse) {
+  .s3__entrada {
+    height: 125vh;
+  }
+}
+
 .s3__palco {
   position: relative;
   z-index: 3;

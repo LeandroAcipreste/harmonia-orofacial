@@ -137,3 +137,14 @@
 .ponte__trilho-estrela {
   height: 250vh;
 }
+
+/* toque: os dois trilhos pela metade (rolagem-toque.js), o celular nao pede rolagem lenta */
+@media (hover: none) and (pointer: coarse) {
+  .ponte__trilho {
+    height: 150vh;
+  }
+
+  .ponte__trilho-estrela {
+    height: 125vh;
+  }
+}

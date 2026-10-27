@@ -1,4 +1,6 @@
-const ARRASTO = 1.2;
+import { arrasto, rolagem } from "../../core/rolagem-toque.js";
+
+const ARRASTO = arrasto(1.2);
 
 const ESQUERDA = { de: "0%", para: "-22%" };
 const DIREITA = { de: "-20%", para: "2%" };
@@ -89,11 +91,11 @@ export const initTransicao = ({ aoRecolher } = {}) => {
                 trigger: bloco,
                 start: "top top",
                 end: () =>
-                    `+=${window.innerHeight * ROLAGEM_POR_UNIDADE * (linha ? linha.duration() : 1)}`,
+                    `+=${window.innerHeight * rolagem(ROLAGEM_POR_UNIDADE) * (linha ? linha.duration() : 1)}`,
                 pin: true,
                 pinSpacing: true,
                 anticipatePin: 1,
-                scrub: 2,
+                scrub: arrasto(2),
                 invalidateOnRefresh: true,
             },
         });
