@@ -1,5 +1,6 @@
 import { ligarBrilhoDoCursor } from "../../components/shellcard/shellcard.js";
 import { prefereMovimentoReduzido } from "../../utils/movimento.js";
+import { escolherFonte } from "../../core/retrato.js";
 
 const ROLAGEM_POR_CARD = 0.9;
 
@@ -64,6 +65,7 @@ const prepararFilme = (secao) => {
     }
 
     secao.classList.add("tem-filme");
+    escolherFonte(filme);
     filme.preload = "auto";
     filme.load();
 

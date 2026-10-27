@@ -94,7 +94,7 @@
       aria-hidden="true"
       tabindex="-1"
     >
-      <source src="assets/videos/hero/hero-espiral-mobile.mp4" type="video/mp4" media="(max-aspect-ratio: 13/20)" />
+      <source src="assets/videos/hero/hero-espiral-mobile-leve.mp4" type="video/mp4" media="(max-aspect-ratio: 13/20)" />
       <source src="assets/videos/hero/hero-espiral-tablet.mp4" type="video/mp4" media="(max-aspect-ratio: 23/20)" />
       <source src="assets/videos/hero/hero-espiral.mp4" type="video/mp4" />
     </video>
@@ -105,10 +105,11 @@
       id="hero-transicao"
       muted
       playsinline
-      preload="auto"
+      preload="none"
       aria-hidden="true"
       tabindex="-1"
       src="assets/videos/hero/transicao-espiral.mp4"
+      data-retrato="assets/videos/hero/transicao-espiral-retrato.mp4"
     ></video>
 
   
@@ -191,7 +192,7 @@
       <!-- fundo: a entrada na clinica (transicao-clinica.mp4), levada pela rolagem com a secao presa; o ultimo
            quadro, o balcao, fica parado atras dos cartoes. No celular, so a imagem desse quadro (sectionthree.js) -->
       <div class="s3__pelicula-palco">
-        <video class="s3__pelicula-filme" muted playsinline preload="none" aria-hidden="true" tabindex="-1" src="assets/videos/resultados/transicao-clinica.mp4"></video>
+        <video class="s3__pelicula-filme" muted playsinline preload="none" aria-hidden="true" tabindex="-1" src="assets/videos/resultados/transicao-clinica.mp4" data-retrato="assets/videos/resultados/transicao-clinica-retrato.mp4"></video>
         <span class="s3__pelicula-imagem"></span>
       </div>
     </div>
@@ -325,12 +326,12 @@
        rolagem leva o video ate o refletor, a luz e as ondas. Na clinica: as ondas seguem em loop, feito do fim do
        proprio video, entao o primeiro quadro do loop e o seguinte ao ultimo da transicao. Sem fade em nenhum ponto. -->
   <div class="ponte" aria-hidden="true">
-    <video class="ponte__transicao" muted playsinline preload="none" tabindex="-1" poster="assets/images/dentista/consultorio-refletor.webp" src="assets/videos/dentista/transicao-doutora-clinica.mp4"></video>
-    <video class="ponte__loop" muted loop playsinline preload="none" tabindex="-1" src="assets/videos/clinica/clinica-loop.mp4"></video>
+    <video class="ponte__transicao" muted playsinline preload="none" tabindex="-1" poster="assets/images/dentista/consultorio-refletor.webp" src="assets/videos/dentista/transicao-doutora-clinica.mp4" data-retrato="assets/videos/dentista/transicao-doutora-clinica-retrato.mp4"></video>
+    <video class="ponte__loop" muted loop playsinline preload="none" tabindex="-1" src="assets/videos/clinica/clinica-loop.mp4" data-retrato="assets/videos/clinica/clinica-loop-retrato.mp4"></video>
     <span class="ponte__veu ponte__veu--doutora"></span>
     <span class="ponte__veu ponte__veu--clinica"></span>
-    <video class="ponte__estrela" muted playsinline preload="none" tabindex="-1" src="assets/videos/avaliacoes/transicao-clinica-avaliacoes-rolagem.mp4"></video>
-    <video class="ponte__estrela-loop" muted loop playsinline preload="none" tabindex="-1" src="assets/videos/avaliacoes/avaliacoes-loop.mp4"></video>
+    <video class="ponte__estrela" muted playsinline preload="none" tabindex="-1" src="assets/videos/avaliacoes/transicao-clinica-avaliacoes-rolagem.mp4" data-retrato="assets/videos/avaliacoes/transicao-clinica-avaliacoes-rolagem-retrato.mp4"></video>
+    <video class="ponte__estrela-loop" muted loop playsinline preload="none" tabindex="-1" src="assets/videos/avaliacoes/avaliacoes-loop.mp4" data-retrato="assets/videos/avaliacoes/avaliacoes-loop-retrato.mp4"></video>
     <span class="ponte__veu ponte__veu--avaliacoes"></span>
   </div>
 

@@ -5,6 +5,8 @@
      0,95         ultimo quadro da transicao: o loop da clinica assume no mesmo instante (corte seco). O video
                   termina no primeiro quadro do loop (medido: 24, dentro da variacao natural das ondas)
      0,95 a 1     a pelicula da clinica escurece um pouco, para o texto que vai subir */
+import { escolherFonte } from "../../core/retrato.js";
+
 const FREIO = 0.06;
 // a dobra da doutora ja saiu com a animacao dela (sectionfour.js): o video comeca logo no inicio do trilho
 const VEU_ATE = 0.08;
@@ -52,6 +54,7 @@ export const initPonte = () => {
     const carregarPonte = () => {
         [transicao, loop].forEach((v) => {
             if (v && v.preload === "none") {
+                escolherFonte(v);
                 v.preload = "auto";
                 v.load();
             }
@@ -219,6 +222,7 @@ export const initPonte = () => {
         carregada = true;
         [estrela, estrelaLoop].forEach((v) => {
             if (v) {
+                escolherFonte(v);
                 v.preload = "auto";
                 v.load();
             }

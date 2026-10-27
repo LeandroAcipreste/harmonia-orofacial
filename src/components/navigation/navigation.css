@@ -250,6 +250,45 @@
     margin: 1rem 0 0.5rem;
     padding: 0.8125rem 1rem;
   }
+
+  /* SO O BOTAO DO MENU: no celular nao ha barra presa no topo durante a rolagem, so o botao, numa pilula escura
+     para ler sobre qualquer fundo. Aberto, o painel volta com fundo e a marca. Fechado, a faixa do topo nao
+     segura o toque: so o botao recebe. */
+  .nav {
+    background-color: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-bottom-color: transparent;
+    pointer-events: none;
+    transition: background-color 0.35s ease, border-color 0.35s ease;
+  }
+
+  .nav.is-aberto {
+    background-color: rgb(5 10 28 / 0.92);
+    border-bottom-color: rgb(255 255 255 / 0.05);
+    pointer-events: auto;
+  }
+
+  .nav__marca {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+  }
+
+  .nav.is-aberto .nav__marca {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .nav__botao {
+    padding: 0.625rem 0.875rem;
+    border: 1px solid rgb(253 186 116 / 0.25);
+    border-radius: 9999px;
+    background-color: rgb(5 10 28 / 0.55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    pointer-events: auto;
+  }
 }
 
 @media (min-width: 900px) and (max-width: 1120px) {

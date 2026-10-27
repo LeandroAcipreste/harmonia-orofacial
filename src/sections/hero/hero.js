@@ -1,4 +1,5 @@
 import { nivelDaConexao } from "../../core/conexao.js";
+import { escolherFonte } from "../../core/retrato.js";
 
 const MONTAGENS = [
     {
@@ -21,11 +22,16 @@ const MONTAGENS = [
     },
 ];
 
+// no celular em pe a hero e sempre a leve (540x1080): a pesada (720x1440, 12,6 Mbps) acelerada 3 vezes no comeco da
+// rolagem travava o Android
+const CELULAR = "(max-aspect-ratio: 13/20)";
+
 const arquivoDaVez = () => {
     const montagem = montagemDaVez();
+    const nivel = montagem.consulta === CELULAR ? "leve" : nivelDaConexao();
 
     return {
-        arquivo: montagem[nivelDaConexao()] || montagem.pesado,
+        arquivo: montagem[nivel] || montagem.pesado,
         cartaz: montagem.cartaz,
     };
 };
@@ -239,6 +245,11 @@ const animarNaRolagem = (hero, video) => {
     if (!abertura || !trilho || !transicao || !video) {
         return;
     }
+
+    // o arquivo da transicao (o de 16:9 ou o recorte do celular em pe) so baixa depois de escolhido
+    escolherFonte(transicao);
+    transicao.preload = "auto";
+    transicao.load();
 
     let fase = "hero";            // hero | acelerando | transicao
     let alvo = 0;                 // onde a rolagem quer o video (0 a 1)

@@ -17,6 +17,14 @@
   border-top: none;
 }
 
+/* celular e tablet: fundo fixo com cover nao funciona no navegador de toque (o Android mede a imagem errado e so
+   o azul aparece; o Safari ignora). Ali a foto rola junto com o rodape. */
+@media (hover: none) and (pointer: coarse) {
+  .rodape {
+    background-attachment: scroll;
+  }
+}
+
 .rodape__inner {
   position: relative;
   max-width: 72rem;
