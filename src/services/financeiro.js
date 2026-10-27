@@ -5,6 +5,7 @@ import {
     emAbertoDeDemonstracao,
     estornarDeDemonstracao,
     lancamentosDeDemonstracao,
+    painelDeDemonstracao,
     pagarDeDemonstracao,
     salvarTaxaDeDemonstracao,
     taxasDeDemonstracao,
@@ -15,6 +16,7 @@ const ROTAS = {
     balanco: "/api/financeiro/balanco",
     lancamentos: "/api/financeiro/lancamentos",
     abertos: "/api/financeiro/abertos",
+    painel: "/api/financeiro/painel",
     taxas: "/api/financeiro/taxas",
     pagamento: "/api/financeiro/pagamentos/",
 };
@@ -23,6 +25,7 @@ const MENSAGENS = {
     balanco: "Não foi possível carregar o balanço.",
     lancamentos: "Não foi possível carregar os lançamentos.",
     abertos: "Não foi possível carregar quem está em aberto.",
+    painel: "Não foi possível carregar o painel.",
     taxas: "Não foi possível carregar as taxas.",
     salvarTaxa: "A taxa não foi salva. Tente de novo.",
     pagar: "O pagamento não foi registrado. Tente de novo.",
@@ -133,4 +136,14 @@ export const estornarPagamento = (id, motivo) => {
         MENSAGENS.estornar,
         "PUT",
     );
+};
+
+/* O PAINEL: conversão, procura, retorno, valor bruto e crescimento. É a
+   mesma rota que o agente financeiro da automação lê. */
+export const painel = ({ de, ate } = {}) => {
+    if (DEMONSTRACAO) {
+        return painelDeDemonstracao({ de, ate });
+    }
+
+    return pedir(comBusca(ROTAS.painel, { de, ate }), {}, MENSAGENS.painel);
 };

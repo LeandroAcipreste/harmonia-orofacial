@@ -12,6 +12,8 @@
   position: relative;
   padding: 5rem 0 6rem;
   overflow: hidden;
+  /* sem fundo proprio: atras das notas fica a estrela da camada .ponte (o loop dela), que a rolagem trouxe das
+     ondas da clinica pelo .ponte__trilho-estrela */
 
   contain: layout paint style;
 }

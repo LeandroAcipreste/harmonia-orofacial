@@ -19,6 +19,7 @@ import {
     enderecoDaPlanilha,
     estornarPagamento,
     lancamentos,
+    painel,
     rotuloDaForma,
     salvarTaxa,
     taxas,
@@ -408,6 +409,7 @@ const initFinanceiro = (sessao) => {
 
     const abas = document.querySelector("#fin-abas");
     const paineis = {
+        painel: document.querySelector("#fin-painel-painel"),
         caixa: document.querySelector("#fin-painel-caixa"),
         precificacao: document.querySelector("#fin-painel-precificacao"),
         rentabilidade: document.querySelector("#fin-painel-rentabilidade"),
@@ -659,19 +661,9 @@ const initFinanceiro = (sessao) => {
               "  ·  margem " +
               emDinheiro(relatorio.total.margem)
             : "";
-
-        document.querySelector("#rent-rota").textContent =
-            "GET /api/relatorios/rentabilidade?de=" +
-            (relatorio.periodo.de || "") +
-            "&ate=" +
-            (relatorio.periodo.ate || "");
-
-        document.querySelector("#rent-json").textContent = JSON.stringify(
-            relatorio.paraConteudo,
-            null,
-            2,
-        );
     };
+
+
 
     const carregarRentabilidade = async () => {
         const de = document.querySelector("#rent-de").value;
@@ -690,6 +682,175 @@ const initFinanceiro = (sessao) => {
         }
     });
 
+    /* O PAINEL
+
+       A visão de cima: conversão, crescimento, procura, valor bruto e
+       retorno. Os números vêm prontos do servidor (a mesma rota que o
+       agente financeiro lê); aqui só se desenha.
+
+       Barras de uma cor só, porque cada lista é uma série só. A cor fica
+       na barra e nas setas; número é sempre cor de texto. As cores foram
+       conferidas com o validador da skill de visualização contra o azul
+       dos cards, e estão no financeiro.css. */
+
+    const blocoDoPainel = document.querySelector("#fin-painel-painel");
+    const painelDe = document.querySelector("#pai-de");
+    const painelAte = document.querySelector("#pai-ate");
+    const modeloRanking = document.querySelector("#modelo-ranking");
+    const modeloEtapa = document.querySelector("#modelo-etapa");
+
+    const NUMERO = new Intl.NumberFormat("pt-BR");
+
+    const comoTaxa = (valor) =>
+        valor === null || valor === undefined ? "" : String(valor).replace(".", ",") + "%";
+
+    /* Cada linha tem nome, valor em texto e a barra. A dica aparece no
+       hover e no foco do teclado, e só acrescenta: o valor principal já
+       está escrito na linha. */
+    const montarRanking = (seletor, linhas, { medida, legenda, dica }) => {
+        const lista = document.querySelector(seletor);
+        const vazio = lista.parentElement.querySelector(".painel__vazio");
+        const maior = Math.max(1, ...linhas.map(medida));
+
+        lista.textContent = "";
+
+        linhas.forEach((linha) => {
+            const item = modeloRanking.content.firstElementChild.cloneNode(true);
+
+            item.querySelector(".ranking__nome").textContent = linha.nome;
+            item.querySelector(".ranking__valor").textContent = legenda(linha);
+            item.style.setProperty("--parte", ((medida(linha) / maior) * 100).toFixed(1) + "%");
+            item.dataset.dica = dica(linha);
+            item.setAttribute("aria-label", linha.nome + ": " + legenda(linha) + ". " + dica(linha));
+
+            lista.appendChild(item);
+        });
+
+        vazio.hidden = linhas.length > 0;
+    };
+
+    /* O funil: as três etapas, da avaliação ao tratamento, cada uma na
+       proporção da primeira. A cor escurece para clarear etapa a etapa: a
+       última, a que importa, é a mais forte. */
+    const montarFunil = (conversao) => {
+        const destino = document.querySelector("#pai-funil");
+        const etapas = [
+            ["Avaliações", conversao.avaliacoes],
+            ["Compareceram", conversao.compareceram],
+            ["Viraram tratamento", conversao.viraramTratamento],
+        ];
+        const maior = Math.max(1, conversao.avaliacoes);
+
+        destino.textContent = "";
+
+        etapas.forEach(([nome, valor], ordem) => {
+            const item = modeloEtapa.content.firstElementChild.cloneNode(true);
+
+            item.dataset.etapa = String(ordem);
+            item.querySelector(".funil__nome").textContent = nome;
+            item.querySelector(".funil__valor").textContent = NUMERO.format(valor);
+            item.style.setProperty("--parte", ((valor / maior) * 100).toFixed(1) + "%");
+
+            destino.appendChild(item);
+        });
+
+        document.querySelector("#pai-conversao").textContent =
+            conversao.taxaDeConversao === null ? "sem dados" : comoTaxa(conversao.taxaDeConversao);
+    };
+
+    /* Crescimento: seta, sinal e a palavra, nunca só a cor. Verde e
+       vermelho se confundem para quem tem daltonismo; a seta não. */
+    const montarCrescimento = (crescimento) => {
+        document.querySelectorAll("[data-crescimento]").forEach((kpi) => {
+            const periodo = crescimento[kpi.dataset.crescimento];
+            const numero = periodo[kpi.dataset.medida];
+            const dinheiro = kpi.dataset.medida === "receita";
+            const formatar = dinheiro ? emDinheiro : (valor) => NUMERO.format(valor);
+            const semanal = kpi.dataset.crescimento === "semanal";
+
+            let direcao = "sem-base";
+
+            if (numero.taxa !== null) {
+                direcao = numero.taxa > 0 ? "alta" : numero.taxa < 0 ? "queda" : "estavel";
+            }
+
+            const SETAS = { alta: "▲", queda: "▼", estavel: "■", "sem-base": "" };
+            const PALAVRAS = {
+                alta: "+" + comoTaxa(numero.taxa) + " alta",
+                queda: "−" + comoTaxa(Math.abs(numero.taxa ?? 0)) + " queda",
+                estavel: "0% estável",
+                "sem-base": "sem base de comparação",
+            };
+
+            kpi.dataset.direcao = direcao;
+            kpi.querySelector(".kpi__valor").textContent = formatar(numero.atual);
+            kpi.querySelector(".kpi__seta").textContent = SETAS[direcao];
+            kpi.querySelector(".kpi__variacao").textContent = PALAVRAS[direcao];
+            kpi.querySelector(".kpi__ajuda").textContent =
+                "vs. " +
+                formatar(numero.anterior) +
+                (semanal ? " na semana anterior" : " no mês anterior") +
+                ", até o mesmo dia";
+        });
+    };
+
+    const carregarPainel = async () => {
+        blocoDoPainel.classList.add("esta-carregando");
+
+        try {
+            const dados = await painel({ de: painelDe.value, ate: painelAte.value });
+
+            montarFunil(dados.conversao);
+            montarCrescimento(dados.crescimento);
+
+            montarRanking(
+                "#pai-procurados",
+                dados.maisProcurados.map((linha) => ({ ...linha, nome: linha.procedimento })),
+                {
+                    medida: (linha) => linha.orcado,
+                    legenda: (linha) => linha.orcado + (linha.orcado === 1 ? " orçamento" : " orçamentos"),
+                    dica: (linha) =>
+                        linha.aceito +
+                        " aceito" +
+                        (linha.aceito === 1 ? "" : "s") +
+                        (linha.orcado ? " (" + comoTaxa(Math.round((linha.aceito / linha.orcado) * 1000) / 10) + ")" : ""),
+                },
+            );
+
+            montarRanking(
+                "#pai-bruto",
+                dados.valorBrutoPorProcedimento.map((linha) => ({ ...linha, nome: linha.procedimento })),
+                {
+                    medida: (linha) => linha.valorBruto,
+                    legenda: (linha) => emDinheiro(linha.valorBruto),
+                    dica: (linha) => linha.aceito + (linha.aceito === 1 ? " orçamento aceito" : " orçamentos aceitos"),
+                },
+            );
+
+            montarRanking("#pai-pacientes", dados.pacientesComMaiorRetorno, {
+                medida: (linha) => linha.recebido,
+                legenda: (linha) => emDinheiro(linha.recebido),
+                dica: (linha) =>
+                    linha.pagamentos +
+                    (linha.pagamentos === 1 ? " pagamento" : " pagamentos") +
+                    ", média de " +
+                    emDinheiro(Math.round(linha.recebido / Math.max(1, linha.pagamentos))),
+            });
+        } finally {
+            blocoDoPainel.classList.remove("esta-carregando");
+        }
+    };
+
+    document.querySelector("#pai-ver").addEventListener("click", async () => {
+        avisar("");
+
+        try {
+            await carregarPainel();
+        } catch (falha) {
+            avisar(falha.message);
+        }
+    });
+
     abas.querySelectorAll(".fin__aba").forEach((aba) => {
         aba.addEventListener("click", async () => {
             mostrarPainel(aba.dataset.painel);
@@ -697,6 +858,10 @@ const initFinanceiro = (sessao) => {
             avisar("");
 
             try {
+                if (aba.dataset.painel === "painel") {
+                    await carregarPainel();
+                }
+
                 if (aba.dataset.painel === "precificacao") {
                     await carregarPrecificacao();
                 }
@@ -757,15 +922,29 @@ const initFinanceiro = (sessao) => {
     const comPrecificacao = permitido(PRECIFICAR);
     const comRentabilidade = permitido(RENTABILIDADE);
 
+    const comPainel = permitido(VER);
+
+    abas.querySelector('[data-painel="painel"]').hidden = !comPainel;
     abas.querySelector('[data-painel="precificacao"]').hidden = !comPrecificacao;
     abas.querySelector('[data-painel="rentabilidade"]').hidden = !comRentabilidade;
-    abas.hidden = !comPrecificacao && !comRentabilidade;
+    abas.hidden = !comPainel && !comPrecificacao && !comRentabilidade;
 
     if (comRentabilidade) {
         document.querySelector("#rent-ate").value = hoje();
     }
 
     carregarTudo();
+
+    /* Quem vê o financeiro inteiro abre direto no painel. A secretária,
+       que só tem o caixa do dia, continua abrindo no caixa. */
+    if (comPainel) {
+        painelDe.value = hoje().slice(0, 8) + "01";
+        painelAte.value = hoje();
+
+        mostrarPainel("painel");
+
+        carregarPainel().catch((falha) => avisar(falha.message));
+    }
 };
 
 /* Chamado pelo main.js, que descobre a página pelo data-pagina do body. */

@@ -115,7 +115,7 @@ a {
   width: min(80vw, 700px);
   aspect-ratio: 1;
   transform: translate(-50%, -50%);
-  background-image: url("../../assets/logo-transparente-png.png");
+  background-image: url("../../assets/images/shared/logo-transparente-png.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;

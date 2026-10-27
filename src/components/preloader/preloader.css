@@ -7,15 +7,38 @@ html.sem-preloader .preloader {
   display: none;
 }
 
+/* PRELOADER: o filme do medalhao (assets/videos/preloader/preloader-logo.mp4) cobrindo a tela, do mesmo jeito que a hero (cover).
+   No fim do filme o medalhao para no centro com raio ~107 (a 1280 px); o disco do logo na hero tem ~148. Na saida
+   o filme aproxima 1,4 vez enquanto some: o medalhao vira o disco da hero. */
 .preloader {
   position: fixed;
   inset: 0;
   z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
+  background-color: #000;
   transition: opacity 0.7s ease, visibility 0.7s ease;
+}
+
+.preloader__filme {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.9s ease, transform 0.7s cubic-bezier(0.55, 0, 0.45, 1);
+}
+
+/* a tela comeca preta; o filme surge do preto quando comeca a tocar (preloader.js) */
+.preloader__filme.esta-tocando {
+  opacity: 1;
+}
+
+.preloader__filme::-webkit-media-controls,
+.preloader__filme::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none;
 }
 
 .preloader.esta-saindo {
@@ -23,17 +46,11 @@ html.sem-preloader .preloader {
   visibility: hidden;
 }
 
-.preloader__fundo {
-  position: absolute;
-  inset: 0;
-  display: block;
-  background-color: var(--navy-900);
-  background-image:
-    radial-gradient(60% 60% at 50% 55%, rgb(0 64 255 / 0.16), transparent 70%),
-    radial-gradient(40% 40% at 50% 100%, rgb(253 186 116 / 0.08), transparent 70%);
-  clip-path: inset(0 0 0 0);
+.preloader.esta-saindo .preloader__filme {
+  transform: scale(1.4);
 }
 
+/* sem JavaScript o filme nao toca: o preloader some sozinho e o site abre */
 .preloader:not(.js-ativo) {
   animation: preloaderSocorro 0.6s ease 4s forwards;
 }
@@ -42,127 +59,5 @@ html.sem-preloader .preloader {
   to {
     opacity: 0;
     visibility: hidden;
-  }
-}
-
-.preloader__palco {
-  position: relative;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.preloader__dente-wrap {
-  position: relative;
-  width: clamp(11rem, 32vw, 16rem);
-  aspect-ratio: 1536 / 1024;
-  filter: drop-shadow(0 0 32px rgb(253 186 116 / 0.30));
-}
-
-.preloader__dente-ghost {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  opacity: 0.08;
-  pointer-events: none;
-}
-
-.preloader__dente-fill {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-
-  clip-path: inset(100% 0 0 0);
-  will-change: clip-path;
-}
-
-.preloader__dente-glow {
-  position: absolute;
-  inset: -20%;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 50% 60%,
-    rgb(253 186 116 / 0.15),
-    transparent 60%
-  );
-  opacity: 0;
-  animation: preloaderGlow 2s ease-in-out infinite;
-  pointer-events: none;
-}
-
-@keyframes preloaderGlow {
-  0%, 100% { opacity: 0; }
-  50% { opacity: 1; }
-}
-
-.preloader__marca {
-  margin-top: 2.25rem;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.42em;
-  text-indent: 0.42em;
-  color: var(--white);
-}
-
-.preloader__tipo {
-  margin-top: 0.625rem;
-  font-size: 0.625rem;
-  font-weight: 500;
-  letter-spacing: 0.3em;
-  text-indent: 0.3em;
-  color: rgb(253 186 116 / 0.7);
-}
-
-.preloader__contador {
-  margin-top: 2rem;
-  font-size: 0.6875rem;
-  letter-spacing: 0.3em;
-  font-variant-numeric: tabular-nums;
-  color: var(--slate-500);
-}
-
-.preloader__barra {
-  margin-top: 0.75rem;
-  width: 6rem;
-  height: 1px;
-  background-color: rgb(255 255 255 / 0.08);
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.preloader__barra-fill {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to right, var(--gold-300), var(--gold-400));
-  border-radius: 2px;
-  transform: scaleX(0);
-  transform-origin: left center;
-  will-change: transform;
-}
-
-.preloader__risco {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 20;
-  height: 1px;
-  background-image: linear-gradient(to right, transparent, var(--gold-300), transparent);
-  opacity: 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .preloader__dente-glow {
-    animation: none;
-  }
-
-  .preloader__dente-wrap {
-    filter: none;
   }
 }

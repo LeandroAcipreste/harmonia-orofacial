@@ -1,0 +1,107 @@
+/* CONTINUE ROLANDO DEVAGAR: o aviso da hero, repetido pelas outras secoes. Os videos andam com a rolagem; rolar
+   devagar deixa as transicoes lisas. Aparece quando a rolagem para e some quando ela volta. O rolar-devagar.js
+   escolhe o lugar (uma das classes --*) onde ele nao fica em cima de texto, foto ou card. */
+.rolar-devagar {
+  position: fixed;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.rolar-devagar.esta-visivel {
+  opacity: 1;
+  transition: opacity 0.9s ease;
+}
+
+.rolar-devagar--centro {
+  bottom: max(1.75rem, env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.rolar-devagar--direita {
+  right: 1.5rem;
+  bottom: max(1.75rem, env(safe-area-inset-bottom));
+}
+
+.rolar-devagar--esquerda {
+  bottom: max(1.75rem, env(safe-area-inset-bottom));
+  left: 1.5rem;
+}
+
+.rolar-devagar--meio {
+  top: 50%;
+  right: 1.5rem;
+  transform: translateY(-50%);
+}
+
+.rolar-devagar--alto {
+  top: 1.75rem;
+  right: 1.5rem;
+}
+
+.rolar-devagar__texto {
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--gold-200);
+  text-shadow: 0 1px 6px rgb(0 0 0 / 0.55);
+}
+
+.rolar-devagar__texto--toque {
+  display: none;
+}
+
+/* tela so de toque (celular, tablet): o aviso fala em deslizar */
+@media (hover: none) and (pointer: coarse) {
+  .rolar-devagar__texto--mouse {
+    display: none;
+  }
+
+  .rolar-devagar__texto--toque {
+    display: inline;
+  }
+}
+
+.rolar-devagar__trilho {
+  position: relative;
+  width: 1px;
+  height: 3.25rem;
+  overflow: hidden;
+  background-image: linear-gradient(to bottom, rgb(254 215 170 / 0.45), rgb(254 215 170 / 0));
+}
+
+/* mesmo ponto e mesma descida do aviso da hero (heroRolarDescer, hero.css) */
+.rolar-devagar__ponto {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 3px;
+  height: 0.75rem;
+  margin-left: -1.5px;
+  border-radius: 9999px;
+  background-color: var(--gold-200);
+  box-shadow: 0 0 8px rgb(254 215 170 / 0.8);
+  animation: heroRolarDescer 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rolar-devagar__ponto {
+    animation: none;
+    top: 0.25rem;
+  }
+}
+
+@media (max-height: 460px) {
+  .rolar-devagar__trilho {
+    height: 2.25rem;
+  }
+}

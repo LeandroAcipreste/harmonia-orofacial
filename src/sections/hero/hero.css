@@ -1,9 +1,24 @@
-.hero {
+/* ABERTURA: a hero fica presa (sticky) enquanto o trilho rola. O video de transicao (assets/videos/hero/transicao-espiral.mp4)
+   comeca no quadro 0 exato da hero. Ao rolar, a hero acelera ate completar a volta e, no quadro 0, a troca e um
+   corte seco: mesma imagem dos dois lados, sem fade (hero.js liga .na-transicao). Dali a rolagem leva o video;
+   o ultimo quadro, parado, e o fundo da segunda dobra, que sobe por cima (sectiontwo.css). */
+
+.abertura {
   position: relative;
-  min-height: 100vh;
+}
+
+.abertura__trilho {
+  height: 400vh;
+}
+
+.hero {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  height: 100vh;
   overflow: hidden;
   background-color: var(--navy-900);
-  background-image: url("../../../assets/hero-espiral.webp");
+  background-image: url("../../../assets/images/hero/hero-espiral.webp");
 
   background-size: cover;
   background-position: center;
@@ -11,25 +26,47 @@
 
 @media (max-aspect-ratio: 23/20) {
   .hero {
-    background-image: url("../../../assets/hero-espiral-tablet.webp");
+    background-image: url("../../../assets/images/hero/hero-espiral-tablet.webp");
   }
 }
 
 @media (max-aspect-ratio: 13/20) {
   .hero {
-    background-image: url("../../../assets/hero-espiral-mobile.webp");
+    background-image: url("../../../assets/images/hero/hero-espiral-mobile.webp");
   }
 }
 
-.hero__video {
+.hero__video,
+.hero__transicao {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   pointer-events: none;
+}
+
+.hero__video {
   opacity: 0;
   transition: opacity 1.2s ease;
+}
+
+/* troca instantanea, sem transicao de opacidade: as duas imagens sao iguais no ponto da troca */
+.hero__transicao {
+  visibility: hidden;
+}
+
+.hero.na-transicao .hero__transicao {
+  visibility: visible;
+}
+
+.hero.na-transicao .hero__video {
+  visibility: hidden;
+}
+
+/* depois de rolar, o cartaz parado de fundo nao aparece mais */
+.hero.ja-rolou {
+  background-image: none;
 }
 
 .hero__video.esta-pronto {
@@ -124,6 +161,21 @@
   text-transform: uppercase;
   color: var(--gold-200);
   text-shadow: 0 1px 6px rgb(0 0 0 / 0.55);
+}
+
+.hero__rolar-texto--toque {
+  display: none;
+}
+
+/* tela so de toque (celular, tablet): o aviso fala em deslizar */
+@media (hover: none) and (pointer: coarse) {
+  .hero__rolar-texto--mouse {
+    display: none;
+  }
+
+  .hero__rolar-texto--toque {
+    display: inline;
+  }
 }
 
 .hero__rolar-trilho {

@@ -6,7 +6,9 @@ const daPaleta = (nome, reserva) => {
     return valor || reserva;
 };
 
-const APAGADO = daPaleta("--navy-900", "#00279a");
+// texto ainda nao lido: invisivel (o dourado com transparencia total, para a palavra ir do nada ao ouro sem
+// passar por um tom escuro). Com o consultorio no fundo, qualquer cor apareceria.
+const APAGADO = "rgba(253, 186, 116, 0)";
 const OURO = daPaleta("--gold-300", "#fdba74");
 const CALMO = daPaleta("--slate-200", "#e2e8f0");
 const DISCRETO = daPaleta("--slate-200", "#e2e8f0");
@@ -17,10 +19,17 @@ const CRO = 0.7;
 const BIO = 1;
 const PRIMEIRA_AREA = 2.5;
 const PASSO_DA_AREA = 0.95;
+// o retrato comeca a descer no meio da bio e termina com a ultima area
+const RETRATO = BIO + 0.5;
+const RETRATO_DURA = PRIMEIRA_AREA + 3 * PASSO_DA_AREA - RETRATO;
 
 const ARRASTO_DE = PRIMEIRA_AREA - 0.3;
 const ARRASTO_ATE = PRIMEIRA_AREA + 3 * PASSO_DA_AREA + 0.8;
 const FOLGA_DO_ARRASTO = 48;
+// a saida: terminada a leitura, as letras sobem e somem, o retrato recolhe e o dente do centro some; logo depois
+// a ponte (src/sections/ponte) comeca o video, sem rolagem morta no meio
+const SAIDA = ARRASTO_ATE + 0.25;
+const SAIDA_DAS_PALAVRAS = 0.8;
 
 const dividirEmPalavras = (elemento) => {
     if (!elemento) {
@@ -127,6 +136,18 @@ export const montarLeituraDaDobra = (linha, posicao) => {
 
     onda(linha, bio, posicao + BIO, 1.4, CALMO);
 
+    // o retrato desce de cima para baixo enquanto a bio e as areas sao lidas
+    const retrato = secao.querySelector(".s4__retrato");
+
+    if (retrato) {
+        linha.fromTo(
+            retrato,
+            { "--revela": 0 },
+            { "--revela": 1, ease: "none", duration: RETRATO_DURA },
+            posicao + RETRATO
+        );
+    }
+
     areas.forEach((area, indice) => {
         const quando = posicao + PRIMEIRA_AREA + indice * PASSO_DA_AREA;
 
@@ -176,6 +197,46 @@ export const montarLeituraDaDobra = (linha, posicao) => {
         );
 
         encolherOVao(secao);
+    }
+
+    sairDaDobra(linha, secao, bloco, posicao + SAIDA);
+};
+
+const sairDaDobra = (linha, secao, bloco, quando) => {
+    const palavras = Array.from(secao.querySelectorAll(".s4__palavra"));
+
+    if (palavras.length) {
+        linha.to(
+            palavras,
+            {
+                y: "-0.6em",
+                opacity: 0,
+                ease: "power2.in",
+                duration: 0.35,
+                stagger: { each: SAIDA_DAS_PALAVRAS / palavras.length },
+            },
+            quando
+        );
+    }
+
+    linha.to(secao.querySelector(".s4__eyebrow"), { opacity: 0, ease: "none", duration: 0.25 }, quando);
+
+    linha.to(
+        secao.querySelectorAll(".s4__regua, .s4__area-regua"),
+        { scaleX: 0, ease: "power2.in", duration: 0.4, stagger: 0.06 },
+        quando + 0.1
+    );
+
+    const retrato = secao.querySelector(".s4__retrato");
+
+    if (retrato) {
+        linha.to(retrato, { "--revela": 0, ease: "power2.in", duration: 0.6 }, quando + 0.2);
+    }
+
+    const dente = bloco && bloco.querySelector(".letreiro");
+
+    if (dente) {
+        linha.to(dente, { opacity: 0, scale: 0.92, ease: "power2.in", duration: 0.5 }, quando + 0.35);
     }
 };
 

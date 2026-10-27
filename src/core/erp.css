@@ -3,6 +3,13 @@
 
 @import "./base.css";
 
+/* O atributo hidden perde para qualquer display escrito numa classe: a
+   faixa de estoque, o selo do menu e a navegação do mês tinham display
+   próprio e apareciam vazios mesmo escondidos. Aqui hidden ganha sempre. */
+[hidden] {
+  display: none !important;
+}
+
 .erp {
   max-width: 64rem;
   margin: 0 auto;

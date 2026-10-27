@@ -7,7 +7,7 @@ Três papéis encostam no dinheiro, e cada um enxerga um pedaço:
 
 | quem | faz |
 |---|---|
-| Secretária (`recepcao`) | lança o pagamento depois do procedimento e confere o caixa do dia |
+| Secretária (`recepcao`) | lança o pagamento do atendimento de hoje, dentro do paciente, e confere o caixa do dia |
 | Financeiro (`financeiro`) | vê tudo, de qualquer período, cuida das taxas e exporta a planilha |
 | Dentista | as duas coisas |
 

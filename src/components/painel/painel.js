@@ -56,9 +56,9 @@ export const EXTENSO = new Intl.DateTimeFormat("pt-BR", {
 /* O selo redondo assina o topo; o dente e a marca d'agua, o mesmo que as
    telas do sistema usam de papel timbrado. A do selo e a versao 512 e nao
    a 180: em 24mm de papel, 180px dariam 176 DPI e serrilhariam. */
-const SELO = "/assets/favicon-512.png";
+const SELO = "/assets/images/shared/favicon-512.png";
 
-const AGUA = "/assets/logo-transparente-png.png";
+const AGUA = "/assets/images/shared/logo-transparente-png.png";
 
 const POR_EXTENSO_SEM_DIA = new Intl.DateTimeFormat("pt-BR", {
     day: "numeric",
@@ -153,7 +153,7 @@ const MARCACAO = `
 
     <div class="odonto__rolagem">
       <div class="odonto__mapa">
-        <img class="odonto__imagem" src="/assets/dentes.png" loading="lazy" decoding="async" alt="Odontograma com os 32 dentes permanentes, numerados pela notação FDI" width="2066" height="761" />
+        <img class="odonto__imagem" src="/assets/images/erp/dentes.png" loading="lazy" decoding="async" alt="Odontograma com os 32 dentes permanentes, numerados pela notação FDI" width="2066" height="761" />
       </div>
     </div>
 

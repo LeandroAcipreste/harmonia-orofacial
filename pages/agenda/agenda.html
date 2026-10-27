@@ -4,11 +4,11 @@
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Agenda do dia · Harmonia Orofacial</title>
+  <title>Agenda · Harmonia Orofacial</title>
 
-  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="512x512" href="../../assets/favicon-512.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/favicon-180.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/images/shared/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="../../assets/images/shared/favicon-512.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/images/shared/favicon-180.png" />
 
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
@@ -23,7 +23,7 @@
 
   <header class="erp__topo">
     <div class="erp__marca">
-      <img class="erp__marca-img" src="../../assets/favicon-180.png" alt="" width="180" height="180" />
+      <img class="erp__marca-img" src="../../assets/images/shared/favicon-180.png" alt="" width="180" height="180" />
       <div>
         <p class="erp__marca-nome">HARMONIA OROFACIAL</p>
         <p class="erp__marca-tipo" id="erp-quem">CLÍNICA ODONTOLÓGICA</p>
@@ -45,11 +45,16 @@
     <a class="navegar__link" href="../administracao/administracao.html" data-permissao="usuarios.gerenciar" hidden>Administração</a>
   </nav>
 
-  <h1 class="erp__titulo">Agenda do dia</h1>
+  <h1 class="erp__titulo" id="agenda-titulo">Agenda do dia</h1>
+
+  <div class="agenda__modos" role="group" aria-label="Ver a agenda por">
+    <button class="agenda__modo esta-aqui" type="button" data-modo="dia" aria-pressed="true">Dia</button>
+    <button class="agenda__modo" type="button" data-modo="mes" aria-pressed="false">Mês</button>
+  </div>
 
   <p class="aviso-estoque" id="aviso-estoque" role="status" hidden></p>
 
-  <div class="agenda__navegacao">
+  <div class="agenda__navegacao" id="agenda-navegacao-dia">
     <button class="agenda__seta" type="button" id="agenda-anterior" aria-label="Dia anterior">
       <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6" /></svg>
     </button>
@@ -66,19 +71,67 @@
     <button class="agenda__hoje" type="button" id="agenda-hoje">Hoje</button>
   </div>
 
+  <div class="agenda__navegacao" id="agenda-navegacao-mes" hidden>
+    <button class="agenda__seta" type="button" id="mes-anterior" aria-label="Mês anterior">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+    </button>
+
+    <p class="agenda__data agenda__data--mes"><span class="agenda__data-rotulo" id="mes-extenso">·</span></p>
+
+    <button class="agenda__seta" type="button" id="mes-proximo" aria-label="Próximo mês">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+    </button>
+
+    <button class="agenda__hoje" type="button" id="mes-atual">Este mês</button>
+  </div>
+
   <p class="agenda__resumo" id="agenda-resumo" role="status"></p>
 
   <ol class="lista" id="agenda-lista"></ol>
+
+  <div class="agenda__mes" id="agenda-mes" hidden></div>
 
   <p class="vazio" id="agenda-vazio" hidden>Nenhuma avaliação marcada para este dia.</p>
   <p class="erro" id="agenda-erro" role="alert" hidden></p>
 
   <div id="painel"></div>
 
+  <dialog class="pedido remarcar" id="remarcar" aria-labelledby="remarcar-titulo">
+    <form method="dialog" id="remarcar-form">
+      <header class="pedido__topo">
+        <div>
+          <h2 class="pedido__titulo" id="remarcar-titulo">Remarcar</h2>
+          <p class="pedido__paciente" id="remarcar-paciente"></p>
+        </div>
+        <button class="pedido__fechar" type="button" id="remarcar-fechar" aria-label="Fechar">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+        </button>
+      </header>
+
+      <div class="pedido__corpo remarcar__corpo">
+        <label class="pedido__campo">
+          <span class="pedido__rotulo">Novo dia</span>
+          <input class="pedido__linha remarcar__entrada" type="date" id="remarcar-dia" required />
+        </label>
+
+        <label class="pedido__campo">
+          <span class="pedido__rotulo">Novo horário</span>
+          <input class="pedido__linha remarcar__entrada" type="time" id="remarcar-hora" step="300" required />
+        </label>
+      </div>
+
+      <footer class="pedido__acoes">
+        <p class="pedido__aviso" id="remarcar-aviso" role="status"></p>
+        <button class="pedido__cancelar" type="button" id="remarcar-cancelar">Cancelar</button>
+        <button class="pedido__emitir" type="submit" id="remarcar-salvar">Remarcar</button>
+      </footer>
+    </form>
+  </dialog>
+
 </main>
 
 <template id="modelo-agendamento">
-  <li>
+  <li class="agenda__item">
     <button class="lista__botao" type="button">
       <span class="agenda__hora"></span>
       <span class="lista__quem">
@@ -87,7 +140,15 @@
       </span>
       <span class="selo"></span>
     </button>
+    <button class="agenda__remarcar" type="button" hidden>Remarcar</button>
   </li>
+</template>
+
+<template id="modelo-dia-do-mes">
+  <section class="agenda__dia">
+    <h2 class="agenda__dia-titulo"></h2>
+    <ol class="lista"></ol>
+  </section>
 </template>
 
 <script type="module" src="../../main.js"></script>

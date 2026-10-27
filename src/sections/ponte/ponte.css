@@ -1,0 +1,139 @@
+/* PONTE: o fundo da dobra da doutora, do trilho e da clinica, numa camada presa a tela atras do conteudo.
+   O ponte.js liga .esta-ativa so enquanto essas dobras estao na tela e escreve na propria .ponte:
+     --veu-d   pelicula da doutora (1 escura, 0 clara)
+     --veu-c   pelicula da clinica
+     --mistura o loop da clinica surgindo por cima do fim da transicao (a ponte) */
+
+.ponte {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  visibility: hidden;
+  pointer-events: none;
+  background-color: var(--navy-900);
+  /* camada propria na placa de video: sem isso, cada quadro do video repintava todo o conteudo por cima
+     (medido: 2 quadros por segundo na clinica, 57 sem a camada) */
+  will-change: transform;
+  transform: translateZ(0);
+  contain: strict;
+}
+
+.ponte.esta-ativa {
+  visibility: visible;
+}
+
+.ponte__transicao,
+.ponte__loop,
+.ponte__estrela,
+.ponte__estrela-loop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  will-change: transform;
+}
+
+.ponte__transicao::-webkit-media-controls,
+.ponte__transicao::-webkit-media-controls-start-playback-button,
+.ponte__loop::-webkit-media-controls,
+.ponte__loop::-webkit-media-controls-start-playback-button,
+.ponte__estrela::-webkit-media-controls,
+.ponte__estrela::-webkit-media-controls-start-playback-button,
+.ponte__estrela-loop::-webkit-media-controls,
+.ponte__estrela-loop::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
+/* o loop da clinica (o video dela com as metades trocadas) assume no ultimo quadro da transicao, que termina no
+   primeiro quadro do loop: corte seco (--mistura 0 ou 1, escrita pelo ponte.js) */
+.ponte__loop {
+  opacity: var(--mistura, 0);
+}
+
+/* ESTRELA (clinica -> avaliacoes): o video da rolagem comeca no quadro 0 do loop da clinica e termina no quadro
+   anterior ao 1o do loop da estrela (as pontes de 1 s estao dentro do proprio video). Troca por visibility, sem fade:
+     .na-estrela        o loop da clinica deu a volta ate o quadro 0 e o video da rolagem assumiu
+     .no-loop-estrela   fim do video da rolagem: o loop da estrela assume */
+.ponte__estrela {
+  visibility: hidden;
+}
+
+.ponte.na-estrela .ponte__estrela {
+  visibility: visible;
+}
+
+.ponte__estrela-loop {
+  visibility: hidden;
+}
+
+.ponte.no-loop-estrela .ponte__estrela-loop {
+  visibility: visible;
+}
+
+/* as peliculas ficam sempre por cima dos videos, inclusive dos da estrela, que vem depois no HTML */
+.ponte__veu {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  will-change: opacity;
+}
+
+/* doutora: o consultorio bem escurecido, um pouco mais do lado do texto */
+.ponte__veu--doutora {
+  opacity: var(--veu-d, 1);
+  background-image:
+    linear-gradient(to bottom, rgb(5 10 28 / 0.9) 0%, rgb(5 10 28 / 0.78) 35%, rgb(5 10 28 / 0.82) 70%, rgb(5 10 28 / 0.94) 100%),
+    linear-gradient(to right, rgb(5 10 28 / 0.35), transparent 60%);
+}
+
+/* clinica: as ondas levemente escurecidas para o texto e as fotos */
+.ponte__veu--clinica {
+  opacity: var(--veu-c, 0);
+  background-image: linear-gradient(
+    to bottom,
+    rgb(5 10 28 / 0.75) 0%,
+    rgb(5 10 28 / 0.5) 30%,
+    rgb(5 10 28 / 0.5) 70%,
+    rgb(5 10 28 / 0.78) 100%
+  );
+}
+
+/* avaliacoes: a estrela escurece um pouco quando as notas chegam, para os cards lerem por cima */
+.ponte__veu--avaliacoes {
+  opacity: var(--veu-a, 0);
+  background-image: linear-gradient(
+    to bottom,
+    rgb(5 10 28 / 0.55) 0%,
+    rgb(5 10 28 / 0.7) 50%,
+    rgb(5 10 28 / 0.85) 100%
+  );
+}
+
+@media (max-width: 899px) {
+  .ponte__veu--doutora {
+    background-image: linear-gradient(to bottom, rgb(5 10 28 / 0.9) 0%, rgb(5 10 28 / 0.82) 40%, rgb(5 10 28 / 0.86) 75%, rgb(5 10 28 / 0.95) 100%);
+  }
+}
+
+.ponte__trilho {
+  height: 300vh;
+}
+
+/* CLINICA NO LUGAR: o trilho devolve a ultima tela dele (margem negativa), entao a clinica ocupa essa tela por
+   baixo do video. Ela fica escondida (.esta-esperando, do ponte.js) e aparece no instante em que o video termina e
+   a tela escurece, ja encaixada; dali ela fica presa enquanto o texto aparece (sectionfive.js). */
+.ponte__trilho {
+  margin-bottom: -100vh;
+}
+
+.s5.esta-esperando .s5__inner {
+  visibility: hidden;
+}
+
+/* TRILHO DA ESTRELA: comeca colado na clinica. Enquanto o texto e as fotos dela sobem e saem, o video ja anda;
+   termina com a estrela inteira na tela, e as notas sobem por cima dela logo em seguida */
+.ponte__trilho-estrela {
+  height: 250vh;
+}

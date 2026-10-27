@@ -7,6 +7,8 @@ const DURACAO_DA_LETRA = 0.3;
    texto seguia chegando depois que a pessoa parava de rolar. Com o Lenis
    já suavizando a roda, pouco atraso basta para não ficar duro. */
 const ARRASTO = 0.6;
+// a clinica fica presa na tela enquanto o texto aparece letra por letra (quanto de rolagem, em telas)
+const ROLAGEM_DAS_LETRAS = 1.6;
 
 const dividirEmLetras = (elemento) => {
     if (!elemento) {
@@ -93,10 +95,15 @@ export const initSectionFive = () => {
                ao pé da seção a última letra só chegava com as fotos já na
                tela. Agora o texto termina de aparecer quando o pé dele
                passa do meio da tela, ainda inteiro à vista. */
+            /* A secao chega ja encaixada na tela (o video da ponte termina com ela no lugar) e fica presa
+               enquanto o texto aparece: o conteudo nao sobe durante a leitura. */
             scrollTrigger: {
-                trigger: coluna,
-                start: "top 85%",
-                end: "bottom 50%",
+                trigger: secao,
+                start: "top top",
+                end: () => `+=${window.innerHeight * ROLAGEM_DAS_LETRAS}`,
+                pin: true,
+                pinSpacing: true,
+                anticipatePin: 1,
                 scrub: ARRASTO,
                 invalidateOnRefresh: true,
             },

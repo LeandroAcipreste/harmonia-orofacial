@@ -21,32 +21,6 @@ const irParaOPainel = async (destino) => {
 
 const MIN_SENHA = DEMONSTRACAO ? 1 : 8;
 
-/* Na demonstração, um clique preenche o formulário: trocar de perfil para
-   conferir permissão tem que ser barato, senão ninguém confere. */
-const montarContasDeTeste = () => {
-    const quadro = document.querySelector("#contas-de-teste");
-
-    if (!quadro || !DEMONSTRACAO) {
-        return;
-    }
-
-    quadro.hidden = false;
-
-    quadro.querySelectorAll(".contas__usar").forEach((botao) => {
-        botao.addEventListener("click", () => {
-            const email = document.querySelector("#login-email");
-            const senha = document.querySelector("#login-senha");
-
-            email.value = botao.dataset.email;
-            senha.value = "12345";
-
-            email.dispatchEvent(new Event("input", { bubbles: true }));
-            senha.dispatchEvent(new Event("input", { bubbles: true }));
-            senha.focus();
-        });
-    });
-};
-
 /* Aceita "nome@dominio.br". Validação de e-mail no cliente serve para
    pegar erro de digitação, não para decidir se o endereço existe. */
 const FORMATO_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -85,8 +59,6 @@ const initLogin = () => {
     if (!form) {
         return;
     }
-
-    montarContasDeTeste();
 
     const pagina = document.querySelector(".acesso");
     const alerta = form.querySelector("#login-alerta");

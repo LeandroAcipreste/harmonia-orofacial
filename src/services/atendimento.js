@@ -2,15 +2,18 @@ import { API, DEMONSTRACAO, ESTAGIOS } from "../core/config.js";
 import { comoMailto } from "./email.js";
 import {
     agendaDeDemonstracao,
+    agendaDoMesDeDemonstracao,
     converterDeDemonstracao,
     emitirDeDemonstracao,
     fichaDeDemonstracao,
     pacientesDeDemonstracao,
+    remarcarDeDemonstracao,
     removerAnexoDeDemonstracao,
     requisitarDeDemonstracao,
     salvarAnexoDeDemonstracao,
     salvarDeDemonstracao,
 } from "./demonstracao.js";
+import { enviar as enviarComRecado, pedir as pedirComRecado } from "./http.js";
 
 const ROTAS = {
     agenda: "/api/agenda",
@@ -20,6 +23,8 @@ const ROTAS = {
 
 const MENSAGENS = {
     agenda: "Não foi possível carregar a agenda deste dia.",
+    mes: "Não foi possível carregar a agenda deste mês.",
+    remarcar: "Não foi possível remarcar. Tente de novo.",
     pacientes: "Não foi possível carregar a lista de pacientes.",
     anexar: "O arquivo não foi anexado. Tente de novo.",
     remover: "Não foi possível remover o anexo.",
@@ -75,6 +80,24 @@ export const agendaDoDia = (data) =>
               ROTAS.agenda + "?data=" + encodeURIComponent(data),
               {},
               MENSAGENS.agenda,
+          );
+
+/* O mês inteiro, para achar a pessoa e remarcar. mes é "AAAA-MM". */
+export const agendaDoMes = (mes) =>
+    DEMONSTRACAO
+        ? agendaDoMesDeDemonstracao(mes)
+        : pedirComRecado(ROTAS.agenda + "?mes=" + encodeURIComponent(mes), {}, MENSAGENS.mes);
+
+/* inicio é "AAAA-MM-DDTHH:MM", na hora da clínica. Pelo http.js porque a
+   recusa do servidor ("esse horário já está ocupado") diz mais que a nossa. */
+export const remarcar = (id, inicio) =>
+    DEMONSTRACAO
+        ? remarcarDeDemonstracao(id, inicio)
+        : enviarComRecado(
+              ROTAS.ficha + encodeURIComponent(id) + "/horario",
+              { inicio },
+              MENSAGENS.remarcar,
+              "PUT",
           );
 
 export const pacientes = ({ busca, estagio } = {}) => {

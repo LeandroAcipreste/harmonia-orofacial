@@ -17,7 +17,7 @@ const LADOS = {
 };
 
 export const MAPA = {
-    imagem: "../../assets/dentes.png",
+    imagem: "../../assets/images/erp/dentes.png",
     proporcao: 2.7148,
     arcadas: [
         {

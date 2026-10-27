@@ -1,5 +1,6 @@
-const DURACAO_SCROLL = 1.4;
-const MULTIPLICADOR_RODA = 0.8;
+// rolagem lenta de proposito: os videos andam com ela e travam se a pagina pular muito por giro da roda
+const DURACAO_SCROLL = 1.8;
+const MULTIPLICADOR_RODA = 0.45;
 const SUAVIZACAO = (avanco) => 1 - Math.pow(1 - avanco, 4);
 
 const ALTURA_NAV = 64;
@@ -45,20 +46,25 @@ export const initScroll = () => {
     return instancia;
 };
 
+/* Recarregou: sempre comeca na hero. Este modulo chega por import() e pode rodar DEPOIS do evento load (sem o
+   peso de antes, o load dispara cedo); por isso, se a pagina ja carregou, leva ao topo agora, e senao, no load. */
 const comecarNoTopo = () => {
-    window.scrollTo(0, 0);
+    const aoTopo = () => {
+        window.scrollTo(0, 0);
 
-    window.addEventListener(
-        "load",
-        () => {
-            window.scrollTo(0, 0);
+        if (instancia) {
+            instancia.scrollTo(0, { immediate: true });
+        }
+    };
 
-            if (instancia) {
-                instancia.scrollTo(0, { immediate: true });
-            }
-        },
-        { once: true }
-    );
+    aoTopo();
+
+    if (document.readyState === "complete") {
+        window.requestAnimationFrame(aoTopo);
+        return;
+    }
+
+    window.addEventListener("load", aoTopo, { once: true });
 };
 
 const ligarAncoras = () => {

@@ -1,4 +1,4 @@
-import { DEMONSTRACAO } from "../core/config.js";
+import { API, DEMONSTRACAO } from "../core/config.js";
 import { enviar, pedir } from "./http.js";
 import {
     agentesDeDemonstracao,
@@ -124,4 +124,7 @@ export const situacaoDoGoogle = () => {
     return pedir(ROTAS.google, {}, MENSAGENS.google);
 };
 
-export const enderecoDeConexaoDoGoogle = () => ROTAS.conectar;
+/* É uma navegação, não um fetch: o navegador vai até a API, que manda para
+   o Google. Por isso precisa do endereço da API inteiro, e não só do
+   caminho, que cairia no servidor do site. */
+export const enderecoDeConexaoDoGoogle = () => API.base + ROTAS.conectar;

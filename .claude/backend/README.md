@@ -23,7 +23,10 @@ banco**. Ele coleta, valida e entrega. Toda decisão fica no servidor.
 | [11-requisicao-de-exame.md](11-requisicao-de-exame.md) | o pedido de exame que o paciente leva à clínica de imagem |
 | [12-financeiro.md](12-financeiro.md) | recebimentos, taxas de cartão, balanço e quem ainda deve |
 | [13-inventario.md](13-inventario.md) | insumos, consumo por atendimento e aviso de estoque mínimo |
-| [14-precificacao.md](14-precificacao.md) | custo da hora, preço sugerido, rentabilidade e o que o n8n lê |
+| [14-precificacao.md](14-precificacao.md) | custo da hora, preço sugerido, rentabilidade, e o relatório de anúncios que o n8n lê |
+| [15-painel-financeiro.md](15-painel-financeiro.md) | o painel do financeiro e o que o agente financeiro lê |
+| [16-email-de-aniversario.md](16-email-de-aniversario.md) | o parabéns por e-mail no dia do aniversário |
+| [17-acesso-da-secretaria.md](17-acesso-da-secretaria.md) | pacientes do dia, agenda do mês para remarcar e cadastro de insumo |
 
 ---
 
@@ -57,6 +60,7 @@ está escrito em cada arquivo, no lugar em que importa.
 | `POST` | `/api/sessao/sair` | 04 |
 | `GET` | `/api/sessao/atual` | 04 |
 | `GET` | `/api/agenda?data=` | 06 |
+| `GET` | `/api/agenda?mes=AAAA-MM` | 17 |
 | `GET` | `/api/pacientes?busca=&estagio=` | 06 |
 | `GET` | `/api/agendamentos/:id` | 06 |
 | `PUT` | `/api/agendamentos/:id/parecer` | 06 |
@@ -84,6 +88,8 @@ está escrito em cada arquivo, no lugar em que importa.
 | `POST` | `/api/precificacao/parametros` | 14 |
 | `POST` `PUT` | `/api/precificacao/procedimentos` | 14 |
 | `GET` | `/api/relatorios/rentabilidade?de=&ate=` | 14 |
+| `GET` | `/api/relatorios/anuncios?de=&ate=` | 14 |
+| `GET` | `/api/financeiro/painel?de=&ate=` | 15 |
 | `POST` | `/api/usuarios/agentes` | 04 |
 | `GET` `POST` | `/api/usuarios/:id/chaves` | 04 |
 | `PUT` | `/api/usuarios/chaves/:id/revogacao` | 04 |

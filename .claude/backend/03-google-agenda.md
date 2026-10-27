@@ -8,7 +8,7 @@ só pergunta ao backend quais horários estão livres.
 ## De onde saem os horários
 
 A doutora abre horários criando eventos numa agenda própria do Google,
-"Horários de avaliação" (pode ser recorrente: toda terça, das 8h às 12h).
+"Horários disponíveis" (pode ser recorrente: toda terça, das 8h às 12h).
 O servidor divide cada evento em blocos de `AGENDA.duracaoMinutos` e tira:
 
 - o que bate com qualquer evento ocupado da agenda principal dela,

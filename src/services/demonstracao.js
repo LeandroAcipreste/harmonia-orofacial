@@ -221,6 +221,64 @@ const recusarSemPermissao = (permissao, recado) => {
         : Promise.reject(new Error(recado));
 };
 
+/* A AGENDA DA DEMONSTRAÇÃO
+
+   Cada ficha num dia só, como no banco: as três primeiras hoje, a última
+   daqui a três dias. Montada na primeira consulta, e não na carga do
+   arquivo, porque o ajudante de data mora mais abaixo. Remarcar muda
+   daqui, e a agenda do dia e a do mês leem o mesmo lugar. */
+
+let marcados = null;
+
+const dataDaDemonstracao = (data) =>
+    [
+        data.getFullYear(),
+        String(data.getMonth() + 1).padStart(2, "0"),
+        String(data.getDate()).padStart(2, "0"),
+    ].join("-");
+
+const hojeNaDemonstracao = () => dataDaDemonstracao(new Date());
+
+const agendaMarcada = () => {
+    if (!marcados) {
+        const depois = new Date();
+
+        depois.setDate(depois.getDate() + 3);
+
+        marcados = new Map(
+            FICHAS.map((ficha, posicao) => [
+                ficha.id,
+                {
+                    data: posicao < 3 ? hojeNaDemonstracao() : dataDaDemonstracao(depois),
+                    hora: ficha.hora,
+                },
+            ]),
+        );
+    }
+
+    return marcados;
+};
+
+const naAgenda = (id) => ({ ...guardado(id), ...agendaMarcada().get(id) });
+
+const porHora = (um, outro) =>
+    um.data.localeCompare(outro.data) || String(um.hora).localeCompare(String(outro.hora));
+
+/* O mesmo porteiro do servidor (middlewares/atendimentoDoDia.js): quem não
+   vê todos os pacientes só abre o atendimento de hoje. */
+const recusarForaDoDia = (id) => {
+    const permissoes = (quemEntrou() || {}).permissoes || [];
+    const marcado = agendaMarcada().get(id);
+
+    if (permissoes.includes("pacientes.ver") || (marcado && marcado.data === hojeNaDemonstracao())) {
+        return null;
+    }
+
+    return Promise.reject(
+        new Error("Este atendimento não é de hoje. Seu acesso abre só os pacientes do dia."),
+    );
+};
+
 export const agendaDeDemonstracao = (data) => {
     const barrado = recusarSemPermissao(
         "agenda.ver",
@@ -231,17 +289,54 @@ export const agendaDeDemonstracao = (data) => {
         return barrado;
     }
 
-    const semana = new Date(data + "T12:00:00").getDay();
+    const agendamentos = [...agendaMarcada().keys()]
+        .map(naAgenda)
+        .filter((registro) => registro.data === data)
+        .sort(porHora);
 
-    if (semana === 0 || semana === 6) {
-        return espera({ agendamentos: [] });
+    return espera({ agendamentos });
+};
+
+export const agendaDoMesDeDemonstracao = (mes) => {
+    const barrado = recusarSemPermissao(
+        "agenda.ver",
+        "Seu acesso não permite ver a agenda.",
+    );
+
+    if (barrado) {
+        return barrado;
     }
 
-    const quantos = semana === 3 ? FICHAS.length : Math.min(3, FICHAS.length);
+    const agendamentos = [...agendaMarcada().keys()]
+        .map(naAgenda)
+        .filter((registro) => registro.data.startsWith(mes + "-"))
+        .sort(porHora);
 
-    return espera({
-        agendamentos: FICHAS.slice(0, quantos).map((ficha) => guardado(ficha.id)),
-    });
+    return espera({ mes, agendamentos });
+};
+
+export const remarcarDeDemonstracao = (id, inicio) => {
+    const barrado = recusarSemPermissao(
+        "agenda.marcar",
+        "Seu acesso não permite remarcar.",
+    );
+
+    if (barrado) {
+        return barrado;
+    }
+
+    const [data, hora] = inicio.split("T");
+    const ocupado = [...agendaMarcada()].some(
+        ([outro, marcado]) => outro !== id && marcado.data === data && marcado.hora === hora,
+    );
+
+    if (ocupado) {
+        return Promise.reject(new Error("Esse horário já está ocupado. Escolha outro."));
+    }
+
+    agendaMarcada().set(id, { data, hora });
+
+    return espera({ ok: true, hora });
 };
 
 const ACENTOS = /[\u0300-\u036f]/g;
@@ -293,7 +388,7 @@ export const pacientesDeDemonstracao = ({ busca, estagio } = {}) => {
     });
 };
 
-export const fichaDeDemonstracao = (id) => espera(guardado(id));
+export const fichaDeDemonstracao = (id) => recusarForaDoDia(id) || espera(guardado(id));
 
 export const salvarDeDemonstracao = (id, parecer) => {
     salvos.set(id, parecer);
@@ -344,18 +439,19 @@ const PERMISSOES_DO_PAPEL = {
         "inventario.gerenciar",
     ],
 
-    /* A secretária: agenda e balcão. Não abre prontuário, não vê relatório
-       de período, não mexe no mínimo do estoque. */
+    /* A secretária: os pacientes do dia, a agenda do mês para remarcar e o
+       inventário. Não vê a lista de todos os pacientes, não abre
+       prontuário, não vê relatório de período. Igual à migration 013. */
     recepcao: [
         "agenda.ver",
         "agenda.marcar",
-        "pacientes.ver",
         "avaliacao.ver",
         "avaliacao.comparecimento",
         "financeiro.registrar",
         "financeiro.caixa",
         "inventario.ver",
         "inventario.mover",
+        "inventario.gerenciar",
     ],
 
     /* O financeiro: o dinheiro inteiro, e nada de saúde. Também não entra
@@ -803,6 +899,12 @@ export const salvarTaxaDeDemonstracao = (nova) => {
 };
 
 export const pagarDeDemonstracao = (avaliacaoId, pagamento) => {
+    const foraDoDia = recusarForaDoDia(avaliacaoId);
+
+    if (foraDoDia) {
+        return foraDoDia;
+    }
+
     contador += 1;
 
     const ficha = FICHAS.find((uma) => uma.id === avaliacaoId);
@@ -999,6 +1101,12 @@ const consumoDe = (avaliacaoId) =>
     });
 
 export const consumirDeDemonstracao = (avaliacaoId, itens) => {
+    const foraDoDia = recusarForaDoDia(avaliacaoId);
+
+    if (foraDoDia) {
+        return foraDoDia;
+    }
+
     itens.forEach((item) => {
         contador += 1;
 
@@ -1274,7 +1382,7 @@ const PAPEIS = [
     { codigo: "agente", nome: "Agente de IA", descricao: "Extensão da doutora na automação: enxerga e opera o ERP inteiro, com a chave sob a guarda dela." },
     { codigo: "dentista", nome: "Dentista", descricao: "Atende, escreve o parecer e o orçamento, registra o aceite." },
     { codigo: "financeiro", nome: "Financeiro", descricao: "Cuida do dinheiro: recebimentos, taxas e relatórios. Não abre prontuário." },
-    { codigo: "recepcao", nome: "Recepção", descricao: "Cuida da agenda e do comparecimento. Não vê anamnese nem parecer." },
+    { codigo: "recepcao", nome: "Recepção", descricao: "Atende os pacientes do dia e registra o pagamento, remarca pela agenda do mês e cadastra insumos. Não vê a lista de todos os pacientes, anamnese nem parecer." },
 ];
 
 const CHAVES = [
@@ -1402,3 +1510,101 @@ export const googleDeDemonstracao = () =>
         email: true,
         respondendo: true,
     });
+
+/* O PAINEL DE MENTIRA
+
+   Crescimento e maior retorno saem dos recebimentos da demonstração, para
+   bater com o que a aba Caixa mostra. Conversão e procura são números
+   fixos, do tamanho de um mês comum de clínica pequena. */
+
+export const painelDeDemonstracao = () => {
+    const hoje = new Date();
+    const dia = comoDia(hoje);
+
+    const segunda = new Date(hoje);
+    segunda.setDate(hoje.getDate() - ((hoje.getDay() + 6) % 7));
+
+    const segundaAnterior = new Date(segunda);
+    segundaAnterior.setDate(segunda.getDate() - 7);
+
+    const mesmoDiaSemanaPassada = new Date(hoje);
+    mesmoDiaSemanaPassada.setDate(hoje.getDate() - 7);
+
+    const primeiro = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+    const primeiroAnterior = new Date(hoje.getFullYear(), hoje.getMonth() - 1, 1);
+    const fimAnterior = new Date(hoje.getFullYear(), hoje.getMonth(), 0);
+    const mesmoDiaMesPassado = new Date(
+        hoje.getFullYear(),
+        hoje.getMonth() - 1,
+        Math.min(hoje.getDate(), fimAnterior.getDate()),
+    );
+
+    const recebidoEntre = (de, ate) =>
+        noPeriodo(comoDia(de), comoDia(ate))
+            .filter((pagamento) => !pagamento.estornadoEm)
+            .reduce((soma, pagamento) => soma + pagamento.valor, 0);
+
+    const comparar = (atual, anterior) => ({
+        atual,
+        anterior,
+        taxa: anterior ? Math.round(((atual - anterior) / anterior) * 1000) / 10 : null,
+    });
+
+    /* A semana anterior da demonstração fica menor que a atual, para a
+       tela mostrar alta; o mês anterior fica maior, para mostrar queda. */
+    const semana = recebidoEntre(segunda, hoje);
+    const mes = recebidoEntre(primeiro, hoje);
+
+    const retorno = new Map();
+
+    PAGAMENTOS.filter((pagamento) => !pagamento.estornadoEm).forEach((pagamento) => {
+        const atual = retorno.get(pagamento.paciente) || { nome: pagamento.paciente, recebido: 0, pagamentos: 0 };
+
+        atual.recebido += pagamento.valor;
+        atual.pagamentos += 1;
+        retorno.set(pagamento.paciente, atual);
+    });
+
+    return espera({
+        periodo: { de: comoDia(primeiro), ate: dia },
+        conversao: {
+            avaliacoes: 23,
+            compareceram: 18,
+            viraramTratamento: 11,
+            taxaDeComparecimento: 78.3,
+            taxaDeConversao: 61.1,
+        },
+        maisProcurados: [
+            { procedimento: "Clareamento", orcado: 9, aceito: 6, valorBruto: 720000 },
+            { procedimento: "Limpeza e profilaxia", orcado: 8, aceito: 7, valorBruto: 154000 },
+            { procedimento: "Restauração", orcado: 6, aceito: 4, valorBruto: 152000 },
+            { procedimento: "Faceta em resina", orcado: 4, aceito: 2, valorBruto: 640000 },
+            { procedimento: "Implante", orcado: 3, aceito: 1, valorBruto: 450000 },
+        ],
+        valorBrutoPorProcedimento: [
+            { procedimento: "Clareamento", orcado: 9, aceito: 6, valorBruto: 720000 },
+            { procedimento: "Faceta em resina", orcado: 4, aceito: 2, valorBruto: 640000 },
+            { procedimento: "Implante", orcado: 3, aceito: 1, valorBruto: 450000 },
+            { procedimento: "Limpeza e profilaxia", orcado: 8, aceito: 7, valorBruto: 154000 },
+            { procedimento: "Restauração", orcado: 6, aceito: 4, valorBruto: 152000 },
+        ],
+        pacientesComMaiorRetorno: [...retorno.values()].sort((um, outro) => outro.recebido - um.recebido),
+        crescimento: {
+            semanal: {
+                receita: comparar(semana, Math.round(semana * 0.82)),
+                avaliacoes: comparar(6, 5),
+                de: comoDia(segunda),
+                anteriorDe: comoDia(segundaAnterior),
+                anteriorAte: comoDia(mesmoDiaSemanaPassada),
+            },
+            mensal: {
+                receita: comparar(mes, Math.round(mes * 1.07)),
+                avaliacoes: comparar(19, 17),
+                de: comoDia(primeiro),
+                anteriorDe: comoDia(primeiroAnterior),
+                anteriorAte: comoDia(mesmoDiaMesPassado),
+            },
+            ate: dia,
+        },
+    });
+};

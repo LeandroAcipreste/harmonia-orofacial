@@ -282,7 +282,8 @@
   translate: 0 -100%;
 }
 
-.nav.esta-recolhida:focus-within {
+/* so o foco de teclado segura a barra a vista; o foco que fica no link depois de um clique nao conta */
+.nav.esta-recolhida:has(:focus-visible) {
   translate: 0 0;
 }
 

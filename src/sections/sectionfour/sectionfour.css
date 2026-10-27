@@ -1,7 +1,10 @@
 .s4 {
   position: relative;
+  isolation: isolate;
   padding: 6rem 1.5rem 7rem;
 }
+
+/* o fundo da dobra (o consultorio escurecido) vem da camada .ponte, presa a tela (src/sections/ponte) */
 
 @media (max-width: 899px) {
   .s4 {
@@ -58,6 +61,43 @@
   color: var(--slate-200);
 }
 
+/* RETRATO: moldura no dourado champanhe do dente da dobra (#e6ce86 a #f4e9ab, com um tom escuro para dar metal).
+   O sectionfour.js escreve --revela (0 a 1) junto com a leitura do texto, e a foto desce de cima para baixo.
+   Sem JavaScript, --revela fica em 1 e a foto aparece inteira. */
+.s4__retrato {
+  --revela: 1;
+
+  width: min(16rem, 70%);
+  margin: 2.5rem 0 0;
+}
+
+.s4__retrato-moldura {
+  padding: 5px;
+  border-radius: 1.25rem;
+  background-image: linear-gradient(
+    145deg,
+    #f4e9ab 0%,
+    #c9a24e 26%,
+    #e9d48e 50%,
+    #b8913f 74%,
+    #f3e7a7 100%
+  );
+  box-shadow:
+    0 1.5rem 3rem rgb(0 0 0 / 0.35),
+    0 0 1.5rem rgb(233 212 142 / 0.18);
+  clip-path: inset(0 0 calc((1 - var(--revela)) * 100%) 0 round 1.25rem);
+}
+
+.s4__retrato-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: 50% 12%;
+  border-radius: calc(1.25rem - 5px);
+}
+
 .s4__areas {
   display: grid;
   gap: 0;
@@ -112,13 +152,18 @@
 .s4.js-leitura .s4__bio,
 .s4.js-leitura .s4__cro,
 .s4.js-leitura .s4__area-texto {
-  color: var(--navy-900);
+  color: transparent;
+}
+
+.s4.js-leitura .s4__palavra {
+  /* inline-block para a palavra poder subir na saida da dobra */
+  display: inline-block;
 }
 
 .s4.js-leitura .s4__bio .s4__palavra,
 .s4.js-leitura .s4__cro .s4__palavra,
 .s4.js-leitura .s4__area-texto .s4__palavra {
-  color: var(--navy-900);
+  color: transparent;
 }
 
 .s4.js-leitura .s4__nome .s4__palavra,

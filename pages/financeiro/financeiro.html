@@ -6,9 +6,9 @@
   <meta name="robots" content="noindex, nofollow" />
   <title>Financeiro · Harmonia Orofacial</title>
 
-  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="512x512" href="../../assets/favicon-512.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/favicon-180.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/images/shared/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="../../assets/images/shared/favicon-512.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/images/shared/favicon-180.png" />
 
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
@@ -23,7 +23,7 @@
 
   <header class="erp__topo">
     <div class="erp__marca">
-      <img class="erp__marca-img" src="../../assets/favicon-180.png" alt="" width="180" height="180" />
+      <img class="erp__marca-img" src="../../assets/images/shared/favicon-180.png" alt="" width="180" height="180" />
       <div>
         <p class="erp__marca-nome">HARMONIA OROFACIAL</p>
         <p class="erp__marca-tipo" id="erp-quem">CLÍNICA ODONTOLÓGICA</p>
@@ -54,12 +54,96 @@
   <div id="fin-conteudo" hidden>
 
     <div class="fin__abas" id="fin-abas" role="group" aria-label="Seções do financeiro" hidden>
+      <button class="fin__aba" type="button" data-painel="painel" hidden>Painel</button>
       <button class="fin__aba esta-aqui" type="button" data-painel="caixa">Caixa</button>
       <button class="fin__aba" type="button" data-painel="precificacao">Precificação</button>
       <button class="fin__aba" type="button" data-painel="rentabilidade">Rentabilidade</button>
     </div>
 
     <p class="erro" id="fin-erro" role="alert" hidden></p>
+
+    <div id="fin-painel-painel" hidden>
+
+      <div class="fin__filtro painel__filtro">
+        <label class="fin__campo">
+          <span class="fin__rotulo">De</span>
+          <input class="fin__entrada" type="date" id="pai-de" />
+        </label>
+        <label class="fin__campo">
+          <span class="fin__rotulo">Até</span>
+          <input class="fin__entrada" type="date" id="pai-ate" />
+        </label>
+        <button class="fin__acao" type="button" id="pai-ver">Ver período</button>
+      </div>
+
+      <p class="painel__nota">
+        Conversão, procura, retorno e valor bruto seguem o período escolhido.
+        O crescimento compara sempre a semana e o mês até hoje com o mesmo
+        trecho da semana e do mês anteriores.
+      </p>
+
+      <section class="painel__kpis" aria-label="Indicadores">
+        <article class="kpi kpi--conversao">
+          <p class="kpi__rotulo">Taxa de conversão</p>
+          <p class="kpi__valor" id="pai-conversao">0%</p>
+          <p class="kpi__ajuda">das avaliações que aconteceram viraram tratamento</p>
+
+          <ol class="funil" id="pai-funil" aria-label="Da avaliação ao tratamento"></ol>
+        </article>
+
+        <article class="kpi" data-crescimento="semanal" data-medida="receita">
+          <p class="kpi__rotulo">Receita da semana</p>
+          <p class="kpi__valor">R$ 0,00</p>
+          <p class="kpi__delta"><span class="kpi__seta" aria-hidden="true"></span><span class="kpi__variacao"></span></p>
+          <p class="kpi__ajuda"></p>
+        </article>
+
+        <article class="kpi" data-crescimento="mensal" data-medida="receita">
+          <p class="kpi__rotulo">Receita do mês</p>
+          <p class="kpi__valor">R$ 0,00</p>
+          <p class="kpi__delta"><span class="kpi__seta" aria-hidden="true"></span><span class="kpi__variacao"></span></p>
+          <p class="kpi__ajuda"></p>
+        </article>
+
+        <article class="kpi" data-crescimento="semanal" data-medida="avaliacoes">
+          <p class="kpi__rotulo">Avaliações da semana</p>
+          <p class="kpi__valor">0</p>
+          <p class="kpi__delta"><span class="kpi__seta" aria-hidden="true"></span><span class="kpi__variacao"></span></p>
+          <p class="kpi__ajuda"></p>
+        </article>
+
+        <article class="kpi" data-crescimento="mensal" data-medida="avaliacoes">
+          <p class="kpi__rotulo">Avaliações do mês</p>
+          <p class="kpi__valor">0</p>
+          <p class="kpi__delta"><span class="kpi__seta" aria-hidden="true"></span><span class="kpi__variacao"></span></p>
+          <p class="kpi__ajuda"></p>
+        </article>
+      </section>
+
+      <div class="painel__grade">
+        <section class="painel__bloco">
+          <h2 class="painel__titulo">Procedimentos mais procurados</h2>
+          <p class="painel__legenda">Vezes que entraram em orçamento no período</p>
+          <ol class="ranking" id="pai-procurados"></ol>
+          <p class="vazio painel__vazio" hidden>Nenhum orçamento no período.</p>
+        </section>
+
+        <section class="painel__bloco">
+          <h2 class="painel__titulo">Valor bruto por procedimento</h2>
+          <p class="painel__legenda">Orçamentos aceitos no período, antes de taxa e imposto</p>
+          <ol class="ranking" id="pai-bruto"></ol>
+          <p class="vazio painel__vazio" hidden>Nenhum orçamento aceito no período.</p>
+        </section>
+
+        <section class="painel__bloco painel__bloco--largo">
+          <h2 class="painel__titulo">Pacientes com maior retorno</h2>
+          <p class="painel__legenda">Quanto cada paciente pagou no período</p>
+          <ol class="ranking" id="pai-pacientes"></ol>
+          <p class="vazio painel__vazio" hidden>Nenhum recebimento no período.</p>
+        </section>
+      </div>
+
+    </div>
 
     <div id="fin-painel-caixa">
 
@@ -337,19 +421,6 @@
         </p>
       </section>
 
-      <section class="fin__bloco">
-        <h2 class="fin__secao">O que a automação lê</h2>
-
-        <p class="fin__ajuda">
-          É este bloco que o n8n busca para decidir sobre o que produzir
-          conteúdo. Vai por chave do agente, e não carrega nome, CPF nem
-          ficha de ninguém: só nome de procedimento e número somado.
-        </p>
-
-        <p class="fin__rota" id="rent-rota"></p>
-
-        <pre class="fin__json" id="rent-json"></pre>
-      </section>
 
     </div>
 
@@ -396,6 +467,22 @@
     <li class="taxa">
       <span class="taxa__forma"></span>
       <span class="taxa__percentual"></span>
+    </li>
+  </template>
+
+  <template id="modelo-ranking">
+    <li class="ranking__linha" tabindex="0">
+      <span class="ranking__nome"></span>
+      <span class="ranking__valor"></span>
+      <span class="ranking__trilho" aria-hidden="true"><span class="ranking__barra"></span></span>
+    </li>
+  </template>
+
+  <template id="modelo-etapa">
+    <li class="funil__etapa">
+      <span class="funil__nome"></span>
+      <span class="funil__valor"></span>
+      <span class="funil__trilho" aria-hidden="true"><span class="funil__barra"></span></span>
     </li>
   </template>
 

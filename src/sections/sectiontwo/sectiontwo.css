@@ -1,5 +1,9 @@
+/* O fundo da segunda dobra e o ultimo quadro da transicao da hero (espiral a esquerda, fitas a direita), parado
+   no fim da abertura (hero.css): a dobra e transparente e sobe por cima dele. No desktop a lista fica a direita,
+   longe do logo, e o wash so escurece o lado dela. */
 .s2 {
   position: relative;
+  z-index: 1;
   padding: 9rem 1.5rem 14rem;
   overflow: hidden;
 }
@@ -7,81 +11,36 @@
 .s2__bg {
   position: absolute;
   inset: 0;
-  background-color: var(--navy-900);
   pointer-events: none;
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%);
   mask-image: linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%);
-}
-
-.s2__layer {
-  position: absolute;
-  background-repeat: no-repeat;
-  mix-blend-mode: screen;
-  will-change: transform;
-}
-
-.s2__layer--radial {
-  top: 46%;
-  right: -34%;
-  width: 78rem;
-  height: 78rem;
-  margin-top: -39rem;
-  opacity: 0.5;
-}
-
-.s2__spin {
-  position: absolute;
-  inset: 0;
-  background-image: url("../../../assets/lustre-radial.jpg");
-  background-size: cover;
-  background-position: center;
-
-  will-change: transform;
-  backface-visibility: hidden;
-}
-
-.s2__spin--halo {
-  filter: blur(26px) saturate(1.5) brightness(1.2);
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 12%, rgb(0 0 0 / 0.5) 38%, transparent 64%);
-  mask-image: radial-gradient(circle at 50% 50%, #000 12%, rgb(0 0 0 / 0.5) 38%, transparent 64%);
-  animation: s2Girar 120s linear infinite;
-}
-
-.s2__spin--detalhe {
-  opacity: 0.32;
-  filter: blur(1.5px) saturate(1.25);
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 4%, rgb(0 0 0 / 0.35) 24%, transparent 46%);
-  mask-image: radial-gradient(circle at 50% 50%, #000 4%, rgb(0 0 0 / 0.35) 24%, transparent 46%);
-  animation: s2Girar 170s linear infinite reverse;
-}
-
-@keyframes s2Girar {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.s2__layer--trama {
-  inset: -10% -10% -10% 30%;
-  opacity: 0.13;
-  background-image: url("../../../assets/lustre-trama.jpg");
-
-  background-size: 210%;
-  background-position: 62% 45%;
-  filter: blur(3px);
-  -webkit-mask-image: radial-gradient(ellipse 55% 50% at 76% 80%, #000 0%, transparent 68%);
-  mask-image: radial-gradient(ellipse 55% 50% at 76% 80%, #000 0%, transparent 68%);
 }
 
 .s2__wash {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(to right, var(--navy-900) 0%, rgb(5 10 28 / 0.92) 28%, rgb(5 10 28 / 0.35) 58%, transparent 78%),
+    linear-gradient(to left, var(--navy-900) 0%, rgb(5 10 28 / 0.92) 28%, rgb(5 10 28 / 0.35) 58%, transparent 78%),
 
     linear-gradient(to top, rgb(5 10 28 / 0.88) 0%, rgb(5 10 28 / 0.45) 22%, transparent 42%),
-    radial-gradient(ellipse 50% 45% at 80% 45%, rgb(253 186 116 / 0.07), transparent 70%),
     radial-gradient(ellipse 90% 55% at 50% 118%, rgb(5 10 28 / 0.95), transparent 72%);
+}
+
+/* CAIXA DA LISTA: um pouco maior que a lista (a margem negativa abre a caixa e o padding do .s2__revela devolve o
+   texto ao lugar). O sectiontwo.js escreve so --abre (0 fechada, 1 aberta) na caixa; daqui:
+   - as duas folhas transparentes saem do centro para os lados, cada uma com o fio dourado na borda;
+   - o conteudo e recortado no vao entre os dois fios, entao so aparece onde a cortina ja abriu.
+   Sem JavaScript, --abre fica em 1 e tudo aparece. */
+.s2__caixa {
+  --abre: 1;
+
+  position: relative;
+  margin: -4rem 0 -5rem -5.5rem;
+}
+
+.s2__revela {
+  padding: 4rem 0 5rem 5.5rem;
+  clip-path: inset(0 calc(50.5% * (1 - var(--abre))) 0 calc(50.5% * (1 - var(--abre))));
 }
 
 .cortina {
@@ -99,17 +58,17 @@
   display: block;
 
   width: 50.5%;
-  background-color: var(--navy-900);
+  background-color: transparent;
 }
 
 .cortina__folha--esq {
   left: 0;
-  transform: translateX(-100%);
+  transform: translateX(calc(-100% * var(--abre)));
 }
 
 .cortina__folha--dir {
   right: 0;
-  transform: translateX(100%);
+  transform: translateX(calc(100% * var(--abre)));
 }
 
 .cortina__folha::after {
@@ -143,6 +102,7 @@
 }
 
 .s2__intro {
+  position: relative;
   max-width: 34rem;
 }
 
@@ -222,23 +182,16 @@
 
 @media (max-width: 767px) {
 
+  .s2__caixa {
+    margin: -2.5rem -1rem -3rem -1rem;
+  }
+
+  .s2__revela {
+    padding: 2.5rem 1rem 3rem 1rem;
+  }
+
   .s2 {
     padding: 7rem 1.5rem 12rem;
-  }
-
-  .s2__layer--radial {
-    top: 50%;
-    right: auto;
-    left: 50%;
-    width: 42rem;
-    height: 42rem;
-    margin: -21rem 0 0 -21rem;
-    opacity: 0.4;
-  }
-
-  .s2__layer--trama {
-    inset: 45% -20% -10% -20%;
-    opacity: 0.08;
   }
 
   .s2__wash {
@@ -271,8 +224,8 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .s2__spin {
-    animation: none;
+@media (min-width: 768px) {
+  .s2__intro {
+    margin-left: auto;
   }
 }

@@ -5,6 +5,13 @@ const ROLAGEM_POR_CARD = 0.9;
 
 const ROLAGEM_DA_TELA = 1;
 
+// desktop: quantas telas de rolagem o video da entrada na clinica ocupa, antes de a caixa subir
+const ROLAGEM_DO_FILME = 3;
+// peso do video na linha do tempo presa (os cartoes somam ~2,6 cada)
+const DURACAO_DO_FILME = 7;
+// celular: a cada quadro o video anda essa fracao do que falta ate a rolagem (deslize rapido nao pula quadros)
+const FREIO = 0.08;
+
 const DEITADO = { rotateX: 90, scaleX: 0.44, yPercent: 44 };
 const DE_FRENTE = { rotateX: 0, scaleX: 1, yPercent: 0 };
 
@@ -31,57 +38,51 @@ export const initSectionThree = () => {
         return;
     }
 
-    carregarFundo(secao);
-
     ligarBrilhoDoCursor(secao.querySelectorAll(".shell-card"));
 
     ligarSequencia(secao);
 };
 
-let fundo = null;
-
-const carregarFundo = (secao) => {
-    const canvas = secao.querySelector("#s3-gl");
-
-    if (!canvas) {
+/* FILME: a entrada na clinica, levada pela rolagem. So busca quadro (nunca toca sozinho). */
+const levarFilme = (filme, p) => {
+    if (!filme || !Number.isFinite(filme.duration) || filme.duration <= 0) {
         return;
     }
 
-    const semGl = () => secao.classList.add("is-sem-gl");
+    const tempo = Math.min(1, Math.max(0, p)) * Math.max(0, filme.duration - 0.05);
 
-    import("../../three/heroGlitter.js")
-        .then(({ iniciarHeroGlitter }) =>
-            iniciarHeroGlitter(canvas, {
-                reduzido: prefereMovimentoReduzido(),
-                superficie: false,
-            })
-        )
-        .then((assumiu) => {
-            if (!assumiu) {
-                semGl();
-                return;
-            }
-
-            if (typeof assumiu === "object") {
-                fundo = assumiu;
-            }
-        })
-        .catch(semGl);
+    if (Math.abs(filme.currentTime - tempo) > 1 / 48) {
+        filme.currentTime = tempo;
+    }
 };
 
-const mirarNoCard = (card) => {
-    if (!fundo) {
-        return;
+const prepararFilme = (secao) => {
+    const filme = secao.querySelector(".s3__pelicula-filme");
+
+    if (!filme) {
+        return null;
     }
 
-    const caixa = card.getBoundingClientRect();
-    const meioX = caixa.left + caixa.width / 2;
-    const meioY = caixa.top + caixa.height / 2;
+    secao.classList.add("tem-filme");
+    filme.preload = "auto";
+    filme.load();
 
-    fundo.mirarEixo(
-        (meioX / window.innerWidth) * 2 - 1,
-        1 - (meioY / window.innerHeight) * 2
-    );
+    // o Safari do iPhone so desenha o quadro buscado depois de o video ter tocado uma vez
+    let acordado = false;
+    filme.acordar = () => {
+        if (acordado) {
+            return;
+        }
+
+        acordado = true;
+        const promessa = filme.play();
+
+        if (promessa && typeof promessa.then === "function") {
+            promessa.then(() => filme.pause()).catch(() => {});
+        }
+    };
+
+    return filme;
 };
 
 const ligarSequencia = (secao) => {
@@ -95,15 +96,17 @@ const ligarSequencia = (secao) => {
         return;
     }
 
+    const filme = prepararFilme(secao);
+
     const consulta = gsap.matchMedia();
 
     consulta.add(CONSULTA_PRESA, () => {
         secao.classList.add("js-sequencia");
 
-        montarMestre(secao, cards, {
+        montarMestre(secao, cards, filme, {
             start: "top top",
             end: () =>
-                `+=${window.innerHeight * (ROLAGEM_POR_CARD * cards.length + ROLAGEM_DA_TELA)}`,
+                `+=${window.innerHeight * (ROLAGEM_POR_CARD * cards.length + ROLAGEM_DA_TELA + (filme ? ROLAGEM_DO_FILME : 0))}`,
             pin: true,
             pinSpacing: true,
             anticipatePin: 1,
@@ -113,7 +116,55 @@ const ligarSequencia = (secao) => {
     });
 
     consulta.add(CONSULTA_SOLTA, () => {
+        montarFilmeSolto(secao, filme);
         cards.forEach(montarCardSolto);
+    });
+};
+
+// celular: a secao nao fica presa. O trecho .s3__entrada rola com o fundo parado (sticky) e o video anda com ele;
+// no fim do trecho a pelicula escurece e os cartoes sobem por cima do balcao.
+const montarFilmeSolto = (secao, filme) => {
+    const entrada = secao.querySelector(".s3__entrada");
+
+    if (!filme || !entrada) {
+        return;
+    }
+
+    let alvo = 0;
+    let atual = 0;
+    let laco = 0;
+
+    const pintar = (p) => {
+        levarFilme(filme, p);
+        secao.style.setProperty("--escuro", Math.min(1, Math.max(0, (p - 0.85) / 0.15)).toFixed(3));
+    };
+
+    const perseguir = () => {
+        const falta = alvo - atual;
+        atual = Math.abs(falta) < 0.0005 ? alvo : atual + falta * FREIO;
+        pintar(atual);
+        laco = atual === alvo ? 0 : window.requestAnimationFrame(perseguir);
+    };
+
+    ScrollTrigger.create({
+        trigger: entrada,
+        start: "top top",
+        end: "bottom bottom",
+        onUpdate: (self) => {
+            if (self.progress > 0) {
+                filme.acordar();
+            }
+
+            alvo = self.progress;
+
+            if (!laco) {
+                laco = window.requestAnimationFrame(perseguir);
+            }
+        },
+        onRefresh: (self) => {
+            alvo = atual = self.progress;
+            pintar(atual);
+        },
     });
 };
 
@@ -142,10 +193,6 @@ const montarCardSolto = (card) => {
             end: "top 12%",
             scrub: true,
             invalidateOnRefresh: true,
-
-            onUpdate: () => mirarNoCard(card),
-            onEnter: () => mirarNoCard(card),
-            onEnterBack: () => mirarNoCard(card),
         },
     });
 
@@ -158,7 +205,7 @@ const montarCardSolto = (card) => {
     return linha;
 };
 
-const montarMestre = (secao, cards, gatilho) => {
+const montarMestre = (secao, cards, filme, gatilho) => {
     const mestre = gsap.timeline({
         defaults: { ease: "power2.inOut" },
         scrollTrigger: {
@@ -169,7 +216,30 @@ const montarMestre = (secao, cards, gatilho) => {
         },
     });
 
-    abrirTela(mestre, secao);
+    // primeiro o video, com a pelicula transparente; quando ele para, a pelicula escurece e a caixa sobe
+    let inicioDaCaixa = 0;
+
+    if (filme) {
+        const relogio = { p: 0 };
+
+        mestre.fromTo(
+            relogio,
+            { p: 0 },
+            {
+                p: 1,
+                duration: DURACAO_DO_FILME,
+                ease: "none",
+                onStart: () => filme.acordar(),
+                onUpdate: () => levarFilme(filme, relogio.p),
+            },
+            0
+        );
+
+        mestre.fromTo(secao, { "--escuro": 0 }, { "--escuro": 1, duration: ABERTURA, ease: "none" }, DURACAO_DO_FILME);
+        inicioDaCaixa = DURACAO_DO_FILME;
+    }
+
+    abrirTela(mestre, secao, inicioDaCaixa);
 
     cards.forEach((card) => {
         mestre.add(criarSequenciaDoCard(card), ">");
@@ -178,14 +248,14 @@ const montarMestre = (secao, cards, gatilho) => {
     return mestre;
 };
 
-const abrirTela = (linha, secao) => {
+const abrirTela = (linha, secao, inicio) => {
     const tela = secao.querySelector(".s3__palco");
 
     if (!tela) {
         return;
     }
 
-    desdobrar(linha, tela, 0);
+    desdobrar(linha, tela, inicio);
 
     linha.to({}, { duration: ASSENTA });
 };

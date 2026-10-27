@@ -1,9 +1,6 @@
 import { revelarAoEntrar } from "../../utils/reveal.js";
-import { prefereMovimentoReduzido } from "../../utils/movimento.js";
 
 const MARGEM_LISTA = "0px 0px -50% 0px";
-
-const movimentoReduzido = prefereMovimentoReduzido();
 
 export const initSectionTwo = () => {
     const secao = document.querySelector(".s2");
@@ -22,20 +19,17 @@ export const initSectionTwo = () => {
 
     void lista.offsetHeight;
 
+    // a lista so aparece quando a espiral termina de deslizar para a direita (hero.js)
     aoHeroParar(() => {
         revelarAoEntrar(lista.querySelectorAll(".s2__item"), { margem: MARGEM_LISTA });
         revelarAoEntrar(secao.querySelectorAll(".s2-reveal"), { margem: MARGEM_LISTA });
     });
 
     abrirCortina(secao);
-
-    if (movimentoReduzido) {
-        return;
-    }
-
-    animarLustre(secao);
 };
 
+// a cortina abre com a rolagem enquanto a caixa da lista sobe. Aqui so se escreve --abre (0 a 1) na caixa; o CSS
+// move os fios e recorta o conteudo no vao entre eles (sectiontwo.css).
 const abrirCortina = (secao) => {
     if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") {
         return;
@@ -43,50 +37,33 @@ const abrirCortina = (secao) => {
 
     gsap.registerPlugin(ScrollTrigger);
 
-    const esquerda = secao.querySelector(".cortina__folha--esq");
-    const direita = secao.querySelector(".cortina__folha--dir");
+    const caixa = secao.querySelector(".s2__caixa");
 
-    if (!esquerda || !direita) {
+    if (!caixa) {
         return;
     }
 
-    const linha = gsap.timeline({
-        defaults: { ease: "power2.inOut" },
-        scrollTrigger: {
-            trigger: secao,
-            start: "top bottom",
-            end: "top top",
-            scrub: true,
-        },
+    let ultimo = -1;
+
+    const escrever = (p) => {
+        const valor = Math.round(p * 1000) / 1000;
+
+        if (valor !== ultimo) {
+            ultimo = valor;
+            caixa.style.setProperty("--abre", valor);
+        }
+    };
+
+    const suave = gsap.parseEase("power2.inOut");
+
+    const linha = ScrollTrigger.create({
+        trigger: caixa,
+        start: "top 95%",
+        end: "top 30%",
+        onUpdate: (self) => escrever(suave(self.progress)),
     });
 
-    linha
-        .fromTo(esquerda, { x: 0, xPercent: 0 }, { x: 0, xPercent: -100 }, 0)
-        .fromTo(direita, { x: 0, xPercent: 0 }, { x: 0, xPercent: 100 }, 0);
-};
-
-const animarLustre = (secao) => {
-    if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") {
-        return;
-    }
-
-    const radial = secao.querySelector(".s2__layer--radial");
-    const trama = secao.querySelector(".s2__layer--trama");
-
-    const trilho = { trigger: secao, start: "top 40%", end: "bottom top" };
-
-    gsap.fromTo(radial, { yPercent: 12 }, { yPercent: -14, ease: "none", scrollTrigger: { ...trilho, scrub: 1 } });
-    gsap.fromTo(trama, { yPercent: -8 }, { yPercent: 10, ease: "none", scrollTrigger: { ...trilho, scrub: 1.6 } });
-
-    gsap.fromTo(
-        radial,
-        { opacity: 0.3 },
-        {
-            opacity: 0.62,
-            ease: "none",
-            scrollTrigger: { trigger: secao, start: "top 40%", end: "center center", scrub: true },
-        }
-    );
+    escrever(suave(linha.progress));
 };
 
 const aoHeroParar = (aoLiberar) => {

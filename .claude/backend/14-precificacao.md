@@ -60,6 +60,7 @@ tem `list=` com o catálogo, e escolher da lista preenche o preço de tabela.
 | `POST /api/precificacao/procedimentos`, `PUT /api/precificacao/procedimentos/:id` | `financeiro.precificar` |
 | `GET /api/precificacao/catalogo` | `parecer.editar` |
 | `GET /api/relatorios/rentabilidade?de=&ate=` | `relatorio.rentabilidade` |
+| `GET /api/relatorios/anuncios?de=&ate=` | `relatorio.rentabilidade` |
 
 ## A receita é rateada, e isso é uma escolha
 
@@ -72,55 +73,106 @@ recebe R$ 818. Quando o orçamento é de um procedimento só, rateio e valor
 coincidem. É a leitura honesta possível: qualquer outra fingiria saber qual
 item o dinheiro pagou primeiro.
 
-## O ranking é por hora de cadeira
+## Os dois relatórios
 
-A clínica não vende procedimento, vende tempo. Um procedimento de ticket
-alto que ocupa três horas pode deixar menos por hora do que um de ticket
-baixo que ocupa uma. Por isso `paraConteudo.criterio` é
-`"margem por hora de cadeira"`, e é assim que a lista sai ordenada.
+- **`/api/relatorios/rentabilidade`** é o da aba Rentabilidade do
+  Financeiro: o que cada procedimento de fato deixou no período, com a
+  receita rateada como descrito acima.
+- **`/api/relatorios/anuncios`** é o do n8n: qual procedimento patrocinar.
 
-## O bloco que a automação lê
+## O relatório para os anúncios (n8n)
+
+A automação usa este relatório para decidir sobre qual procedimento fazer
+publicação patrocinada. Ele responde duas perguntas juntas, dentro do
+período pedido:
+
+**Procura.** Quantas vezes o procedimento entrou no orçamento de uma
+avaliação (é alguém que veio e precisa dele) e quantas dessas viraram
+aceite. A data que conta é a da consulta: o horário marcado ou, quando não
+houve horário, a chegada da ficha. Item de orçamento escrito fora do
+catálogo não entra na conta.
+
+**Custo-benefício.** Quanto sobra por hora de cadeira no preço de tabela,
+depois de custo, imposto e taxa de cartão. Sai da precificação (a conta do
+começo deste documento).
+
+**Pontuação**, de 0 a 100, junta as duas:
+
+```
+(procura ÷ maior procura do período) × (margem por hora ÷ maior margem por hora do período) × 100
+```
+
+Multiplica, e não soma, de propósito: um procedimento muito procurado que
+dá prejuízo, ou muito lucrativo que ninguém procura, fica perto de zero.
+Para anúncio patrocinado só interessa o que tem as duas coisas. Margem
+negativa conta como zero.
+
+### A chamada
+
+```
+GET /api/relatorios/anuncios?de=2026-09-01&ate=2026-09-30
+Authorization: Bearer <chave do agente>
+```
+
+Sem `de` e `ate`, o período é do dia 1º do mês corrente até hoje. Datas
+em `AAAA-MM-DD`.
+
+### A resposta
 
 ```json
 {
-  "criadoEm": "2026-09-20T14:02:11.000Z",
-  "criterio": "margem por hora de cadeira",
-  "destaques": [
-    { "procedimento": "Clareamento", "margemPorHora": 48000, "margemPercentual": 62.4, "vezes": 9 }
+  "periodo": { "de": "2026-09-01", "ate": "2026-09-30" },
+  "criterio": "pontuação de 0 a 100: procura relativa × margem por hora relativa, no período",
+  "paraPatrocinar": [
+    {
+      "procedimento": "Clareamento",
+      "pontuacao": 100,
+      "procura": { "orcado": 12, "aceito": 7, "taxaDeAceite": 58.3 },
+      "custoBeneficio": {
+        "precoDeTabela": 120000,
+        "margemPercentual": 64.5,
+        "margemPorHora": 77400,
+        "duracaoMinutos": 60
+      },
+      "custoIncompleto": false
+    }
   ],
-  "revisar": [
-    { "procedimento": "Faceta em resina", "margem": -12000, "motivo": "custo acima do recebido no período" }
-  ]
+  "procedimentos": [ "... todos os procedimentos ativos, no mesmo formato, do maior para o menor" ]
 }
 ```
 
-Valores em centavos, como em todo o resto do sistema.
+- **`paraPatrocinar`**: os até três com maior pontuação, só os que têm
+  pontuação acima de zero. É o que o n8n usa para escolher a pauta.
+- **`procedimentos`**: todos os ativos, ordenados pela pontuação, para
+  quando o fluxo precisar de mais opções ou quiser evitar repetir o anúncio
+  da semana anterior.
+- **`custoIncompleto: true`**: algum insumo da ficha técnica não tem preço
+  de compra, então a margem está otimista. O fluxo deve tratar como alerta
+  para a doutora, e não como pauta.
+- Valores em **centavos**, como em todo o sistema: `120000` é R$ 1.200,00.
 
 ### Ligando no n8n
 
-1. **Credencial**: a chave do agente, a mesma já usada nas outras rotinas
-   (`Authorization: Bearer <chave>`), que fica sob a guarda da doutora.
-   Desde o contrato v9 essa chave abre o ERP inteiro, o que é mais um
-   motivo para o fluxo do n8n mandar ao modelo só o `paraConteudo`, e não
-   a resposta inteira de qualquer rota.
-2. **Nó HTTP Request**: `GET {{API}}/api/relatorios/rentabilidade`, sem
-   parâmetro traz o mês corrente.
-3. **O que mandar para o modelo**: apenas `paraConteudo`. Os `destaques`
-   viram pauta ("o que divulgar"), e `revisar` é alerta para a doutora, não
-   assunto de post.
-4. **Cadência**: uma vez por semana basta. O relatório muda com
-   recebimento, e recebimento não muda de hora em hora.
+1. **Credencial**: Header Auth no cofre do n8n, com
+   `Authorization: Bearer <chave do agente>`. A chave é emitida na tela
+   de Administração.
+2. **Nó HTTP Request**: `GET {{API}}/api/relatorios/anuncios`, com `de` e
+   `ate` do período que a campanha deve olhar (as últimas quatro semanas,
+   por exemplo).
+3. **O que mandar para o modelo**: `paraPatrocinar`. É o que basta para
+   escolher o procedimento e o argumento do anúncio (procura alta, aceite
+   alto).
+4. **Cadência**: semanal. Procura e aceite mudam com as consultas, não de
+   hora em hora.
 
-### O relatório é agregado, mesmo com o agente enxergando tudo
+### O que o relatório não carrega
 
-Desde o contrato v9 o agente lê o ERP inteiro, prontuário incluído. Ainda
-assim **este** relatório não carrega nome, CPF, telefone nem valor
-individual de pagamento: ele é somado por procedimento porque é disso que a
-pauta precisa, e mandar ficha de paciente para um modelo de linguagem sem
-necessidade é risco de graça.
-
+Nenhum nome de paciente, CPF, telefone, ficha ou valor individual de
+pagamento: tudo é somado por procedimento. A chave do agente abre o ERP
+inteiro, mas este relatório é agregado por desenho, porque mandar dado de
+paciente para um modelo de linguagem, sem necessidade, é risco de graça.
 Há um teste de ponta a ponta que falha se um nome de paciente aparecer na
-resposta desta rota.
+resposta.
 
 ## O que não está modelado
 

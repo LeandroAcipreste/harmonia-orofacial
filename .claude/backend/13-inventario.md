@@ -9,7 +9,7 @@ inventário é da clínica, não do caixa.
 | quem | faz |
 |---|---|
 | Dentista | tudo: cadastra insumo, define o mínimo, lança entrada, consumo, perda e ajuste |
-| Secretária (`recepcao`) | vê, lança entrada, perda e ajuste de contagem |
+| Secretária (`recepcao`) | cadastra insumo, vê, lança entrada, perda e ajuste de contagem; o consumo, só no atendimento de hoje |
 
 ## O saldo é a soma do extrato
 

@@ -69,8 +69,8 @@
   overflow: hidden;
   overflow: clip;
 
-  -webkit-mask-image: url("../../../assets/dente-mascara.svg");
-  mask-image: url("../../../assets/dente-mascara.svg");
+  -webkit-mask-image: url("../../../assets/images/letreiro/dente-mascara.svg");
+  mask-image: url("../../../assets/images/letreiro/dente-mascara.svg");
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-size: 3400vmax;

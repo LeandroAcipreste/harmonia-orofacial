@@ -2,21 +2,26 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
+  <!-- recarregou: a pagina sempre volta para a hero. Desliga a restauracao de rolagem do navegador antes de
+       qualquer coisa (o scroll.js leva ao topo depois). -->
+  <script>if ("scrollRestoration" in history) { history.scrollRestoration = "manual"; }</script>
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>Harmonia Orofacial · Clínica Odontológica</title>
 
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon-512.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/shared/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/images/shared/favicon-512.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/images/shared/favicon-180.png" />
 
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="style.css" />
 
-  <link rel="preload" as="image" href="assets/lustre-radial.jpg" />
-  <link rel="preload" as="image" href="assets/lustre-trama.jpg" />
+  <!-- PRELOADER PRETO DESDE O PRIMEIRO QUADRO: este pedaco nao depende de arquivo nenhum. A imagem preta embutida
+       faz o Chrome largar a pagina anterior (a hero com a logo) na hora, em vez de segura-la ate o CSS chegar. -->
+  <style>
+    .preloader { position: fixed; inset: 0; z-index: 100; background: #000 url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==") 0 0 / 100% 100% no-repeat; }
+    .preloader__filme { opacity: 0; }
+  </style>
 </head>
 
 <body data-pagina="home">
@@ -24,30 +29,29 @@
 
 
 <div class="preloader" id="preloader" role="status" aria-live="polite" aria-label="Carregando">
-  <span class="preloader__fundo" aria-hidden="true"></span>
-
-  <div class="preloader__palco">
-    <div class="preloader__dente-wrap" aria-hidden="true">
-      <img class="preloader__dente-ghost" src="assets/svg-dente-dourado.svg" alt="" />
-      <img class="preloader__dente-fill"  src="assets/svg-dente-dourado.svg" alt="" />
-      <span class="preloader__dente-glow"></span>
-    </div>
-
-    <p class="preloader__marca">HARMONIA OROFACIAL</p>
-    <p class="preloader__tipo">CLÍNICA ODONTOLÓGICA</p>
-    <p class="preloader__contador"><span class="preloader__num">0</span>%</p>
-    <div class="preloader__barra"><span class="preloader__barra-fill"></span></div>
-  </div>
-
-  <span class="preloader__risco" aria-hidden="true"></span>
+  <!-- o filme do medalhao (preloader.js). Perto do fim ele aproxima ate o medalhao ficar do tamanho do disco do
+       logo na hero, e some por cima dela. -->
+  <video
+    class="preloader__filme"
+    muted
+    playsinline
+    preload="auto"
+    aria-hidden="true"
+    tabindex="-1"
+    src="assets/videos/preloader/preloader-logo.mp4"
+  ></video>
 </div>
+
+<!-- o CSS do site vem depois do preloader: o preto acima pinta sem esperar por ele; o resto da pagina espera -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
 
 
 <header class="nav" id="nav">
   <nav class="nav__inner">
 
     <a class="nav__marca" href="#hero" aria-label="Harmonia Orofacial, início">
-      <img class="nav__marca-img" src="assets/favicon-180.png" alt="" />
+      <img class="nav__marca-img" src="assets/images/shared/favicon-180.png" alt="" />
     </a>
 
     <button class="nav__botao" type="button" aria-expanded="false">
@@ -74,6 +78,10 @@
 
 <main class="pagina">
 
+  <!-- abertura: a hero fica presa enquanto o trilho rola e a rolagem leva o video de transicao (a espiral vai
+       para a esquerda girando, as fitas correm para a direita). O ultimo quadro e o fundo da segunda dobra (hero.js). -->
+  <div class="abertura" id="abertura">
+
   <section class="hero" id="hero">
     <video
       class="hero__video"
@@ -86,74 +94,92 @@
       aria-hidden="true"
       tabindex="-1"
     >
-      <source src="assets/hero-espiral-mobile.mp4" type="video/mp4" media="(max-aspect-ratio: 13/20)" />
-      <source src="assets/hero-espiral-tablet.mp4" type="video/mp4" media="(max-aspect-ratio: 23/20)" />
-      <source src="assets/hero-espiral.mp4" type="video/mp4" />
+      <source src="assets/videos/hero/hero-espiral-mobile.mp4" type="video/mp4" media="(max-aspect-ratio: 13/20)" />
+      <source src="assets/videos/hero/hero-espiral-tablet.mp4" type="video/mp4" media="(max-aspect-ratio: 23/20)" />
+      <source src="assets/videos/hero/hero-espiral.mp4" type="video/mp4" />
     </video>
+
+    <!-- transicao para a segunda dobra: andada quadro a quadro pela rolagem (hero.js), nunca toca sozinha -->
+    <video
+      class="hero__transicao"
+      id="hero-transicao"
+      muted
+      playsinline
+      preload="auto"
+      aria-hidden="true"
+      tabindex="-1"
+      src="assets/videos/hero/transicao-espiral.mp4"
+    ></video>
 
   
     <h1 class="sr-only">Harmonia Orofacial · Clínica Odontológica</h1>
 
     <div class="hero__rolar" aria-hidden="true">
-      <span class="hero__rolar-texto">role</span>
+      <!-- os videos andam com a rolagem: rolar devagar deixa a transicao lisa. Um texto para mouse, outro para toque -->
+      <span class="hero__rolar-texto hero__rolar-texto--mouse">role devagar</span>
+      <span class="hero__rolar-texto hero__rolar-texto--toque">deslize devagar</span>
       <span class="hero__rolar-trilho"><span class="hero__rolar-ponto"></span></span>
     </div>
   </section>
 
+  <div class="abertura__trilho" aria-hidden="true"></div>
+
   <section class="s2" id="sectiontwo">
     <div class="s2__bg" aria-hidden="true">
-      <div class="s2__layer s2__layer--radial" id="s2-radial">
-        <div class="s2__spin s2__spin--halo"></div>
-        <div class="s2__spin s2__spin--detalhe"></div>
-      </div>
-      <div class="s2__layer s2__layer--trama" id="s2-trama"></div>
       <div class="s2__wash"></div>
     </div>
 
     <div class="s2__inner">
       <div class="s2__intro">
-        <p class="s2__eyebrow s2-reveal">Procedimentos</p>
-        <ul class="s2__lista">
-          <li class="s2__item"><span class="s2__item-txt">Implantes</span></li>
-          <li class="s2__item"><span class="s2__item-txt">Restauração</span></li>
-          <li class="s2__item"><span class="s2__item-txt">Exodontias simples e siso</span></li>
-          <li class="s2__item"><span class="s2__item-txt">Endodontia (canal)</span></li>
-          <li class="s2__item"><span class="s2__item-txt">Harmonização facial / Botox</span></li>
-          <li class="s2__item"><span class="s2__item-txt">Remoção de tártaro / profilaxia</span></li>
-          <li class="s2__item"><span class="s2__item-txt">Clareamento a laser em única sessão</span></li>
-          <li class="s2__item"><span class="s2__item-txt">Prótese dentária</span></li>
-          <li class="s2__item"><span class="s2__item-txt">Gengivoplastia</span></li>
-          <li class="s2__item"><span class="s2__item-txt">Facetas de resina</span></li>
-          <li class="s2__item"><span class="s2__item-txt">Ortodontia / Aparelho</span></li>
-          <li class="s2__item"><span class="s2__item-txt">Preenchimento labial</span></li>
-        </ul>
+        <!-- a caixa: a cortina transparente abre para os lados com a rolagem e o conteudo so aparece no vao entre os
+             dois fios dourados (sectiontwo.js escreve --abre; o CSS move os fios e recorta) -->
+        <div class="s2__caixa">
+          <div class="s2__revela">
+            <p class="s2__eyebrow s2-reveal">Procedimentos</p>
+            <ul class="s2__lista">
+              <li class="s2__item"><span class="s2__item-txt">Implantes</span></li>
+              <li class="s2__item"><span class="s2__item-txt">Restauração</span></li>
+              <li class="s2__item"><span class="s2__item-txt">Exodontias simples e siso</span></li>
+              <li class="s2__item"><span class="s2__item-txt">Endodontia (canal)</span></li>
+              <li class="s2__item"><span class="s2__item-txt">Harmonização facial / Botox</span></li>
+              <li class="s2__item"><span class="s2__item-txt">Remoção de tártaro / profilaxia</span></li>
+              <li class="s2__item"><span class="s2__item-txt">Clareamento a laser em única sessão</span></li>
+              <li class="s2__item"><span class="s2__item-txt">Prótese dentária</span></li>
+              <li class="s2__item"><span class="s2__item-txt">Gengivoplastia</span></li>
+              <li class="s2__item"><span class="s2__item-txt">Facetas de resina</span></li>
+              <li class="s2__item"><span class="s2__item-txt">Ortodontia / Aparelho</span></li>
+              <li class="s2__item"><span class="s2__item-txt">Preenchimento labial</span></li>
+            </ul>
+          </div>
+
+          <div class="cortina" aria-hidden="true">
+            <span class="cortina__folha cortina__folha--esq"></span>
+            <span class="cortina__folha cortina__folha--dir"></span>
+          </div>
+        </div>
       </div>
     </div>
-
-
-    <div class="cortina" aria-hidden="true">
-      <span class="cortina__folha cortina__folha--esq"></span>
-      <span class="cortina__folha cortina__folha--dir"></span>
-    </div>
   </section>
+
+  </div>
 
  
   <div class="faixa-marquee" aria-hidden="true">
     <span class="faixa-marquee__fade-topo"></span>
     <div class="faixa-marquee__trilho" id="faixa-marquee-trilho">
-      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
-      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
-      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
-      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
-      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
-      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
+      <img class="faixa-marquee__item" src="assets/images/shared/marca-harmonia.webp" alt="" width="320" height="80" />
+      <img class="faixa-marquee__item" src="assets/images/shared/marca-harmonia.webp" alt="" width="320" height="80" />
+      <img class="faixa-marquee__item" src="assets/images/shared/marca-harmonia.webp" alt="" width="320" height="80" />
+      <img class="faixa-marquee__item" src="assets/images/shared/marca-harmonia.webp" alt="" width="320" height="80" />
+      <img class="faixa-marquee__item" src="assets/images/shared/marca-harmonia.webp" alt="" width="320" height="80" />
+      <img class="faixa-marquee__item" src="assets/images/shared/marca-harmonia.webp" alt="" width="320" height="80" />
       <!-- duplicata para loop perfeito -->
-      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
-      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
-      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
-      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
-      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
-      <img class="faixa-marquee__item" src="assets/marca-harmonia.webp" alt="" width="320" height="80" />
+      <img class="faixa-marquee__item" src="assets/images/shared/marca-harmonia.webp" alt="" width="320" height="80" />
+      <img class="faixa-marquee__item" src="assets/images/shared/marca-harmonia.webp" alt="" width="320" height="80" />
+      <img class="faixa-marquee__item" src="assets/images/shared/marca-harmonia.webp" alt="" width="320" height="80" />
+      <img class="faixa-marquee__item" src="assets/images/shared/marca-harmonia.webp" alt="" width="320" height="80" />
+      <img class="faixa-marquee__item" src="assets/images/shared/marca-harmonia.webp" alt="" width="320" height="80" />
+      <img class="faixa-marquee__item" src="assets/images/shared/marca-harmonia.webp" alt="" width="320" height="80" />
     </div>
     <span class="faixa-marquee__fade-base"></span>
   </div>
@@ -162,11 +188,16 @@
 
    
     <div class="s3__pelicula" aria-hidden="true">
+      <!-- fundo: a entrada na clinica (transicao-clinica.mp4), levada pela rolagem com a secao presa; o ultimo
+           quadro, o balcao, fica parado atras dos cartoes. No celular, so a imagem desse quadro (sectionthree.js) -->
       <div class="s3__pelicula-palco">
-        <canvas class="s3__pelicula-gl" id="s3-gl" width="1920" height="1080"></canvas>
+        <video class="s3__pelicula-filme" muted playsinline preload="none" aria-hidden="true" tabindex="-1" src="assets/videos/resultados/transicao-clinica.mp4"></video>
         <span class="s3__pelicula-imagem"></span>
       </div>
     </div>
+
+    <!-- celular: trecho de rolagem so do video, antes de os cartoes subirem -->
+    <div class="s3__entrada" aria-hidden="true"></div>
 
     <div class="s3__palco">
 
@@ -187,11 +218,11 @@
                 </div>
               </div>
               <figure class="s3__etapa s3__etapa--foto s3__etapa--antes">
-                <img class="s3__foto" src="assets/procedimento-antes.png" alt="Implantes, antes do procedimento" loading="lazy" />
+                <img class="s3__foto" src="assets/images/resultados/procedimento-antes.png" alt="Implantes, antes do procedimento" loading="lazy" />
                 <figcaption class="s3__legenda">ANTES</figcaption>
               </figure>
               <figure class="s3__etapa s3__etapa--foto s3__etapa--depois">
-                <img class="s3__foto" src="assets/procedimento-depois.png" alt="Implantes, depois do procedimento" loading="lazy" />
+                <img class="s3__foto" src="assets/images/resultados/procedimento-depois.png" alt="Implantes, depois do procedimento" loading="lazy" />
                 <figcaption class="s3__legenda">DEPOIS</figcaption>
               </figure>
             </div>
@@ -215,11 +246,11 @@
                 </div>
               </div>
               <figure class="s3__etapa s3__etapa--foto s3__etapa--antes">
-                <img class="s3__foto" src="assets/procedimento-antes.png" alt="Harmonização, antes do procedimento" loading="lazy" />
+                <img class="s3__foto" src="assets/images/resultados/procedimento-antes.png" alt="Harmonização, antes do procedimento" loading="lazy" />
                 <figcaption class="s3__legenda">ANTES</figcaption>
               </figure>
               <figure class="s3__etapa s3__etapa--foto s3__etapa--depois">
-                <img class="s3__foto" src="assets/procedimento-depois.png" alt="Harmonização, depois do procedimento" loading="lazy" />
+                <img class="s3__foto" src="assets/images/resultados/procedimento-depois.png" alt="Harmonização, depois do procedimento" loading="lazy" />
                 <figcaption class="s3__legenda">DEPOIS</figcaption>
               </figure>
             </div>
@@ -243,11 +274,11 @@
                 </div>
               </div>
               <figure class="s3__etapa s3__etapa--foto s3__etapa--antes">
-                <img class="s3__foto" src="assets/procedimento-antes.png" alt="Prótese, antes do procedimento" loading="lazy" />
+                <img class="s3__foto" src="assets/images/resultados/procedimento-antes.png" alt="Prótese, antes do procedimento" loading="lazy" />
                 <figcaption class="s3__legenda">ANTES</figcaption>
               </figure>
               <figure class="s3__etapa s3__etapa--foto s3__etapa--depois">
-                <img class="s3__foto" src="assets/procedimento-depois.png" alt="Prótese, depois do procedimento" loading="lazy" />
+                <img class="s3__foto" src="assets/images/resultados/procedimento-depois.png" alt="Prótese, depois do procedimento" loading="lazy" />
                 <figcaption class="s3__legenda">DEPOIS</figcaption>
               </figure>
             </div>
@@ -271,11 +302,11 @@
                 </div>
               </div>
               <figure class="s3__etapa s3__etapa--foto s3__etapa--antes">
-                <img class="s3__foto" src="assets/procedimento-antes.png" alt="Clareamento, antes do procedimento" loading="lazy" />
+                <img class="s3__foto" src="assets/images/resultados/procedimento-antes.png" alt="Clareamento, antes do procedimento" loading="lazy" />
                 <figcaption class="s3__legenda">ANTES</figcaption>
               </figure>
               <figure class="s3__etapa s3__etapa--foto s3__etapa--depois">
-                <img class="s3__foto" src="assets/procedimento-depois.png" alt="Clareamento, depois do procedimento" loading="lazy" />
+                <img class="s3__foto" src="assets/images/resultados/procedimento-depois.png" alt="Clareamento, depois do procedimento" loading="lazy" />
                 <figcaption class="s3__legenda">DEPOIS</figcaption>
               </figure>
             </div>
@@ -289,6 +320,20 @@
   </section>
 
   
+  <!-- PONTE: o fundo da dobra da doutora, do trilho e da clinica numa camada so, presa a tela (ponte.js).
+       Na doutora: o primeiro quadro da transicao (o consultorio), escurecido. No trilho: a pelicula clareia e a
+       rolagem leva o video ate o refletor, a luz e as ondas. Na clinica: as ondas seguem em loop, feito do fim do
+       proprio video, entao o primeiro quadro do loop e o seguinte ao ultimo da transicao. Sem fade em nenhum ponto. -->
+  <div class="ponte" aria-hidden="true">
+    <video class="ponte__transicao" muted playsinline preload="none" tabindex="-1" poster="assets/images/dentista/consultorio-refletor.webp" src="assets/videos/dentista/transicao-doutora-clinica.mp4"></video>
+    <video class="ponte__loop" muted loop playsinline preload="none" tabindex="-1" src="assets/videos/clinica/clinica-loop.mp4"></video>
+    <span class="ponte__veu ponte__veu--doutora"></span>
+    <span class="ponte__veu ponte__veu--clinica"></span>
+    <video class="ponte__estrela" muted playsinline preload="none" tabindex="-1" src="assets/videos/avaliacoes/transicao-clinica-avaliacoes-rolagem.mp4"></video>
+    <video class="ponte__estrela-loop" muted loop playsinline preload="none" tabindex="-1" src="assets/videos/avaliacoes/avaliacoes-loop.mp4"></video>
+    <span class="ponte__veu ponte__veu--avaliacoes"></span>
+  </div>
+
   <div class="transicao">
 
     
@@ -357,6 +402,23 @@
             estética do sorriso na mesma clínica, do implante planejado
             digitalmente às facetas e à harmonização do rosto.
           </p>
+
+          <!-- retrato: desce de cima para baixo enquanto o texto da dobra e lido (sectionfour.js escreve --revela) -->
+          <figure class="s4__retrato">
+            <div class="s4__retrato-moldura">
+              <img
+                class="s4__retrato-img"
+                src="assets/images/dentista/dra-celia-retrato.webp"
+                srcset="assets/images/dentista/dra-celia-retrato-480.webp 480w, assets/images/dentista/dra-celia-retrato.webp 941w"
+                sizes="(min-width: 900px) 16rem, 70vw"
+                width="941"
+                height="1672"
+                alt="Dra. Célia Rodrigues de Lima, de jaleco azul, sorrindo na clínica"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </figure>
         </div>
 
         <ul class="s4__areas">
@@ -405,6 +467,9 @@
 
   </div>
 
+  <!-- trilho da ponte: o texto da doutora sai da tela e a rolagem leva o video ate as ondas da clinica -->
+  <div class="ponte__trilho" aria-hidden="true"></div>
+
   <section class="s5" id="sectionfive">
     <div class="s5__inner">
 
@@ -438,35 +503,38 @@
       <div class="s5__coluna-wrap">
         <div class="s5__coluna">
           <figure class="s5__foto shell-card">
-            <img class="s5__img" src="assets/clinica/1.webp" srcset="assets/clinica/1-400.webp 400w, assets/clinica/1-800.webp 800w, assets/clinica/1.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Fachada da clínica, com o letreiro Harmonia Orofacial e a bandeira azul na calçada" loading="lazy" decoding="async" />
+            <img class="s5__img" src="assets/images/clinica/1.webp" srcset="assets/images/clinica/1-400.webp 400w, assets/images/clinica/1-800.webp 800w, assets/images/clinica/1.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Fachada da clínica, com o letreiro Harmonia Orofacial e a bandeira azul na calçada" loading="lazy" decoding="async" />
           </figure>
           <figure class="s5__foto shell-card">
-            <img class="s5__img" src="assets/clinica/2.webp" srcset="assets/clinica/2-400.webp 400w, assets/clinica/2-800.webp 800w, assets/clinica/2.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Vista ampla da recepção, com o balcão branco, o lustre aceso e as poltronas azuis" loading="lazy" decoding="async" />
+            <img class="s5__img" src="assets/images/clinica/2.webp" srcset="assets/images/clinica/2-400.webp 400w, assets/images/clinica/2-800.webp 800w, assets/images/clinica/2.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Vista ampla da recepção, com o balcão branco, o lustre aceso e as poltronas azuis" loading="lazy" decoding="async" />
           </figure>
           <figure class="s5__foto shell-card">
-            <img class="s5__img" src="assets/clinica/3.webp" srcset="assets/clinica/3-400.webp 400w, assets/clinica/3-800.webp 800w, assets/clinica/3.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Lustre dourado aceso sobre o balcão da recepção" loading="lazy" decoding="async" />
+            <img class="s5__img" src="assets/images/clinica/3.webp" srcset="assets/images/clinica/3-400.webp 400w, assets/images/clinica/3-800.webp 800w, assets/images/clinica/3.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Lustre dourado aceso sobre o balcão da recepção" loading="lazy" decoding="async" />
           </figure>
           <figure class="s5__foto shell-card">
-            <img class="s5__img" src="assets/clinica/4.webp" srcset="assets/clinica/4-400.webp 400w, assets/clinica/4-800.webp 800w, assets/clinica/4.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Sala de espera com cadeiras azuis e o corredor dos consultórios ao fundo" loading="lazy" decoding="async" />
+            <img class="s5__img" src="assets/images/clinica/4.webp" srcset="assets/images/clinica/4-400.webp 400w, assets/images/clinica/4-800.webp 800w, assets/images/clinica/4.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Sala de espera com cadeiras azuis e o corredor dos consultórios ao fundo" loading="lazy" decoding="async" />
           </figure>
           <!-- duplicata para carrossel infinito -->
           <figure class="s5__foto shell-card">
-            <img class="s5__img" src="assets/clinica/1.webp" srcset="assets/clinica/1-400.webp 400w, assets/clinica/1-800.webp 800w, assets/clinica/1.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Fachada da clínica, com o letreiro Harmonia Orofacial e a bandeira azul na calçada" loading="lazy" decoding="async" />
+            <img class="s5__img" src="assets/images/clinica/1.webp" srcset="assets/images/clinica/1-400.webp 400w, assets/images/clinica/1-800.webp 800w, assets/images/clinica/1.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Fachada da clínica, com o letreiro Harmonia Orofacial e a bandeira azul na calçada" loading="lazy" decoding="async" />
           </figure>
           <figure class="s5__foto shell-card">
-            <img class="s5__img" src="assets/clinica/2.webp" srcset="assets/clinica/2-400.webp 400w, assets/clinica/2-800.webp 800w, assets/clinica/2.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Vista ampla da recepção, com o balcão branco, o lustre aceso e as poltronas azuis" loading="lazy" decoding="async" />
+            <img class="s5__img" src="assets/images/clinica/2.webp" srcset="assets/images/clinica/2-400.webp 400w, assets/images/clinica/2-800.webp 800w, assets/images/clinica/2.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Vista ampla da recepção, com o balcão branco, o lustre aceso e as poltronas azuis" loading="lazy" decoding="async" />
           </figure>
           <figure class="s5__foto shell-card">
-            <img class="s5__img" src="assets/clinica/3.webp" srcset="assets/clinica/3-400.webp 400w, assets/clinica/3-800.webp 800w, assets/clinica/3.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Lustre dourado aceso sobre o balcão da recepção" loading="lazy" decoding="async" />
+            <img class="s5__img" src="assets/images/clinica/3.webp" srcset="assets/images/clinica/3-400.webp 400w, assets/images/clinica/3-800.webp 800w, assets/images/clinica/3.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Lustre dourado aceso sobre o balcão da recepção" loading="lazy" decoding="async" />
           </figure>
           <figure class="s5__foto shell-card">
-            <img class="s5__img" src="assets/clinica/4.webp" srcset="assets/clinica/4-400.webp 400w, assets/clinica/4-800.webp 800w, assets/clinica/4.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Sala de espera com cadeiras azuis e o corredor dos consultórios ao fundo" loading="lazy" decoding="async" />
+            <img class="s5__img" src="assets/images/clinica/4.webp" srcset="assets/images/clinica/4-400.webp 400w, assets/images/clinica/4-800.webp 800w, assets/images/clinica/4.webp 1200w" sizes="(min-width: 1024px) 354px, (min-width: 640px) 47vw, 92vw" width="1200" height="1600" alt="Sala de espera com cadeiras azuis e o corredor dos consultórios ao fundo" loading="lazy" decoding="async" />
           </figure>
         </div>
       </div>
 
     </div>
   </section>
+
+  <!-- trilho da estrela: as ondas da clinica viram a estrela das avaliacoes, levadas pela rolagem -->
+  <div class="ponte__trilho-estrela" aria-hidden="true"></div>
 
   <!--
     Avaliações do Google. Os textos vêm de
@@ -513,7 +581,7 @@
     <div class="rodape__conteudo">
       <h2 class="sr-only">Contato</h2>
 
-      <img class="rodape__marca rodape-anim" src="assets/marca-harmonia.webp" alt="Harmonia Orofacial, clínica odontológica" width="598" height="156" loading="lazy" />
+      <img class="rodape__marca rodape-anim" src="assets/images/shared/marca-harmonia.webp" alt="Harmonia Orofacial, clínica odontológica" width="598" height="156" loading="lazy" />
 
       <p class="rodape__cro rodape-anim">DRA. CELIA LIMA CRO/SE 04799</p>
 
@@ -552,7 +620,7 @@
       </a>
     </div>
 
-    <img class="rodape__dente" src="assets/logo-transparente-png.png" alt="" aria-hidden="true" />
+    <img class="rodape__dente" src="assets/images/shared/logo-transparente-png.png" alt="" aria-hidden="true" />
 
     <div class="rodape__base rodape-anim">
       <p class="rodape__direitos">

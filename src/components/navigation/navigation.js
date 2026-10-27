@@ -1,5 +1,3 @@
-const ENTRADA = { deslocamento: -60, duracao: 1 };
-
 const CONSULTA_MOVEL = "(max-width: 899px)";
 
 const CLASSE_ABERTO = "is-aberto";
@@ -10,10 +8,9 @@ const CLASSE_RECOLHIDA = "esta-recolhida";
    tablet, sem cursor, uma barra escondida não voltaria nunca. */
 const CONSULTA_CURSOR = "(hover: hover) and (pointer: fine)";
 
-/* A altura da barra (4rem). É a região que, com o cursor em cima, traz a
-   barra de volta, e também a linha que a hero precisa cruzar para contar
-   como deixada para trás. */
-const ALTURA_DA_REGIAO = 64;
+/* Distancia do topo da tela em que o cursor chegando traz a barra (a barra tem 4rem, 64 px; um pouco mais para
+   ela surgir antes de o mouse encostar na borda). */
+const REGIAO_DE_CHEGADA = 96;
 
 export const initNavigation = () => {
     const nav = document.querySelector(".nav");
@@ -31,15 +28,8 @@ export const initNavigation = () => {
     ligarMenu(nav);
     ligarRecolhimento(nav);
 
-    if (typeof gsap === "undefined") {
-        return;
-    }
-
-    gsap.fromTo(
-        nav,
-        { y: ENTRADA.deslocamento, opacity: 0 },
-        { y: 0, opacity: 1, duration: ENTRADA.duracao, ease: "power3.out" }
-    );
+    /* Sem entrada em GSAP: ele grava translate: none no estilo do elemento, e isso vence o translate da classe
+       .esta-recolhida (a barra ficava presa a vista). Quem move a barra e so o CSS. */
 };
 
 const ligarMenu = (nav) => {
@@ -82,61 +72,42 @@ const ligarMenu = (nav) => {
     });
 };
 
-/* A BARRA SE RECOLHE DEPOIS DA HERO
+/* A BARRA FICA ESCONDIDA E APARECE COM O CURSOR
 
-   Passou da hero, a barra sobe e sai da frente do conteúdo. O cursor
-   chegando no topo da tela traz ela de volta, e sair dali recolhe de novo.
+   Onde existe cursor, a barra fica recolhida acima da tela desde o topo da pagina. O cursor chegando perto do
+   alto da tela traz ela de volta, e sair dali recolhe de novo. No celular e no tablet, sem cursor, ela fica a
+   vista: escondida, nao voltaria nunca.
 
-   Nada aqui roda por quadro:
-   - quem sabe que a hero ficou para trás é um IntersectionObserver, e não
-     um ouvinte de rolagem;
-   - o mousemove só compara um número, e só mexe na classe quando o estado
-     muda. Nenhuma leitura de layout.
+   Nada aqui roda por quadro: o mousemove so compara um numero e so mexe na classe quando o estado muda.
 
-   Com o menu aberto, a barra nunca recolhe: seria fechar a porta na cara
-   de quem está escolhendo para onde ir. */
+   Com o menu aberto, a barra nunca recolhe: seria fechar a porta na cara de quem esta escolhendo para onde ir. */
 const ligarRecolhimento = (nav) => {
-    const hero = document.querySelector("#hero");
-
-    if (!hero || typeof IntersectionObserver === "undefined") {
-        return;
-    }
-
     const comCursor = window.matchMedia(CONSULTA_CURSOR);
 
-    let passouDaHero = false;
     let cursorNaRegiao = false;
+    // notebook com tela de toque diz que o ponteiro principal e toque: o mouse se denuncia ao se mexer
+    let temMouse = comCursor.matches;
 
     const aplicar = () => {
         const recolher =
-            comCursor.matches &&
-            passouDaHero &&
+            temMouse &&
             !cursorNaRegiao &&
             !nav.classList.contains(CLASSE_ABERTO);
 
         nav.classList.toggle(CLASSE_RECOLHIDA, recolher);
     };
 
-    const observador = new IntersectionObserver(
-        (entradas) => {
-            entradas.forEach((entrada) => {
-                passouDaHero = !entrada.isIntersecting;
-                aplicar();
-            });
-        },
-        /* A hero conta como deixada para trás quando o pé dela passa por
-           baixo da barra, e não quando some da tela inteira. */
-        { rootMargin: "-" + ALTURA_DA_REGIAO + "px 0px 0px 0px" },
-    );
-
-    observador.observe(hero);
-
     document.addEventListener(
-        "mousemove",
+        "pointermove",
         (evento) => {
-            const naRegiao = evento.clientY <= ALTURA_DA_REGIAO;
+            if (evento.pointerType !== "mouse") {
+                return;
+            }
 
-            if (naRegiao !== cursorNaRegiao) {
+            const naRegiao = evento.clientY <= REGIAO_DE_CHEGADA;
+
+            if (!temMouse || naRegiao !== cursorNaRegiao) {
+                temMouse = true;
                 cursorNaRegiao = naRegiao;
                 aplicar();
             }
@@ -144,8 +115,17 @@ const ligarRecolhimento = (nav) => {
         { passive: true },
     );
 
+    // clicou num link da barra: ela recolhe assim que o cursor sai do topo, sem o foco segurar
+    nav.addEventListener("click", (evento) => {
+        const link = evento.target.closest("a");
+
+        if (link && evento.detail > 0) {
+            link.blur();
+        }
+    });
+
     /* Saiu da janela (foi para as abas do navegador, por exemplo): conta
-       como saiu da região. */
+       como saiu da regiao. */
     document.documentElement.addEventListener("mouseleave", () => {
         if (cursorNaRegiao) {
             cursorNaRegiao = false;
@@ -153,5 +133,9 @@ const ligarRecolhimento = (nav) => {
         }
     });
 
-    comCursor.addEventListener("change", aplicar);
+    comCursor.addEventListener("change", () => {
+        temMouse = temMouse || comCursor.matches;
+        aplicar();
+    });
+    aplicar();
 };

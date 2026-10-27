@@ -1,10 +1,12 @@
-const DURACAO_TOTAL = 5000;
-const ESPERA_ANTES_DE_SAIR = 420;
-const LIMITE_SEGURANCA = DURACAO_TOTAL + 7000;
+/* PRELOADER: a tela fica preta por meio segundo, depois o filme do medalhao surge do preto e toca. 0,7 s antes
+   do fim (o tempo da saida no preloader.css) ele aproxima e some por cima da hero. Se o filme nao tocar, o site
+   abre mesmo assim. */
+const SAIDA = 0.7;
+// a tela fica preta esse tempo antes de o filme comecar
+const ESPERA_NO_PRETO = 500;
+const LIMITE_SEGURANCA = 14000;
 
 const EVENTO_FIM = "harmonia:preloader-fim";
-
-const suavizar = (t) => 1 - Math.pow(1 - t, 3);
 
 export const initPreloader = () => {
     const preloader = document.querySelector(".preloader");
@@ -13,14 +15,10 @@ export const initPreloader = () => {
         return;
     }
 
-    const denteFill = preloader.querySelector(".preloader__dente-fill");
-    const barraFill = preloader.querySelector(".preloader__barra-fill");
-    const contador = preloader.querySelector(".preloader__num");
+    const filme = preloader.querySelector(".preloader__filme");
 
-    let quadro = 0;
-    let inicio = null;
-    let ultimoInteiro = -1;
     let encerrado = false;
+    let saindo = false;
 
     const encerrar = () => {
         if (encerrado) {
@@ -28,7 +26,6 @@ export const initPreloader = () => {
         }
 
         encerrado = true;
-        window.cancelAnimationFrame(quadro);
         document.documentElement.classList.remove("esta-carregando");
         preloader.remove();
 
@@ -37,7 +34,7 @@ export const initPreloader = () => {
         }
     };
 
-    if (document.documentElement.classList.contains("sem-preloader")) {
+    if (document.documentElement.classList.contains("sem-preloader") || !filme) {
         encerrar();
         document.dispatchEvent(new CustomEvent(EVENTO_FIM));
         return;
@@ -46,50 +43,40 @@ export const initPreloader = () => {
     document.documentElement.classList.add("esta-carregando");
     preloader.classList.add("js-ativo");
 
-    const pintar = (p) => {
-        if (denteFill) {
-            denteFill.style.clipPath = `inset(${(1 - p) * 100}% 0 0 0)`;
-        }
-
-        if (barraFill) {
-            barraFill.style.transform = `scaleX(${p})`;
-        }
-
-        const inteiro = Math.round(p * 100);
-
-        if (contador && inteiro !== ultimoInteiro) {
-            ultimoInteiro = inteiro;
-            contador.textContent = inteiro;
-        }
-    };
-
     const sair = () => {
-        document.dispatchEvent(new CustomEvent(EVENTO_FIM));
-        preloader.addEventListener("transitionend", encerrar, { once: true });
-        preloader.classList.add("esta-saindo");
-    };
-
-    const passo = (agora) => {
-        if (inicio === null) {
-            inicio = agora;
-        }
-
-        const bruto = Math.min(1, (agora - inicio) / DURACAO_TOTAL);
-
-        pintar(suavizar(bruto));
-
-        if (bruto < 1) {
-            quadro = window.requestAnimationFrame(passo);
+        if (saindo) {
             return;
         }
 
-        comHeroPronta(() => window.setTimeout(sair, ESPERA_ANTES_DE_SAIR));
+        saindo = true;
+        comHeroPronta(() => {
+            document.dispatchEvent(new CustomEvent(EVENTO_FIM));
+            preloader.addEventListener("transitionend", encerrar, { once: true });
+            preloader.classList.add("esta-saindo");
+            window.setTimeout(encerrar, SAIDA * 1000 + 300);
+        });
     };
 
-    pintar(0);
-    quadro = window.requestAnimationFrame(passo);
+    filme.addEventListener("timeupdate", () => {
+        if (Number.isFinite(filme.duration) && filme.currentTime >= filme.duration - SAIDA) {
+            sair();
+        }
+    });
 
-    window.setTimeout(encerrar, LIMITE_SEGURANCA);
+    filme.addEventListener("ended", sair, { once: true });
+    filme.addEventListener("error", sair, { once: true });
+
+    filme.addEventListener("playing", () => filme.classList.add("esta-tocando"), { once: true });
+
+    window.setTimeout(() => {
+        const promessa = filme.play();
+
+        if (promessa && typeof promessa.catch === "function") {
+            promessa.catch(sair);
+        }
+    }, ESPERA_NO_PRETO);
+
+    window.setTimeout(sair, LIMITE_SEGURANCA);
 };
 
 const PRONTA_O_BASTANTE = 3;
