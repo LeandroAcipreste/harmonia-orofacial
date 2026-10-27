@@ -7,7 +7,7 @@
    2. No toque, so os videos perto da tela ficam ligados. O celular decodifica poucos videos de uma vez; com todos
       ligados, as transicoes engasgam. Cada video se liga meia tela (ANTECEDENCIA) antes do trecho dele e se solta (sem src,
       load(): o decodificador fica livre) quando fica longe. No computador nada se solta. */
-const TOQUE = "(hover: none) and (pointer: coarse)";
+const TOQUE = "(any-hover: none) and (pointer: coarse)";
 const ANTECEDENCIA = "50% 0px 50% 0px";
 const MEIO_QUADRO = 1 / 48;
 

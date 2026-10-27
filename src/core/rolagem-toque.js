@@ -1,8 +1,10 @@
 /* ROLAGEM NO TOQUE: no celular e no tablet os trechos presos (abertura, letreiro, ponte, letras da clinica,
    estrela) andam com METADE da rolagem do computador, e os videos alcancam o dedo mais depressa. No computador a
-   rolagem lenta continua como ele pediu. Os trilhos em CSS usam a mesma condicao (@media (hover: none) and
-   (pointer: coarse)) com as alturas pela metade. */
-const TOQUE = "(hover: none) and (pointer: coarse)";
+   rolagem lenta continua como ele pediu. Os trilhos em CSS usam a mesma condicao (@media (any-hover: none) and
+   (pointer: coarse)) com as alturas pela metade.
+   any-hover: none, e nao hover: none: notebook com tela de toque diz que o ponteiro principal e o dedo, mas tem
+   trackpad; ali a rolagem tem que continuar a lenta do computador (aconteceu no notebook dele). */
+const TOQUE = "(any-hover: none) and (pointer: coarse)";
 
 export const noToque = () => window.matchMedia(TOQUE).matches;
 

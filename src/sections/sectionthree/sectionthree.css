@@ -87,7 +87,7 @@
 }
 
 /* toque: metade do trecho (rolagem-toque.js) */
-@media (hover: none) and (pointer: coarse) {
+@media (any-hover: none) and (pointer: coarse) {
   .s3__entrada {
     height: 125vh;
   }

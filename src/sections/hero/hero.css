@@ -12,7 +12,7 @@
 }
 
 /* toque: metade do trilho (rolagem-toque.js), o celular nao pede rolagem lenta */
-@media (hover: none) and (pointer: coarse) {
+@media (any-hover: none) and (pointer: coarse) {
   .abertura__trilho {
     height: 200vh;
   }

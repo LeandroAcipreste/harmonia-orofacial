@@ -61,7 +61,7 @@
 }
 
 /* tela so de toque (celular, tablet): o aviso fala em deslizar */
-@media (hover: none) and (pointer: coarse) {
+@media (any-hover: none) and (pointer: coarse) {
   .rolar-devagar__texto--mouse {
     display: none;
   }
