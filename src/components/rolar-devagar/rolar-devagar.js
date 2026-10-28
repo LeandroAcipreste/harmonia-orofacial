@@ -11,6 +11,9 @@ const VIGIA_MS = 500;
 // sempre no meio da largura da tela (nos cantos ele ficava sobre o vidro da porta, sem leitura): embaixo, no meio
 // da altura ou no alto
 const LUGARES = ["centro", "meio", "alto"];
+// nas avaliacoes do celular, so embaixo: os cards correndo faziam ele pular do meio para baixo o tempo todo
+const LUGARES_DAS_AVALIACOES = ["centro"];
+const TOQUE = "(any-hover: none) and (pointer: coarse)";
 const FOLGA = 12;
 // foto ou card que ocupa mais que isso da tela e fundo, nao informacao
 const FUNDO = 0.5;
@@ -21,6 +24,7 @@ const INFORMACAO = "p, h1, h2, h3, h4, li, blockquote, figure, img, picture, a, 
 export const initRolarDevagar = () => {
     const hero = document.querySelector(".hero");
     const rodape = document.querySelector(".rodape");
+    const avaliacoes = document.querySelector(".avaliacoes");
 
     const aviso = document.createElement("div");
     aviso.className = "rolar-devagar rolar-devagar--centro";
@@ -147,6 +151,16 @@ export const initRolarDevagar = () => {
         return !rodape || rodape.getBoundingClientRect().top > window.innerHeight * 0.6;
     };
 
+    const lugaresAgora = () => {
+        if (!avaliacoes || !window.matchMedia(TOQUE).matches) {
+            return LUGARES;
+        }
+
+        const caixa = avaliacoes.getBoundingClientRect();
+        const meio = window.innerHeight / 2;
+        return caixa.height && caixa.top < meio && caixa.bottom > meio ? LUGARES_DAS_AVALIACOES : LUGARES;
+    };
+
     const mostrar = () => {
         espera = 0;
 
@@ -156,11 +170,13 @@ export const initRolarDevagar = () => {
         }
 
         // continua onde esta enquanto o lugar estiver livre: nao fica pulando de canto
-        if (aviso.classList.contains("esta-visivel") && livre()) {
+        const lugares = lugaresAgora();
+
+        if (aviso.classList.contains("esta-visivel") && lugares.includes(lugar) && livre()) {
             return;
         }
 
-        const achou = LUGARES.find((nome) => {
+        const achou = lugares.find((nome) => {
             posicionar(nome);
             return livre();
         });
