@@ -11,10 +11,10 @@
   height: 400vh;
 }
 
-/* toque: metade do trilho (rolagem-toque.js), o celular nao pede rolagem lenta */
+/* toque: o mesmo trecho da primeira viagem do site da AuronTech (340vh) */
 @media (any-hover: none) and (pointer: coarse) {
   .abertura__trilho {
-    height: 200vh;
+    height: 340vh;
   }
 }
 

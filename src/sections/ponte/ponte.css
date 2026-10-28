@@ -138,13 +138,13 @@
   height: 250vh;
 }
 
-/* toque: os dois trilhos pela metade (rolagem-toque.js), o celular nao pede rolagem lenta */
+/* toque: os trechos das viagens do site da AuronTech (240vh e 230vh) */
 @media (any-hover: none) and (pointer: coarse) {
   .ponte__trilho {
-    height: 150vh;
+    height: 240vh;
   }
 
   .ponte__trilho-estrela {
-    height: 125vh;
+    height: 230vh;
   }
 }

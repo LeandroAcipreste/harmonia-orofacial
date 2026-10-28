@@ -86,10 +86,10 @@
   }
 }
 
-/* toque: metade do trecho (rolagem-toque.js) */
+/* toque: o trecho de uma viagem do site da AuronTech */
 @media (any-hover: none) and (pointer: coarse) {
   .s3__entrada {
-    height: 125vh;
+    height: 240vh;
   }
 }
 
